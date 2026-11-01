@@ -1,0 +1,254 @@
+/*
+ * Jetons de design des Bibliothèques de l'UdeM.
+ *
+ * Repris tels quels du thème MUI de coquille-web
+ * (plugins/gatsby-plugin-bib-theme/tokens) pour que le rendu reste identique.
+ * Les composants n'écrivent jamais de couleur, de police ni de durée en dur :
+ * ils passent par ces variables.
+ */
+
+:root {
+  /* ---- Couleurs de marque ---- */
+  --bleu-principal: #0057ac;
+  --bleu-principal-clair: rgb(51 120 188);
+  --bleu-principal-fonce: rgb(0 60 120);
+  --bleu-fonce: #0b113a;
+  --bleu-fonce-clair: rgb(59 64 97);
+  --bleu-100: #e5f0f8;
+  --bleu-200: #cce2f3;
+  --bleu-600: #00407f;
+  --jaune: #ffca40;
+  --jaune-pale: #ffe8ac;
+  --rose-100: #fcf3f1;
+  --rose-300: #fee1de;
+  --rose-500: #f4bdb7;
+  --rouge-orange: #f04e24;
+  /* Variante assombrie pour le texte : #f04e24 n'atteint que 3,45:1 sur le
+     fond du site et 2,93:1 sur rose 300, insuffisant pour du texte courant
+     (WCAG 1.4.3, 4,5:1). #b33410 passe sur tous les fonds clairs du thème
+     (de 4,61:1 sur bleu 200 à 5,87:1 sur le fond). Le #f04e24 reste pour
+     les icônes et les éléments graphiques (3:1 suffit, WCAG 1.4.11). */
+  --rouge-orange-texte-sur-clair: #b33410;
+  --vert-fonce: #024244;
+  --vert-pale: #52b782;
+  --violet-fonce: #9374f6;
+  /* Neutres de la palette : ceux des rôles du thème clair, pour les
+     éléments qui gardent leurs couleurs dans les deux thèmes (barre de
+     l'en-tête posée sur la photo de la bannière) */
+  --gris-700: #222930;
+  --blanc-casse: #f8fafb;
+
+  /* Voile noir posé sur les photos des bannières et des sections à image
+     (rgba(0,0,0,.4) ou .5 dans la source), dosé avec color-mix */
+  --couleur-voile: #000;
+  /* Survol des boutons pleins bleu foncé (assombri, comme dark de MUI) */
+  --bleu-fonce-survol: rgb(7 11 40);
+  --couleur-pdf: #ea4c3a;
+
+  /* ---- Typographie ---- */
+  --police-sans: 'Figtree Variable', 'Figtree Fallback', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --graisse-legere: 300;
+  --graisse-normale: 400;
+  --graisse-moyenne: 500;
+  --graisse-forte: 600;
+
+  /* ---- Formes ---- */
+  --rayon-plein: 9999px;
+  --rayon-grand: 24px;
+  --rayon-moyen: 16px;
+  --rayon-petit: 12px;
+  --rayon-tres-petit: 8px;
+  --rayon-minuscule: 4px;
+
+  /* ---- Espacement (1 unité MUI = 8 px) ---- */
+  --espace-1: 0.5rem;
+  --espace-2: 1rem;
+  --espace-3: 1.5rem;
+  --espace-4: 2rem;
+  --espace-5: 2.5rem;
+  --espace-6: 3rem;
+  --espace-8: 4rem;
+
+  /* ---- Échelle d'espacement par rôle (voir CONVENTIONS, « Espacements ») ----
+     Les composants n'emploient que ces rôles pour l'espace vertical et les
+     écarts de grille : la même relation a le même écart partout. Du plus
+     petit au plus grand : élément < titre < bloc < blocs < bande. */
+  /* Entre deux éléments d'un même groupe : paragraphes, boutons d'une
+     rangée, éléments d'une liste */
+  --espace-element: var(--espace-2);
+  /* Sous le titre d'un bloc (h2) : la moitié de sa taille (0.5em du h2 du
+     thème), plus près de son texte que du bloc précédent */
+  --espace-titre: 1.25rem;
+  /* Entre les groupes d'un bloc : texte et boutons, colonnes empilées sur
+     mobile, introduction et grille, grille et bouton « voir tout » */
+  --espace-bloc: var(--espace-5);
+  /* Entre deux blocs d'une même bande (bloc puis accordéons, texte puis
+     fiches) */
+  --espace-blocs: var(--espace-8);
+  /* Marge verticale d'une bande (Section) : 48, 64 puis 96 px, comme la
+     source ; en px, car la bande ne grandit pas avec le texte */
+  --espace-bande: 48px;
+  /* Entre les cartes d'une grille ou d'un carrousel */
+  --espace-grille: var(--espace-3);
+  /* Marge interne des cartes */
+  --espace-carte: 1.6667rem;
+
+  /* ---- Dimensions par rôle ---- */
+  /* Rayon de toutes les cartes */
+  --rayon-carte: var(--rayon-petit);
+  /* Pastille fléchée : grande dans une carte, petite dans une ligne de liste */
+  --taille-pastille: 3.125rem;
+  --taille-pastille-petite: 2.5rem;
+  --taille-icone-pastille: 1.5rem;
+  /* Cible tactile des commandes principales sur mobile (CONVENTIONS) */
+  --taille-cible: 44px;
+
+  --gouttiere: 20px;
+  --largeur-max: 1536px;
+  /* Mesure du texte courant : 75 caractères par ligne au plus (optimum de
+     50 à 75 selon Baymard ; WCAG 1.4.8 fixe 80 au plus). En Figtree, un
+     caractère de texte français mesure en moyenne 0,71ch : 52ch ≈ 73. */
+  --mesure-texte: 52ch;
+
+  /* ---- Mouvement (Material 3) ---- */
+  --duree-courte-1: 50ms;
+  --duree-courte-2: 100ms;
+  --duree-courte-3: 150ms;
+  --duree-courte-4: 200ms;
+  --duree-moyenne-1: 250ms;
+  --duree-moyenne-2: 300ms;
+  --duree-moyenne-3: 350ms;
+  --duree-moyenne-4: 400ms;
+  --duree-longue-1: 450ms;
+  --duree-longue-2: 500ms;
+  --courbe-emphase: cubic-bezier(0.2, 0, 0, 1);
+  --courbe-emphase-acceleree: cubic-bezier(0.3, 0, 0.8, 0.15);
+  --courbe-emphase-deceleree: cubic-bezier(0.05, 0.7, 0.1, 1);
+  --courbe-standard: cubic-bezier(0.2, 0, 0, 1);
+  --courbe-standard-acceleree: cubic-bezier(0.3, 0, 1, 1);
+  --courbe-standard-deceleree: cubic-bezier(0, 0, 0, 1);
+
+  /* ---- Empilement ---- */
+  --z-entete: 1100;
+  --z-tiroir: 1200;
+  --z-modale: 1300;
+
+  /* Hauteur de l'en-tête collant : sert à scroll-padding-top pour que la
+     cible d'une ancre ou le focus ne passe pas dessous (WCAG 2.4.11). */
+  --hauteur-entete: 100px;
+}
+
+@media (min-width: 900px) {
+  :root {
+    --gouttiere: 64px;
+    --espace-titre: 1.75rem;
+    --espace-bande: 64px;
+    /* La barre compacte dure jusqu'à 1199 px et fait environ 102 px */
+    --hauteur-entete: 104px;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --espace-bande: 96px;
+    /* 5rem = la barre de bureau (90 px à 18 px) ; en rem, la marge suit le
+       texte agrandi, quand la barre passe sur deux rangées (WCAG 2.4.11) */
+    --hauteur-entete: 5rem;
+  }
+}
+
+/* ---- Rôles des couleurs, thème clair ----
+   Les composants emploient les rôles ; la palette ci-dessus ne change pas
+   d'un thème à l'autre. `.theme-clair` remet ces valeurs sur une zone qui
+   garde ses couleurs dans les deux thèmes (pied de page, bandeau des
+   horaires, bandes de ton moyen) ; `.surface-claire` (carte posée dans une
+   bande foncée) reprend celles du thème en cours. */
+:root,
+.theme-clair,
+.surface-claire {
+  --couleur-texte: var(--bleu-fonce);
+  --couleur-texte-secondaire: #4a5160;
+  --couleur-neutre-700: var(--gris-700);
+  --couleur-fond: var(--blanc-casse);
+  --couleur-surface: #ffffff;
+  --couleur-bordure: #c3ccd5;
+  --couleur-lien: var(--bleu-principal);
+  --couleur-lien-survol: var(--bleu-principal-fonce);
+  --couleur-focus: var(--bleu-principal);
+  /* Texte et icônes posés sur un fond foncé ou coloré (boutons pleins,
+     bandes bleues) : blanc dans les deux thèmes */
+  --couleur-sur-fonce: #ffffff;
+  /* Fond des boutons pleins (texte --couleur-sur-fonce) et son survol */
+  --couleur-fond-fort: var(--bleu-fonce);
+  --couleur-fond-fort-survol: var(--bleu-principal);
+  /* Texte et icônes de la couleur de marque sur une surface */
+  --couleur-accent: var(--bleu-principal);
+  /* Fonds teintés de bleu (encadrés, puces, survols) */
+  --couleur-teinte: var(--bleu-100);
+  --couleur-teinte-forte: var(--bleu-200);
+  --couleur-teinte-jaune: var(--jaune-pale);
+  --couleur-teinte-rose: var(--rose-100);
+  --couleur-teinte-rose-forte: var(--rose-300);
+  --rouge-orange-texte: var(--rouge-orange-texte-sur-clair);
+
+  /* Ombres (Paper, cartes, tiroirs), teintées du bleu foncé du thème */
+  --ombre-1: 0 2px 1px -1px rgb(11 17 58 / 20%), 0 1px 1px 0 rgb(11 17 58 / 14%), 0 1px 3px 0 rgb(11 17 58 / 12%);
+  --ombre-2: 0 3px 5px -1px rgb(11 17 58 / 20%), 0 6px 10px 0 rgb(11 17 58 / 14%), 0 1px 18px 0 rgb(11 17 58 / 12%);
+
+  /* Alertes : fond, couleur de l'icône */
+  --alerte-fond: #eef4f7;
+  --alerte-succes-fond: #52b782;
+  /* Icône foncée sur le vert : le #edf9f3 de la source n'atteignait que
+     2,48:1 (WCAG 1.4.11 demande 3:1) ; le bleu foncé donne 7,32:1. */
+  --alerte-succes-icone: var(--bleu-fonce);
+  --alerte-info-fond: #cce2f3;
+  --alerte-info-icone: #0057ac;
+  --alerte-avertissement-fond: var(--jaune-pale);
+  --alerte-avertissement-icone: #976d00;
+  --alerte-erreur-fond: #fee1de;
+  --alerte-erreur-icone: #b10000;
+
+  color-scheme: light;
+}
+
+/* ---- Thème sombre (en attente) ----
+   Prototype non branché : aucun bouton ne pose data-theme="sombre" sur
+   <html>, le site reste clair. Contrastes (WCAG 1.4.3 et 1.4.11) : voir
+   docs/CONVENTIONS.md, « Thème sombre ». */
+:root[data-theme='sombre'],
+:root[data-theme='sombre'] .surface-claire {
+  --couleur-texte: #e8ebf3;
+  --couleur-texte-secondaire: #b3bbcc;
+  --couleur-neutre-700: #d9dde6;
+  --couleur-fond: #0e1322;
+  --couleur-surface: #182035;
+  --couleur-bordure: #3e4864;
+  --couleur-lien: #93c3f5;
+  --couleur-lien-survol: #c0dcf9;
+  --couleur-focus: #93c3f5;
+  --couleur-accent: #93c3f5;
+  /* Le bleu foncé se perdait sur le fond : bleu principal (blanc 7,1:1) */
+  --couleur-fond-fort: var(--bleu-principal);
+  --couleur-fond-fort-survol: var(--bleu-principal-fonce);
+  --couleur-teinte: #1d2b48;
+  --couleur-teinte-forte: #26375c;
+  --couleur-teinte-jaune: #3a3218;
+  --couleur-teinte-rose: #2e1e25;
+  --couleur-teinte-rose-forte: #43242c;
+  --rouge-orange-texte: #ff9378;
+
+  --ombre-1: 0 2px 1px -1px rgb(0 0 0 / 40%), 0 1px 1px 0 rgb(0 0 0 / 28%), 0 1px 3px 0 rgb(0 0 0 / 24%);
+  --ombre-2: 0 3px 5px -1px rgb(0 0 0 / 40%), 0 6px 10px 0 rgb(0 0 0 / 28%), 0 1px 18px 0 rgb(0 0 0 / 24%);
+
+  --alerte-fond: #1a2338;
+  --alerte-succes-fond: #163a2b;
+  --alerte-succes-icone: #74d6a4;
+  --alerte-info-fond: #1d2f4b;
+  --alerte-info-icone: #93c3f5;
+  --alerte-avertissement-fond: #3a3016;
+  --alerte-avertissement-icone: #f2c654;
+  --alerte-erreur-fond: #46201e;
+  --alerte-erreur-icone: #ff9389;
+
+  color-scheme: dark;
+}

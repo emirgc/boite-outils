@@ -1,0 +1,39 @@
+---
+/*
+ * Accueil : le guide « La boîte à outils » de LibGuides, avec la disposition
+ * du site actuel. Tout le contenu sous le bandeau vient de l'API : les
+ * bibliothécaires continuent de le modifier dans LibGuides.
+ */
+import RechercheGuides from '@/components/RechercheGuides.astro'
+import Base from '@/layouts/Base.astro'
+import { guide, ID_ACCUEIL } from '@/lib/libguides'
+
+const { nom, description, sections } = await guide(ID_ACCUEIL)
+// Titre et photo remplacés par rapport à LibGuides ; sans effet s'ils y changent
+const TITRES: Record<string, string> = { 'Encore des questions?': 'Des questions?' }
+const ANCIENNE_PHOTO = 'https://www.bib.umontreal.ca/images/libguides/encore-questions.png'
+const NOUVELLE_PHOTO = '/images/accueil/des-questions.webp'
+---
+
+<Base titre={`${nom} | Les bibliothèques UdeM`} description={description} sansRetroaction>
+  <main id="contenu-principal" tabindex="-1">
+    <div class="heros">
+      <img class="heros-image" src="/images/accueil/heros.webp" alt="" />
+      <div class="heros-texte">
+        <h1>{nom}</h1>
+        {description && <p>{description}</p>}
+      </div>
+    </div>
+    <div class="accueil conteneur" data-revelation="zone">
+      <RechercheGuides id="recherche-accueil" />
+      {
+        sections.flatMap((s) => s.boites).map((boite) => (
+          <section class="boite" id={`s-lg-box-${boite.id}`}>
+            {boite.nom && <h2>{TITRES[boite.nom] ?? boite.nom}</h2>}
+            <Fragment set:html={boite.html.replaceAll(ANCIENNE_PHOTO, NOUVELLE_PHOTO)} />
+          </section>
+        ))
+      }
+    </div>
+  </main>
+</Base>

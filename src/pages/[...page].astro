@@ -1,0 +1,263 @@
+---
+/*
+ * Une page de guide lue dans l'API de LibGuides, avec la présentation de
+ * bibweb. Une page statique par page du guide.
+ */
+import FilAriane from '@/components/coquille/FilAriane.astro'
+import Base from '@/layouts/Base.astro'
+import { ancetres, guide, routesGuides } from '@/lib/libguides'
+import { estCollectif, lienAncre } from '@/lib/nettoyage'
+import { LIEN_NOUS_ECRIRE, LIENS_NOUS_JOINDRE } from '@/data/navigation'
+
+export async function getStaticPaths() {
+  const routes = await routesGuides()
+  return routes.map(({ chemin, idGuide, idPage, cacheKey }) => ({ params: { page: chemin.slice(1, -1) }, props: { idGuide, idPage }, cacheKey }))
+}
+
+const { idGuide, idPage } = Astro.props
+const { nom, description, misAJour, auteur, racine, sections } = await guide(idGuide)
+const section = sections.find((s) => s.id === idPage)!
+const parents = await ancetres(idGuide)
+const premierePage = section.chemin === racine
+const ids = new Set(sections.map((s) => s.id))
+const pagesPrincipales = sections.filter((s) => !s.parent || !ids.has(s.parent))
+const sousPages = (id: string) => sections.filter((s) => s.parent === id)
+const titresBoites = section.boites.filter((b) => b.nom)
+// Une page sans fiche reprend la première fiche du guide
+const fichesPage = section.profils.length ? section.profils : (sections.find((s) => s.profils.length)?.profils ?? [])
+const profils = fichesPage.filter((p) => !estCollectif(p.nom))
+// Guide écrit en commun : une seule fiche « Nous joindre », à la place de l'équipe
+const imageCommune = fichesPage.find((p) => estCollectif(p.nom))?.photo
+// Une même adresse peut revenir dans plusieurs fiches de la page
+const courrielsEquipe = [...new Set(fichesPage.filter((p) => estCollectif(p.nom)).flatMap((p) => p.courriels ?? []).flat())]
+const enCommun = fichesPage.some((p) => estCollectif(p.nom)) || (!fichesPage.length && Boolean(auteur && estCollectif(auteur)))
+const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA', { dateStyle: 'long', timeZone: 'America/Montreal' })
+---
+
+<Base titre={`${section.nom} | ${nom} | Boîte à outils | Les bibliothèques UdeM`} description={description}>
+  {/* Sans JavaScript, les onglets ne servent à rien : tous les panneaux s'affichent */}
+  <noscript slot="head"><style is:inline>.onglets [role='tablist'] { display: none; } .onglets [role='tabpanel'][hidden] { display: block; }</style></noscript>
+  <div class="conteneur gabarit">
+    <FilAriane
+      maillons={[
+        { libelle: 'Site des bibliothèques', href: 'https://bib.umontreal.ca/' },
+        { libelle: 'La boîte à outils', href: '/' },
+        ...parents,
+        ...(premierePage ? [{ libelle: nom }] : [{ libelle: nom, href: racine }, { libelle: section.nom }]),
+      ]}
+    />
+      <div class="navigation-contenu">
+        <nav class="navigation" aria-label="Sections du guide">
+          <p class="navigation-titre">Dans ce guide</p>
+          <ul>
+            {
+              pagesPrincipales.map((s) => (
+                <li>
+                  <a href={s.chemin} aria-current={s.id === section.id ? 'page' : undefined}>{s.nom}</a>
+                  {s.id === section.id && titresBoites.length > 0 && (
+                    <ul class="toc-boites">
+                      {titresBoites.map((b) => <li><a href={`#s-lg-box-${b.id}`}>{b.nom}</a></li>)}
+                    </ul>
+                  )}
+                  {(s.id === section.id || s.id === section.parent) && sousPages(s.id).length > 0 && (
+                    <ul class="toc-sous-pages">
+                      {sousPages(s.id).map((sous) => (
+                        <li>
+                          <a href={sous.chemin} aria-current={sous.id === section.id ? 'page' : undefined}>{sous.nom}</a>
+                          {sous.id === section.id && titresBoites.length > 0 && (
+                            <ul class="toc-boites">
+                              {titresBoites.map((b) => <li><a href={`#s-lg-box-${b.id}`}>{b.nom}</a></li>)}
+                            </ul>
+                          )}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </li>
+              ))
+            }
+          </ul>
+        </nav>
+        {profils.length > 0 || enCommun ? (
+          <aside aria-label="Nous joindre">
+            {profils.map((profil) => (
+              <div class="profil">
+                {profil.titre && <p class="profil-titre">{profil.titre}</p>}
+                {profil.href ? (
+                  <a class="profil-personne" href={profil.href}>
+                    {profil.photo && <img class="profil-photo" src={profil.photo} alt="" width="88" height="88" loading="lazy" />}
+                    <span class="profil-nom">{profil.nom}</span>
+                  </a>
+                ) : (
+                  <div class="profil-personne">
+                    {profil.photo && <img class="profil-photo" src={profil.photo} alt="" width="88" height="88" loading="lazy" />}
+                    <span class="profil-nom">{profil.nom}</span>
+                  </div>
+                )}
+              </div>
+            ))}
+            {enCommun && (
+              <div class="profil profil-commun">
+                <p class="profil-titre">Nous joindre</p>
+                {imageCommune && <img class="profil-photo" src={imageCommune} alt="" width="88" height="88" loading="lazy" />}
+                <ul>
+                  {LIENS_NOUS_JOINDRE.map(({ libelle, href }) => <li><a href={href}>{libelle}</a></li>)}
+                  <li>
+                    {courrielsEquipe.length > 0 ? (
+                      <>Nous écrire : {courrielsEquipe.map((adresse) => <a class="profil-courriel" href={`mailto:${adresse}`}>{adresse}</a>)}</>
+                    ) : (
+                      <a href={LIEN_NOUS_ECRIRE}>Nous écrire</a>
+                    )}
+                  </li>
+                </ul>
+              </div>
+            )}
+          </aside>
+        ) : (
+          auteur && <aside class="navigation-auteur" aria-label="Responsable du guide">Responsable du guide : <strong>{auteur}</strong></aside>
+        )}
+      </div>
+
+
+      <main id="contenu-principal" tabindex="-1">
+        <h1>{nom}</h1>
+        {description && <p class="chapeau-guide">{description}</p>}
+        <div class="guide-contenu">
+          <h2 id={section.idTitre} class="titre-ancre">{section.nom}<Fragment set:html={lienAncre(section.idTitre, section.nom)} /></h2>
+          {
+            section.boites.map((boite) => (
+              <div class="boite" id={`s-lg-box-${boite.id}`}>
+                {boite.ancre && <span class="ancre-boite" id={boite.ancre} />}
+                {boite.nom && <h3 id={boite.idTitre} class="titre-ancre">{boite.nom}<Fragment set:html={lienAncre(boite.idTitre!, boite.nom)} /></h3>}
+                <Fragment set:html={boite.html} />
+                {boite.onglets.length > 0 && (
+                  <div class="onglets">
+                    <div role="tablist" aria-label={boite.nom || section.nom}>
+                      {boite.onglets.map((o, i) => (
+                        <button type="button" role="tab" id={`${o.id}-onglet`} aria-controls={o.id} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>
+                          {o.nom}
+                        </button>
+                      ))}
+                    </div>
+                    {boite.onglets.map((o, i) => (
+                      <div role="tabpanel" id={o.id} aria-labelledby={`${o.id}-onglet`} tabindex="0" hidden={i > 0} set:html={o.html} />
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))
+          }
+        </div>
+        <p class="provenance">
+          Mis à jour le {dateMaj}.
+        </p>
+      </main>
+  </div>
+    <script>
+      // Onglets selon le motif de l'APG : tabindex itinérant, activation au focus
+      // Trait sous l'onglet actif : il glisse d'un onglet à l'autre, comme dans bibweb
+      const placerTrait = (liste: HTMLElement) => {
+        const choisi = liste.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
+        const trait = liste.querySelector<HTMLElement>('.onglet-trait')
+        if (!choisi || !trait || !choisi.offsetWidth) return
+        trait.style.width = `${choisi.offsetWidth}px`
+        trait.style.translate = `${choisi.offsetLeft}px ${choisi.offsetTop + choisi.offsetHeight - 3}px`
+      }
+
+      const activer = (onglet: HTMLElement) => {
+        onglet.parentElement!.querySelectorAll<HTMLElement>('[role="tab"]').forEach((o) => {
+          const choisi = o === onglet
+          o.setAttribute('aria-selected', String(choisi))
+          o.tabIndex = choisi ? 0 : -1
+          document.getElementById(o.getAttribute('aria-controls')!)!.hidden = !choisi
+        })
+        placerTrait(onglet.parentElement!)
+      }
+
+      document.querySelectorAll<HTMLElement>('[role="tablist"]').forEach((liste) => {
+        const onglets = [...liste.querySelectorAll<HTMLElement>('[role="tab"]')]
+        const trait = document.createElement('span')
+        trait.className = 'onglet-trait'
+        trait.setAttribute('aria-hidden', 'true')
+        liste.append(trait)
+        placerTrait(liste)
+        new ResizeObserver(() => placerTrait(liste)).observe(liste)
+        // Après l'initialisation : le premier panneau et le premier trait ne s'animent pas au chargement
+        requestAnimationFrame(() => liste.parentElement!.setAttribute('data-onglets-anime', ''))
+        liste.addEventListener('click', (e) => {
+          const onglet = (e.target as Element).closest<HTMLElement>('[role="tab"]')
+          if (onglet) activer(onglet)
+        })
+        liste.addEventListener('keydown', (e) => {
+          const i = onglets.indexOf(e.target as HTMLElement)
+          const cible = { ArrowRight: onglets[(i + 1) % onglets.length], ArrowLeft: onglets[(i - 1 + onglets.length) % onglets.length], Home: onglets[0], End: onglets.at(-1) }[e.key]
+          if (!cible) return
+          e.preventDefault()
+          activer(cible)
+          cible.focus()
+        })
+      })
+
+      // Le navigateur n'ouvre pas de lui-même un onglet ou un <details> visé par une ancre
+      const ouvrir = () => {
+        const cible = location.hash && document.getElementById(location.hash.slice(1))
+        if (!cible) return
+        const panneau = cible.closest('[role="tabpanel"]')
+        if (panneau) activer(document.getElementById(panneau.getAttribute('aria-labelledby')!)!)
+        // Une ouverture par ancre n'est pas animée : la cible est en place tout de suite
+        for (let d = cible.closest('details'); d; d = d.parentElement!.closest('details')) {
+          d.classList.add('sans-transition')
+          d.open = true
+          requestAnimationFrame(() => requestAnimationFrame(() => d?.classList.remove('sans-transition')))
+        }
+        cible.scrollIntoView()
+      }
+      addEventListener('hashchange', ouvrir)
+      ouvrir()
+
+      // Menu de gauche : la boîte en cours de lecture est celle qui a passé le tiers supérieur de l'écran
+      const menu = document.querySelector<HTMLElement>('.navigation-contenu')!
+      const liens = [...menu.querySelectorAll<HTMLAnchorElement>('.toc-boites a')]
+      // Le menu seul défile, ou toute la colonne sur une fenêtre très basse (guide.css) ; jamais la page
+      const centrerDansMenu = (lien: HTMLElement) => {
+        const zone = [menu.querySelector<HTMLElement>('.navigation')!, menu].find((e) => e.scrollHeight > e.clientHeight)
+        if (zone) zone.scrollTop = lien.offsetTop - zone.offsetTop - zone.clientHeight / 2
+      }
+      // Un fondu sur le bord qui cache des liens dit que le menu continue (guide.css)
+      for (const zone of [menu.querySelector<HTMLElement>('.navigation')!, menu]) {
+        const indiquerSuite = () => {
+          zone.toggleAttribute('data-suite-haut', zone.scrollTop > 1)
+          zone.toggleAttribute('data-suite-bas', zone.scrollTop + zone.clientHeight < zone.scrollHeight - 1)
+        }
+        zone.addEventListener('scroll', indiquerSuite, { passive: true })
+        new ResizeObserver(indiquerSuite).observe(zone)
+      }
+      const pageCourante = menu.querySelector<HTMLElement>('[aria-current="page"]')
+      if (pageCourante) centrerDansMenu(pageCourante)
+      const boites = liens.map((lien) => document.getElementById(lien.hash.slice(1))!)
+      let courant: HTMLAnchorElement | undefined
+      let attente = 0
+
+      const suivreLecture = () => {
+        attente = 0
+        const auBas = innerHeight + scrollY >= document.documentElement.scrollHeight - 2
+        const lue = auBas ? boites.length - 1 : boites.findLastIndex((boite) => boite.getBoundingClientRect().top <= innerHeight / 3)
+        const lien = liens[lue]
+        if (lien === courant) return
+        courant?.removeAttribute('aria-current')
+        lien?.setAttribute('aria-current', 'location')
+        courant = lien
+        // Le menu défile seul s'il dépasse de l'écran, sans jamais faire bouger la page
+        if (lien) centrerDansMenu(lien)
+      }
+      const planifier = () => {
+        attente ||= requestAnimationFrame(suivreLecture)
+      }
+      addEventListener('scroll', planifier, { passive: true })
+      addEventListener('resize', planifier)
+      // Ouvrir un accordéon ou changer d'onglet déplace les boîtes suivantes
+      document.addEventListener('toggle', planifier, true)
+      document.addEventListener('click', planifier)
+      suivreLecture()
+    </script>
+</Base>

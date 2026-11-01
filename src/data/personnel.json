@@ -1,0 +1,1057 @@
+[
+ {
+  "id": "alain-borsi",
+  "nomComplet": "Alain Borsi",
+  "photo": "alain-borsi.webp",
+  "disciplines": []
+ },
+ {
+  "id": "alex-sandrine-lavallee-masse",
+  "nomComplet": "Alex-Sandrine Lavallée-Masse",
+  "photo": "alex-sandrine-lavallee-masse.webp",
+  "disciplines": []
+ },
+ {
+  "id": "alexandre-amar-zifkin",
+  "nomComplet": "Alexandre Amar-Zifkin",
+  "photo": "alexandre-amar-zifkin.webp",
+  "disciplines": [
+   "Ophtalmologie",
+   "optométrie",
+   "neurosciences",
+   "sciences de la vision"
+  ]
+ },
+ {
+  "id": "amelie-bernard",
+  "nomComplet": "Amélie Bernard",
+  "photo": "amelie-bernard.webp",
+  "disciplines": []
+ },
+ {
+  "id": "amelie-elizabeth-levesque",
+  "nomComplet": "Amélie Elizabeth Lévesque",
+  "photo": "amelie-elizabeth-levesque.webp",
+  "disciplines": [
+   "Référence et offre pédagogique de première ligne"
+  ]
+ },
+ {
+  "id": "aminata-keita",
+  "nomComplet": "Aminata Keita",
+  "photo": "aminata-keita.webp",
+  "disciplines": [
+   "Bibliothéconomie et sciences de l'information",
+   "Relations industrielles"
+  ]
+ },
+ {
+  "id": "amy-bergeron",
+  "nomComplet": "Amy Bergeron",
+  "photo": "amy-bergeron.webp",
+  "disciplines": [
+   "Offre pédagogique en bibliothèque"
+  ]
+ },
+ {
+  "id": "ann-marie-sotomayor",
+  "nomComplet": "Ann Marie Sotomayor",
+  "photo": "ann-mary-sotomayor.webp",
+  "disciplines": []
+ },
+ {
+  "id": "anne-dubois-mercier",
+  "nomComplet": "Anne Dubois Mercier",
+  "photo": "anne-dubois-mercier.webp",
+  "disciplines": []
+ },
+ {
+  "id": "anne-hakier",
+  "nomComplet": "Anne Hakier",
+  "photo": "anne-hakier.webp",
+  "disciplines": [
+   "Géographie",
+   "données géospatiales"
+  ]
+ },
+ {
+  "id": "anne-julie-tremblay",
+  "nomComplet": "Anne-Julie Tremblay",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "anne-marie-brien",
+  "nomComplet": "Anne-Marie Brien",
+  "photo": "anne-marie-brien.webp",
+  "disciplines": []
+ },
+ {
+  "id": "anne-marie-lalonde",
+  "nomComplet": "Anne-Marie Lalonde",
+  "photo": "anne-marie-lalonde.webp",
+  "disciplines": [
+   "Gestion des collections"
+  ]
+ },
+ {
+  "id": "annick-charette",
+  "nomComplet": "Annick Charette",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "anny-levesque",
+  "nomComplet": "Anny Lévesque",
+  "photo": "anny-levesque.webp",
+  "disciplines": []
+ },
+ {
+  "id": "audrey-attia",
+  "nomComplet": "Audrey Attia",
+  "photo": "audrey-attia.webp",
+  "disciplines": [
+   "Soutien à la recherche et à l’enseignement"
+  ]
+ },
+ {
+  "id": "audrey-begin-poissant",
+  "nomComplet": "Audrey Bégin-Poissant",
+  "photo": "audrey-begin-poisson.webp",
+  "disciplines": [
+   "Projets numériques et numérisation"
+  ]
+ },
+ {
+  "id": "benjamin-constantineau",
+  "nomComplet": "Benjamin Constantineau",
+  "photo": "benjamin-constantineau.webp",
+  "disciplines": [
+   "Circulation",
+   "gestion des collections et des espaces",
+   "Création numérique"
+  ]
+ },
+ {
+  "id": "benoit-mayrand",
+  "nomComplet": "Benoit Mayrand",
+  "photo": "benoit-mayrand.webp",
+  "disciplines": []
+ },
+ {
+  "id": "billie-bergeron",
+  "nomComplet": "Billie Bergeron",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "busch-antenor-alexandre",
+  "nomComplet": "Busch Antenor Alexandre",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "caroline-patenaude",
+  "nomComplet": "Caroline Patenaude",
+  "photo": "caroline-patenaude.webp",
+  "disciplines": [
+   "Sociologie",
+   "Anthropologie",
+   "Études autochtones",
+   "Données statistiques"
+  ]
+ },
+ {
+  "id": "catherine-fortier",
+  "nomComplet": "Catherine Fortier",
+  "photo": "catherine-fortier.webp",
+  "disciplines": [
+   "Soutien à la recherche et à l’enseignement"
+  ]
+ },
+ {
+  "id": "cathy-bingoye",
+  "nomComplet": "Cathy Bingoye",
+  "photo": "cathy-bingoye.webp",
+  "disciplines": [
+   "Gestion des données de recherche",
+   "Recherche et communication savante"
+  ]
+ },
+ {
+  "id": "chantal-desrosiers",
+  "nomComplet": "Chantal Desrosiers",
+  "photo": "chantal-desrosiers.webp",
+  "disciplines": []
+ },
+ {
+  "id": "chantal-taillon",
+  "nomComplet": "Chantal Taillon",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "chloe-sinotte",
+  "nomComplet": "Chloé Sinotte",
+  "photo": "chloe-sinotte.webp",
+  "disciplines": [
+   "Santé publique",
+   "santé environnementale et santé au travail",
+   "administration des services de santéet nutrition"
+  ]
+ },
+ {
+  "id": "christian-belanger",
+  "nomComplet": "Christian Bélanger",
+  "photo": "christian-belanger.webp",
+  "disciplines": []
+ },
+ {
+  "id": "clotilde-rajalu",
+  "nomComplet": "Clotilde Rajalu",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "cynthia-gagne",
+  "nomComplet": "Cynthia Gagné",
+  "photo": "cynthia-gagne.webp",
+  "disciplines": [
+   "Sciences biologiques",
+   "chimie"
+  ]
+ },
+ {
+  "id": "danny-letourneau",
+  "nomComplet": "Danny Létourneau",
+  "photo": "danny-letourneau.webp",
+  "disciplines": []
+ },
+ {
+  "id": "david-patenaude",
+  "nomComplet": "David Patenaude",
+  "photo": "david-patenaude.webp",
+  "disciplines": [
+   "Criminologie",
+   "Démographie et sciences de la population",
+   "Sécurité et études policières",
+   "Dépendances",
+   "Victimologie",
+   "Sexualité : enjeux de société et pratiques d'intervention"
+  ]
+ },
+ {
+  "id": "delphine-cado",
+  "nomComplet": "Delphine Cado",
+  "photo": "delphine-cado.webp",
+  "disciplines": [
+   "Sciences infirmières et gérontologie"
+  ]
+ },
+ {
+  "id": "denis-arvisais",
+  "nomComplet": "Denis Arvisais",
+  "photo": "denis-arvisais.webp",
+  "disciplines": [
+   "Études médicales postdoctorales (programmes de résidence)",
+   "éducation physique et à la santé",
+   "kinésiologie"
+  ]
+ },
+ {
+  "id": "diane-gagnon",
+  "nomComplet": "Diane Gagnon",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "diane-moreau",
+  "nomComplet": "Diane Moreau",
+  "photo": "diane-moreau.webp",
+  "disciplines": []
+ },
+ {
+  "id": "dominic-desaulniers",
+  "nomComplet": "Dominic Desaulniers",
+  "photo": "dominic-desaulniers.webp",
+  "disciplines": [
+   "Psychologie",
+   "psychoéducation",
+   "intervention auprès des jeunes",
+   "intervention en déficience intellectuelle et en TSA"
+  ]
+ },
+ {
+  "id": "emilie-dalpe",
+  "nomComplet": "Émilie Dalpé",
+  "photo": "emilie-dalpe.webp",
+  "disciplines": [
+   "Littératures de langue française",
+   "Littératures et langues du monde",
+   "Littérature comparée",
+   "Études anglaises",
+   "Études allemandes",
+   "Études hispaniques"
+  ]
+ },
+ {
+  "id": "emilie-walsh",
+  "nomComplet": "Émilie Walsh",
+  "photo": null,
+  "disciplines": [
+   "Ressources électroniques et licences"
+  ]
+ },
+ {
+  "id": "emir-chouchane",
+  "nomComplet": "Emir Chouchane",
+  "photo": "emir-chouchane.webp",
+  "disciplines": [
+   "Médiation technologique"
+  ]
+ },
+ {
+  "id": "eric-bouchard",
+  "nomComplet": "Éric Bouchard",
+  "photo": "eric-bouchard.webp",
+  "disciplines": [
+   "Livres rares et collections spéciales"
+  ]
+ },
+ {
+  "id": "eric-romano",
+  "nomComplet": "Éric Romano",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "fanny-c-brochu",
+  "nomComplet": "Fanny C. Brochu",
+  "photo": "fanny-c-brochu.webp",
+  "disciplines": []
+ },
+ {
+  "id": "fatima-zahra-ouadrhiri",
+  "nomComplet": "Fatima Zahra Ouadrhiri",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "france-nadeau",
+  "nomComplet": "France Nadeau",
+  "photo": "france-nadeau.webp",
+  "disciplines": []
+ },
+ {
+  "id": "francois-constantin-d-amour",
+  "nomComplet": "François Constantin-D’Amour",
+  "photo": "francois-constantin-d-amour.webp",
+  "disciplines": [
+   "Service Accessibilité"
+  ]
+ },
+ {
+  "id": "francois-xavier-panaccio",
+  "nomComplet": "François-Xavier Panaccio",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "frederic-tremblay",
+  "nomComplet": "Frédéric Tremblay",
+  "photo": "frederic-tremblay.webp",
+  "disciplines": []
+ },
+ {
+  "id": "gabrielle-mathieu-dupuis",
+  "nomComplet": "Gabrielle Mathieu-Dupuis",
+  "photo": "gabrielle-mathieu-dupuis.webp",
+  "disciplines": []
+ },
+ {
+  "id": "genevieve-lemarier",
+  "nomComplet": "Geneviève Lemarier",
+  "photo": "genevieve-lemarier.webp",
+  "disciplines": []
+ },
+ {
+  "id": "ginette-denyse-melancon-bolduc",
+  "nomComplet": "Ginette-Denyse Melançon-Bolduc",
+  "photo": "ginette-melancon-bolduc.webp",
+  "disciplines": [
+   "Aménagement"
+  ]
+ },
+ {
+  "id": "graham-lavender",
+  "nomComplet": "Graham Lavender",
+  "photo": "graham-lavender.webp",
+  "disciplines": [
+   "Science politique",
+   "Études internationales",
+   "Études féministes - des genres et des sexualités",
+   "Sciences économiques",
+   "Données statistiques"
+  ]
+ },
+ {
+  "id": "guillaume-viart",
+  "nomComplet": "Guillaume Viart",
+  "photo": "guillaume-viart.webp",
+  "disciplines": []
+ },
+ {
+  "id": "guy-blondeau",
+  "nomComplet": "Guy Blondeau",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "guylaine-brazeau",
+  "nomComplet": "Guylaine Brazeau",
+  "photo": "guylaine-brazeau.webp",
+  "disciplines": [
+   "Gestion des collections"
+  ]
+ },
+ {
+  "id": "hugo-bernier",
+  "nomComplet": "Hugo Bernier",
+  "photo": null,
+  "disciplines": [
+   "Expérience numérique en recherche"
+  ]
+ },
+ {
+  "id": "indiana-delsart",
+  "nomComplet": "Indiana Delsart",
+  "photo": "indiana-delsart.webp",
+  "disciplines": [
+   "Mathématiques",
+   "informatique",
+   "actuariat",
+   "statistique",
+   "physique"
+  ]
+ },
+ {
+  "id": "isabelle-giguere",
+  "nomComplet": "Isabelle Giguère",
+  "photo": "isabelle-giguere.webp",
+  "disciplines": [
+   "Dépôt de données de recherche Borealis"
+  ]
+ },
+ {
+  "id": "isabelle-lagadec",
+  "nomComplet": "Isabelle Lagadec",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "jason-madooray",
+  "nomComplet": "Jason Madooray",
+  "photo": "jason-madooray.webp",
+  "disciplines": []
+ },
+ {
+  "id": "jean-francois-durnin",
+  "nomComplet": "Jean-François Durnin",
+  "photo": "jean-francois-durnin.webp",
+  "disciplines": [
+   "Sciences de l'éducation"
+  ]
+ },
+ {
+  "id": "jeremy-prime",
+  "nomComplet": "Jérémy Prime",
+  "photo": "jeremy-prime.webp",
+  "disciplines": []
+ },
+ {
+  "id": "jessica-legault",
+  "nomComplet": "Jessica Legault",
+  "photo": "jessica-legault.webp",
+  "disciplines": [
+   "Périodiques"
+  ]
+ },
+ {
+  "id": "joanna-bodnar",
+  "nomComplet": "Joanna Bodnar",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "josee-vachon",
+  "nomComplet": "Josée Vachon",
+  "photo": "josee-vachon.webp",
+  "disciplines": []
+ },
+ {
+  "id": "josee-viel",
+  "nomComplet": "Josée Viel",
+  "photo": "josee-viel.webp",
+  "disciplines": []
+ },
+ {
+  "id": "judith-fafard-larose",
+  "nomComplet": "Judith Fafard-Larose",
+  "photo": "judith-fafard-larose.webp",
+  "disciplines": []
+ },
+ {
+  "id": "julie-ouellette",
+  "nomComplet": "Julie Ouellette",
+  "photo": "julie-ouellette.webp",
+  "disciplines": []
+ },
+ {
+  "id": "julie-trepanier",
+  "nomComplet": "Julie Trépanier",
+  "photo": "julie-trepanier.webp",
+  "disciplines": [
+   "Référence et offre pédagogique de première ligne"
+  ]
+ },
+ {
+  "id": "juliette-tirard-collet",
+  "nomComplet": "Juliette Tirard-Collet",
+  "photo": "juliette-tirard-collet.webp",
+  "disciplines": [
+   "Communication et image de marque"
+  ]
+ },
+ {
+  "id": "justine-menard",
+  "nomComplet": "Justine Ménard",
+  "photo": "justine-menard.webp",
+  "disciplines": [
+   "Ressources électroniques et ententes consortiales"
+  ]
+ },
+ {
+  "id": "karine-theriault-dube",
+  "nomComplet": "Karine Thériault-Dubé",
+  "photo": "karine-theriault-dube.webp",
+  "disciplines": []
+ },
+ {
+  "id": "khalid-jouamaa",
+  "nomComplet": "Khalid Jouamaa",
+  "photo": "khalid-jouamaa.webp",
+  "disciplines": []
+ },
+ {
+  "id": "laurence-charest",
+  "nomComplet": "Laurence Charest",
+  "photo": "laurence-charest.webp",
+  "disciplines": [
+   "Papyrus"
+  ]
+ },
+ {
+  "id": "lucie-geoffroy",
+  "nomComplet": "Lucie Geoffroy",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "ly-kieng-tir",
+  "nomComplet": "Ly Kieng Tir",
+  "photo": "ly-kieng-tir.webp",
+  "disciplines": []
+ },
+ {
+  "id": "magalie-beaudoin",
+  "nomComplet": "Magalie Beaudoin",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "magdalena-oriental",
+  "nomComplet": "Magdalena Oriental",
+  "photo": "magdalena-oriental.webp",
+  "disciplines": [
+   "Ressources humaines"
+  ]
+ },
+ {
+  "id": "marc-olivier-croteau",
+  "nomComplet": "Marc-Olivier Croteau",
+  "photo": "marc-olivier-croteau.webp",
+  "disciplines": [
+   "Communication",
+   "journalisme et travail social"
+  ]
+ },
+ {
+  "id": "mariana-frimu",
+  "nomComplet": "Mariana Frimu",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "mariane-leonard",
+  "nomComplet": "Mariane Léonard",
+  "photo": "mariane-leonard.webp",
+  "disciplines": [
+   "Référence et offre pédagogique de première ligne"
+  ]
+ },
+ {
+  "id": "marie-claude-poirier",
+  "nomComplet": "Marie-Claude Poirier",
+  "photo": "marie-claude-poirier.webp",
+  "disciplines": [
+   "Médecine vétérinaire"
+  ]
+ },
+ {
+  "id": "marie-france-bernier",
+  "nomComplet": "Marie-France Bernier",
+  "photo": "marie-france-bernier.webp",
+  "disciplines": []
+ },
+ {
+  "id": "marie-france-laliberte",
+  "nomComplet": "Marie-France Laliberté",
+  "photo": "marie-france-laliberte.webp",
+  "disciplines": []
+ },
+ {
+  "id": "marie-josee-lapalme",
+  "nomComplet": "Marie-Josée Lapalme",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "marie-pierre-gadoua",
+  "nomComplet": "Marie-Pierre Gadoua",
+  "photo": "marie-pierre-gadoua.webp",
+  "disciplines": [
+   "Engagement et innovation sociale"
+  ]
+ },
+ {
+  "id": "marjorie-gauchier",
+  "nomComplet": "Marjorie Gauchier",
+  "photo": "marjorie-gauchier.webp",
+  "disciplines": [
+   "Droit d'auteur"
+  ]
+ },
+ {
+  "id": "martin-sevigny",
+  "nomComplet": "Martin Sévigny",
+  "photo": "martin-sevigny.webp",
+  "disciplines": []
+ },
+ {
+  "id": "maryna-beaulieu",
+  "nomComplet": "Maryna Beaulieu",
+  "photo": "maryna-beaulieu.webp",
+  "disciplines": [
+   "Prêt entre bibliothèques"
+  ]
+ },
+ {
+  "id": "mathieu-murray-samuel",
+  "nomComplet": "Mathieu Murray-Samuel",
+  "photo": "mathieu-murray-samuel.webp",
+  "disciplines": [
+   "Monographies"
+  ]
+ },
+ {
+  "id": "mathieu-nicolas-tardif",
+  "nomComplet": "Mathieu Nicolas Tardif",
+  "photo": "mathieu-tardif.webp",
+  "disciplines": []
+ },
+ {
+  "id": "mathieu-pigeon",
+  "nomComplet": "Mathieu Pigeon",
+  "photo": "mathieu-pigeon.webp",
+  "disciplines": [
+   "Édition savante et libre-accès"
+  ]
+ },
+ {
+  "id": "mathieu-proulx",
+  "nomComplet": "Mathieu Proulx",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "mathieu-thomas",
+  "nomComplet": "Mathieu Thomas",
+  "photo": "mathieu-thomas.webp",
+  "disciplines": [
+   "Livres rares et collections spéciales"
+  ]
+ },
+ {
+  "id": "maude-lethiecq-normand",
+  "nomComplet": "Maude Lethiecq-Normand",
+  "photo": "maude-lethiecq-normand.webp",
+  "disciplines": []
+ },
+ {
+  "id": "melanie-lachapelle",
+  "nomComplet": "Mélanie Lachapelle",
+  "photo": "melanie-lachapelle.webp",
+  "disciplines": []
+ },
+ {
+  "id": "melanie-masse",
+  "nomComplet": "Mélanie Massé",
+  "photo": "melanie-masse.webp",
+  "disciplines": [
+   "Aménagement"
+  ]
+ },
+ {
+  "id": "monica-audet",
+  "nomComplet": "Monica Audet",
+  "photo": "monica-audet.webp",
+  "disciplines": []
+ },
+ {
+  "id": "morgane-de-bellefeuille",
+  "nomComplet": "Morgane De Bellefeuille",
+  "photo": "morgane-de-bellefeuille.webp",
+  "disciplines": [
+   "Direction adjointe"
+  ]
+ },
+ {
+  "id": "mylene-therrien",
+  "nomComplet": "Mylène Therrien",
+  "photo": "mylene-therrien.webp",
+  "disciplines": [
+   "Circulation",
+   "gestion des collections et des espaces"
+  ]
+ },
+ {
+  "id": "myriam-boyer",
+  "nomComplet": "Myriam Boyer",
+  "photo": "myriam-boyer.webp",
+  "disciplines": [
+   "Gestion des collections et numérisation"
+  ]
+ },
+ {
+  "id": "nadege-arsa",
+  "nomComplet": "Nadège Arsa",
+  "photo": "nadege-arsa.webp",
+  "disciplines": [
+   "Collections"
+  ]
+ },
+ {
+  "id": "nancy-theberge",
+  "nomComplet": "Nancy Théberge",
+  "photo": "nancy-theberge.webp",
+  "disciplines": []
+ },
+ {
+  "id": "nancy-turgeon",
+  "nomComplet": "Nancy Turgeon",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "natalia-jabinschi",
+  "nomComplet": "Natalia Jabinschi",
+  "photo": "natalia-jabinschi.webp",
+  "disciplines": []
+ },
+ {
+  "id": "nathalie-poulin",
+  "nomComplet": "Nathalie Poulin",
+  "photo": "nathalie-poulin.webp",
+  "disciplines": []
+ },
+ {
+  "id": "nima-behforouz",
+  "nomComplet": "Nima Behforouz",
+  "photo": "nima-behforouz.webp",
+  "disciplines": []
+ },
+ {
+  "id": "nino-gabrielli",
+  "nomComplet": "Nino Gabrielli",
+  "photo": "nino-gabrielli.webp",
+  "disciplines": [
+   "Philosophie",
+   "Études religieuses",
+   "Études classiques",
+   "Études médiévales",
+   "Études asiatiques"
+  ]
+ },
+ {
+  "id": "noemie-gervais",
+  "nomComplet": "Noémie Gervais",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "pascal-martinolli",
+  "nomComplet": "Pascal Martinolli",
+  "photo": "pascal-martinolli.webp",
+  "disciplines": [
+   "Histoire",
+   "Linguistique et traduction"
+  ]
+ },
+ {
+  "id": "pierre-yves-lafleur",
+  "nomComplet": "Pierre-Yves Lafleur",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "rose-carine-henriquez",
+  "nomComplet": "Rose Carine Henriquez",
+  "photo": "rose-carine-henriquez.webp",
+  "disciplines": [
+   "Référence et offre pédagogique de première ligne",
+   "français langue seconde"
+  ]
+ },
+ {
+  "id": "sara-bouhlal",
+  "nomComplet": "Sara Bouhlal",
+  "photo": "sara-bouhlal.webp",
+  "disciplines": [
+   "Droit"
+  ]
+ },
+ {
+  "id": "sarah-cherrier",
+  "nomComplet": "Sarah Cherrier",
+  "photo": "sarah-cherrier.webp",
+  "disciplines": [
+   "Audiologie",
+   "ergothérapie",
+   "orthophonie",
+   "physiothérapie",
+   "sciences de la réadaptation"
+  ]
+ },
+ {
+  "id": "sarah-julie-richard",
+  "nomComplet": "Sarah-Julie Richard",
+  "photo": "sarah-julie-richard.webp",
+  "disciplines": []
+ },
+ {
+  "id": "simon-blais-longtin",
+  "nomComplet": "Simon Blais Longtin",
+  "photo": "simon-blais-longtin.webp",
+  "disciplines": [
+   "Soutien à utilisation de l'intelligence artificielle générative"
+  ]
+ },
+ {
+  "id": "simon-pierre-crevier",
+  "nomComplet": "Simon-Pierre Crevier",
+  "photo": "simon-pierre-crevier.webp",
+  "disciplines": [
+   "Santé publique",
+   "santé environnementale et santé au travail",
+   "administration des services de santé et nutrition"
+  ]
+ },
+ {
+  "id": "siv-kham-chao",
+  "nomComplet": "Siv Kham Chao",
+  "photo": "siv-kham-chao.webp",
+  "disciplines": []
+ },
+ {
+  "id": "sophie-brisebois",
+  "nomComplet": "Sophie Brisebois",
+  "photo": "sophie-brisebois.webp",
+  "disciplines": []
+ },
+ {
+  "id": "sosthene-yamale",
+  "nomComplet": "Sosthène Yamalé",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "stephanie-gagnon",
+  "nomComplet": "Stéphanie Gagnon",
+  "photo": "stephanie-gagnon.webp",
+  "disciplines": []
+ },
+ {
+  "id": "stephanie-hainault",
+  "nomComplet": "Stéphanie Hainault",
+  "photo": "stephanie-hainault.webp",
+  "disciplines": []
+ },
+ {
+  "id": "stephanie-lariviere-roberge",
+  "nomComplet": "Stéphanie Larivière-Roberge",
+  "photo": "stephanie-lariviere-roberge.webp",
+  "disciplines": [
+   "Référence et offre pédagogique de première ligne",
+   "Service Accessibilité"
+  ]
+ },
+ {
+  "id": "stephanie-pham-dang",
+  "nomComplet": "Stéphanie Pham-Dang",
+  "photo": "stephanie-pham-dang.webp",
+  "disciplines": [
+   "Droit"
+  ]
+ },
+ {
+  "id": "sylvie-fontaine",
+  "nomComplet": "Sylvie Fontaine",
+  "photo": "sylvie-fontaine.webp",
+  "disciplines": [
+   "Soutien à la recherche et à l’enseignement"
+  ]
+ },
+ {
+  "id": "taline-ekmekjian",
+  "nomComplet": "Taline Ekmekjian",
+  "photo": null,
+  "disciplines": [
+   "Soutien aux synthèses de connaissance"
+  ]
+ },
+ {
+  "id": "tanya-buchet",
+  "nomComplet": "Tanya Buchet",
+  "photo": "tanya-buchet.webp",
+  "disciplines": [
+   "Études médicales de premier cycle (Doctorat en médecine)",
+   "gériatrie",
+   "sciences biomédicales"
+  ]
+ },
+ {
+  "id": "tara-landry",
+  "nomComplet": "Tara Landry",
+  "photo": "tara-landry.webp",
+  "disciplines": [
+   "Soutien à la recherche et à l’enseignement"
+  ]
+ },
+ {
+  "id": "tatiana-bobeica-talpa",
+  "nomComplet": "Tatiana Bobeica Talpa",
+  "photo": "tatiana-bobeica-talpa.webp",
+  "disciplines": [
+   "Médecine dentaire",
+   "biochimie et médecine moléculaire",
+   "microbiologie et immunologie"
+  ]
+ },
+ {
+  "id": "thien-huong-che-quang",
+  "nomComplet": "Thien-Huong Che-Quang",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "thien-sa-hoang",
+  "nomComplet": "Thiên Sa Hoàng",
+  "photo": "thien-sa-hoang.webp",
+  "disciplines": [
+   "Pharmacie et pharmacologie",
+   "sciences biopharmaceutique"
+  ]
+ },
+ {
+  "id": "thierry-caballero",
+  "nomComplet": "Thierry Caballero",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "thomas-gagnon-van-leeuwen",
+  "nomComplet": "Thomas Gagnon-van Leeuwen",
+  "photo": null,
+  "disciplines": [
+   "Droit"
+  ]
+ },
+ {
+  "id": "valerie-bastien",
+  "nomComplet": "Valérie Bastien",
+  "photo": "valerie-bastien.webp",
+  "disciplines": [
+   "Sciences de l’éducation",
+   "didacthèque",
+   "didactique",
+   "littérature jeunesse"
+  ]
+ },
+ {
+  "id": "valerie-rioux",
+  "nomComplet": "Valérie Rioux",
+  "photo": "valerie-rioux.webp",
+  "disciplines": [
+   "Histoire de l'art",
+   "Cinéma",
+   "Études du jeu vidéo",
+   "Études télévisuelles",
+   "Muséologie"
+  ]
+ },
+ {
+  "id": "vanessa-martin",
+  "nomComplet": "Vanessa Martin",
+  "photo": "vanessa-martin.webp",
+  "disciplines": []
+ },
+ {
+  "id": "viviane-angers",
+  "nomComplet": "Viviane Angers",
+  "photo": "viviane-angers.webp",
+  "disciplines": [
+   "Référence et offre pédagogique de première ligne",
+   "psychoéducation",
+   "psychologie",
+   "sciences de l'éducation",
+   "sciences infirmières",
+   "travail social – premier cycle"
+  ]
+ },
+ {
+  "id": "viviane-st-arnaud",
+  "nomComplet": "Viviane St-Arnaud",
+  "photo": "viviane-st-arnaud.webp",
+  "disciplines": [
+   "Prêt entre bibliothèques"
+  ]
+ },
+ {
+  "id": "wassif-cheik",
+  "nomComplet": "Wassif Cheik",
+  "photo": null,
+  "disciplines": []
+ },
+ {
+  "id": "yacine-mansar",
+  "nomComplet": "Yacine Mansar",
+  "photo": "yacine-mansar.webp",
+  "disciplines": []
+ },
+ {
+  "id": "yan-vallee",
+  "nomComplet": "Yan Vallée",
+  "photo": "yan-vallee.webp",
+  "disciplines": []
+ }
+]

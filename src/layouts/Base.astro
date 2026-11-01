@@ -1,0 +1,304 @@
+---
+/*
+ * Coquille commune : bandeau orange et barre de la boîte à outils (disposition
+ * du site actuel, liens encore vers celui-ci), rétroaction et pied de page de
+ * bibweb. La page place son <main> dans le slot.
+ *
+ * Sous 1200 px, le menu suit celui de bibweb (Entete et PanneauMenu) : barre
+ * compacte collante, loupe et burger, rideau qui descend sous l'en-tête. Dès
+ * 1200 px, la loupe seule ouvre le même rideau, réduit à la recherche. Sous
+ * 1200 px, la loupe l'ouvre aussi en mode « recherche » (data-mode) : la
+ * recherche seule, le focus dans le champ, et « Afficher le menu », qui déplie le
+ * reste. Elle devient un X tant que ce mode est ouvert, le burger une fois le
+ * menu entier affiché ; la loupe replie alors le menu sur la recherche. Motif
+ * « disclosure navigation » de l'APG : aria-expanded, Échap ferme et rend le
+ * focus au bouton. Sans JavaScript, le menu complet reste affiché dans la barre.
+ */
+import '@/styles/global.css'
+import '@/styles/guide.css'
+import '@/styles/animations.css'
+import figtreeLatin from '@fontsource-variable/figtree/files/figtree-latin-wght-normal.woff2?url'
+import { CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown'
+import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass'
+import { XIcon } from '@phosphor-icons/react/dist/ssr/X'
+import LogoBibliotheques from '@/components/LogoBibliotheques.astro'
+import RechercheGuides from '@/components/RechercheGuides.astro'
+import Consentement from '@/components/coquille/Consentement.astro'
+import PiedDePage from '@/components/coquille/PiedDePage.astro'
+import { LIENS_SOFIA } from '@/data/navigation'
+import Retroaction from '@/components/coquille/Retroaction.astro'
+
+// Pages de premier niveau (accueil, portails) : pas de rétroaction, comme dans bibweb
+const { titre, description, sansRetroaction = false } = Astro.props as { titre: string; description?: string; sansRetroaction?: boolean }
+
+const MENU_RIDEAU_ID = 'menu-mobile'
+const MENU = [
+  ['Ressources par discipline', '/disciplines/'],
+  ['Trouver et évaluer', '/trouver-evaluer/'],
+  ['Citer ses sources', '/citer/'],
+  ['Faire de la recherche', '/recherche/'],
+  ['Bases de données A à Z', '/bases-de-donnees/'],
+]
+---
+
+<!doctype html>
+<html lang="fr-CA">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="preload" href={figtreeLatin} as="font" type="font/woff2" crossorigin />
+    <title>{titre}</title>
+    {description && <meta name="description" content={description} />}
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/favicon.ico" sizes="32x32" />
+    {/* Sens du glissement entre deux pages, sur mobile (voir guide.css) : « retour » pour le bouton
+        Précédent ou une page plus haute dans l'arborescence, sinon « avance ». Dans le <head> : il doit
+        être prêt avant le premier affichage. Repris de bibweb. */}
+    <script is:inline>
+      window.addEventListener('pagereveal', (e) => {
+        if (!e.viewTransition) return
+        const profondeur = (url) => new URL(url).pathname.split('/').filter(Boolean).length
+        const a = window.navigation?.activation
+        let retour = false
+        if (a?.navigationType === 'traverse' && a.from) retour = a.entry.index < a.from.index
+        else if (a?.from?.url) retour = profondeur(location.href) < profondeur(a.from.url)
+        e.viewTransition.types.add(retour ? 'retour' : 'avance')
+        if (a?.navigationType === 'traverse') {
+          document.documentElement.dataset.vtHistorique = ''
+          e.viewTransition.finished.finally(() => delete document.documentElement.dataset.vtHistorique)
+        }
+      })
+    </script>
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="lien-evitement" href="#contenu-principal">Aller au contenu principal</a>
+    <header class="entete" data-entete>
+      <div class="entete-barre">
+        <div class="marque">
+          <a class="logo-bib" href="https://bib.umontreal.ca/" aria-label="Les bibliothèques de l’Université de Montréal"><LogoBibliotheques /></a>
+          <a class="nom-site" href="/">La boîte à outils</a>
+        </div>
+        <nav aria-label="Menu de la boîte à outils">
+          <ul>
+            {MENU.map(([libelle, href]) => <li><a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>{libelle}</a></li>)}
+          </ul>
+        </nav>
+        <div class="outils" hidden data-outils>
+          <button type="button" class="bouton-icone bouton-loupe" aria-label="Rechercher" aria-expanded="false" aria-controls={MENU_RIDEAU_ID} data-loupe>
+            <MagnifyingGlassIcon className="si-ferme" size={24} weight="bold" aria-hidden="true" />
+            <XIcon className="si-ouvert" size={26} weight="bold" aria-hidden="true" />
+          </button>
+          <button type="button" class="bouton-icone bouton-menu" aria-label="Menu" aria-expanded="false" aria-controls={MENU_RIDEAU_ID} data-bouton-menu>
+            <svg class="si-ferme" viewBox="0 0 256 256" width="34" height="34" fill="currentColor" aria-hidden="true"><path d="M224 128a8 8 0 0 1-8 8H40a8 8 0 1 1 0-16h176a8 8 0 0 1 8 8zM86 72h132c3.314 0 6-3.582 6-8s-2.686-8-6-8H86c-3.314 0-6 3.582-6 8s2.686 8 6 8zm132 112H86c-3.314 0-6 3.582-6 8s2.686 8 6 8h132c3.314 0 6-3.582 6-8s-2.686-8-6-8z" /></svg>
+            <XIcon className="si-ouvert" size={34} weight="bold" aria-hidden="true" />
+          </button>
+        </div>
+      </div>
+      <div class="voile-menu" hidden data-voile-menu></div>
+      <div class="rideau" id={MENU_RIDEAU_ID} hidden data-mode="complet" data-rideau>
+        <div class="feuille">
+          <div class="rideau-recherche">
+            <p class="surtitre">Rechercher</p>
+            <RechercheGuides id="recherche-menu" portee />
+          </div>
+          <ul class="liens-sofia">
+            {LIENS_SOFIA.map(({ libelle, href, Icone }) => (
+              <li><a href={href}><Icone size={20} aria-hidden="true" /><span>{libelle}</span></a></li>
+            ))}
+          </ul>
+          <div class="deplier">
+            <button type="button" class="deplier-bouton" data-deplier-menu>
+              Afficher le menu
+              <CaretDownIcon className="deplier-fleche" size={22} weight="bold" aria-hidden="true" />
+            </button>
+          </div>
+          <p class="surtitre surtitre-explorer" id="menu-explorer">Explorer</p>
+          <nav aria-labelledby="menu-explorer">
+            <ul class="pages-menu">
+              {[['Accueil', '/'], ...MENU].map(([libelle, href]) => <li><a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>{libelle}</a></li>)}
+            </ul>
+          </nav>
+          <button type="button" class="poignee" aria-label="Fermer le menu" data-fermer-menu><span aria-hidden="true"></span></button>
+        </div>
+      </div>
+    </header>
+    <slot />
+    {!sansRetroaction && <div class="conteneur"><Retroaction /></div>}
+    <PiedDePage />
+    <Consentement />
+    <script>
+      import '@/lib/animations'
+      import { copierLienAncre } from '@/lib/ancres-copie'
+
+      copierLienAncre()
+
+      const entete = document.querySelector<HTMLElement>('[data-entete]')!
+      const rideau = entete.querySelector<HTMLElement>('[data-rideau]')!
+      const voile = entete.querySelector<HTMLElement>('[data-voile-menu]')!
+      const bouton = entete.querySelector<HTMLButtonElement>('[data-bouton-menu]')!
+      const champ = rideau.querySelector<HTMLInputElement>('input[type="search"]')!
+      const loupe = entete.querySelector<HTMLButtonElement>('[data-loupe]')!
+      const compact = matchMedia('(width < 1200px)')
+
+      // Les outils n'existent qu'avec JavaScript : sans lui, la barre garde ses liens (voir guide.css)
+      entete.querySelector<HTMLElement>('[data-outils]')!.hidden = false
+      document.documentElement.toggleAttribute('data-menu-js', true)
+
+      const poignee = entete.querySelector<HTMLButtonElement>('[data-fermer-menu]')!
+      const feuille = rideau.querySelector<HTMLElement>('.feuille')!
+      const deplierBouton = rideau.querySelector<HTMLButtonElement>('[data-deplier-menu]')!
+      type Mode = 'recherche' | 'complet'
+      let mode: Mode = 'complet'
+      // Bouton qui a ouvert le rideau : il reprend le focus à la fermeture
+      let declencheur = bouton
+
+      function majBoutons() {
+        const ouvert = !rideau.hidden
+        const menuEntier = ouvert && mode === 'complet'
+        const recherche = ouvert && mode === 'recherche'
+        bouton.setAttribute('aria-expanded', String(menuEntier))
+        bouton.setAttribute('aria-label', menuEntier ? 'Fermer le menu' : 'Menu')
+        loupe.setAttribute('aria-expanded', String(recherche))
+        loupe.setAttribute('aria-label', recherche ? 'Fermer la recherche' : 'Rechercher')
+      }
+
+      function changerMode(nouveau: Mode) {
+        mode = nouveau
+        rideau.dataset.mode = nouveau
+        poignee.setAttribute('aria-label', nouveau === 'recherche' ? 'Fermer la recherche' : 'Fermer le menu')
+        majBoutons()
+      }
+
+      function fermer({ rendreFocus = false } = {}) {
+        if (rideau.hidden) return
+        rideau.hidden = voile.hidden = true
+        document.documentElement.removeAttribute('data-menu-ouvert')
+        majBoutons()
+        if (rendreFocus) declencheur.focus()
+      }
+
+      function ouvrir(origine: HTMLButtonElement, nouveau: Mode) {
+        declencheur = origine
+        rideau.hidden = voile.hidden = false
+        document.documentElement.setAttribute('data-menu-ouvert', '')
+        changerMode(nouveau)
+        if (nouveau === 'recherche') champ.focus({ preventScroll: true })
+      }
+
+      // Passage d'un mode à l'autre, comme bibweb : le reste du menu s'efface en remontant et la feuille se rétracte, ou l'inverse
+      const COURBE_ENTREE = 'cubic-bezier(0.05, 0.7, 0.1, 1)'
+      const COURBE_SORTIE = 'cubic-bezier(0.3, 0, 1, 1)'
+      let animation = false
+      const reduit = () => matchMedia('(prefers-reduced-motion: reduce)').matches
+      const autresGroupes = () => [...feuille.querySelectorAll<HTMLElement>(':scope > .surtitre-explorer, :scope > nav')]
+
+      async function changerHauteur(avant: number) {
+        feuille.style.height = ''
+        const apres = feuille.getBoundingClientRect().height
+        // Pas de barre de défilement le temps de l'agrandissement
+        feuille.style.overflowY = 'hidden'
+        await feuille.animate([{ height: `${avant}px` }, { height: `${apres}px` }], { duration: 300, easing: COURBE_ENTREE }).finished.catch(() => {})
+        feuille.style.overflowY = ''
+      }
+
+      async function replier() {
+        if (reduit() || animation) {
+          changerMode('recherche')
+          feuille.scrollTo({ top: 0 })
+          champ.focus({ preventScroll: true })
+          return
+        }
+        animation = true
+        const autres = autresGroupes()
+        const avant = feuille.getBoundingClientRect().height
+        feuille.style.height = `${avant}px`
+        feuille.scrollTo({ top: 0, behavior: 'smooth' })
+        await Promise.all(autres.map((e) => e.animate([{ opacity: 1, translate: '0 0' }, { opacity: 0, translate: '0 -1rem' }], { duration: 150, easing: COURBE_SORTIE, fill: 'forwards' }).finished))
+        changerMode('recherche')
+        for (const e of autres) e.getAnimations().forEach((a) => a.cancel())
+        champ.focus({ preventScroll: true })
+        await changerHauteur(avant)
+        animation = false
+      }
+
+      async function deplier() {
+        declencheur = bouton
+        if (reduit() || animation) return changerMode('complet')
+        animation = true
+        const avant = feuille.getBoundingClientRect().height
+        feuille.style.height = `${avant}px`
+        changerMode('complet')
+        autresGroupes().forEach((e, i) => e.animate([{ opacity: 0, translate: '0 -1rem' }, { opacity: 1, translate: '0 0' }], { duration: 300, delay: 60 + i * 50, easing: COURBE_ENTREE, fill: 'backwards' }))
+        await changerHauteur(avant)
+        animation = false
+      }
+
+      bouton.addEventListener('click', () => {
+        if (rideau.hidden) ouvrir(bouton, 'complet')
+        else if (mode === 'complet') fermer()
+        // Ouvert en mode recherche : le menu se déplie sans se refermer
+        else deplier()
+      })
+      loupe.addEventListener('click', () => {
+        if (rideau.hidden) ouvrir(loupe, 'recherche')
+        else if (mode === 'recherche') fermer()
+        else {
+          declencheur = loupe
+          replier()
+        }
+      })
+      // Le bouton disparaît : le focus passe au premier lien apparu
+      deplierBouton.addEventListener('click', () => {
+        deplier()
+        requestAnimationFrame(() => feuille.querySelector<HTMLElement>(':scope > nav a')?.focus({ preventScroll: true }))
+      })
+      document.addEventListener('click', (e) => {
+        if (!entete.contains(e.target as Node)) fermer()
+      })
+      poignee.addEventListener('click', () => fermer({ rendreFocus: true }))
+      voile.addEventListener('click', () => fermer())
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') fermer({ rendreFocus: true })
+      })
+      // Tab hors de l'en-tête : le rideau ne doit pas masquer l'élément qui reçoit le focus (WCAG 2.4.11)
+      entete.addEventListener('focusout', (e) => {
+        const suivant = e.relatedTarget as Node | null
+        if (suivant && !entete.contains(suivant)) fermer()
+      })
+      compact.addEventListener('change', () => fermer())
+
+      // Carrousels : boutons Précédent et Suivant, désactivés aux extrémités, absents si tout tient
+      const FLECHE = '<svg viewBox="0 0 256 256" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z"/></svg>'
+      document.querySelectorAll<HTMLElement>('.carrousel').forEach((carrousel) => {
+        const piste = carrousel.querySelector<HTMLElement>('.carrousel-piste')!
+        const bouton = (libelle: string, sens: number) => {
+          const b = document.createElement('button')
+          b.type = 'button'
+          b.setAttribute('aria-label', libelle)
+          b.innerHTML = FLECHE
+          b.addEventListener('click', () => {
+            if (b.getAttribute('aria-disabled') !== 'true') piste.scrollBy({ left: sens * piste.clientWidth * 0.8 })
+          })
+          return b
+        }
+        const precedent = bouton('Diapositives précédentes', -1)
+        const suivant = bouton('Diapositives suivantes', 1)
+        const controles = document.createElement('div')
+        controles.className = 'carrousel-controles'
+        controles.append(precedent, suivant)
+        carrousel.append(controles)
+        const maj = () => {
+          const reste = piste.scrollWidth - piste.clientWidth
+          controles.hidden = reste <= 1
+          precedent.setAttribute('aria-disabled', String(piste.scrollLeft <= 1))
+          suivant.setAttribute('aria-disabled', String(piste.scrollLeft >= reste - 1))
+        }
+        piste.addEventListener('scroll', maj, { passive: true })
+        new ResizeObserver(maj).observe(piste)
+        maj()
+      })
+    </script>
+  </body>
+</html>

@@ -1,0 +1,3366 @@
+/*
+ * Présentation d'un guide : coquille simplifiée de bibweb, classes du HTML
+ * nettoyé (lib/nettoyage.ts) et infographies. Couleurs et espaces viennent de
+ * tokens.css.
+ */
+
+/* ---- Thème orange de la boîte à outils ---- */
+:root {
+  --couleur-accent: var(--rouge-orange-texte-sur-clair);
+  --couleur-lien: var(--rouge-orange-texte-sur-clair);
+  --couleur-lien-survol: color-mix(in srgb, var(--rouge-orange-texte-sur-clair) 80%, var(--couleur-voile));
+  --couleur-focus: var(--rouge-orange-texte-sur-clair);
+  --couleur-teinte: var(--rose-100);
+  --couleur-teinte-forte: var(--rose-300);
+  --noir: #000;
+  --fleche-externe: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 18 18 6M8 6h10v10'/%3E%3C/svg%3E");
+  --fleche: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 256'%3E%3Cpath d='M221.66 133.66l-72 72a8 8 0 0 1-11.32-11.32L196.69 136H40a8 8 0 0 1 0-16h156.69l-58.35-58.34a8 8 0 0 1 11.32-11.32l72 72a8 8 0 0 1 0 11.32Z'/%3E%3C/svg%3E");
+}
+
+/* ---- Coquille ---- */
+.entete {
+  padding-block-start: var(--espace-2);
+  background: var(--rouge-orange);
+}
+
+.entete-barre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-1) var(--espace-3);
+  width: calc(100% - 2 * var(--gouttiere));
+  max-width: calc(var(--largeur-max) - 2 * var(--gouttiere));
+  margin-inline: auto;
+  padding: 0.75rem var(--espace-3);
+  border-radius: var(--rayon-petit) var(--rayon-petit) 0 0;
+  background: var(--couleur-fond);
+}
+
+.marque {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.logo-bib,
+.logo-bib:hover {
+  color: var(--couleur-texte);
+}
+
+.logo-bib svg {
+  display: block;
+  width: 8.5rem;
+  height: auto;
+}
+
+.nom-site {
+  padding-inline-start: 0.75rem;
+  border-inline-start: 1px solid var(--couleur-texte);
+  color: var(--couleur-texte);
+  font-size: 1.25rem;
+  text-decoration: none;
+}
+
+.entete-barre > nav ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--espace-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.entete-barre > nav a {
+  display: inline-block;
+  padding-block: 0.5rem;
+  color: var(--couleur-texte);
+  font-size: 0.8125rem;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.entete-barre > nav a:hover,
+.entete-barre > nav [aria-current='page'] {
+  color: var(--couleur-lien);
+  text-decoration: underline;
+  text-underline-offset: 0.3em;
+}
+
+.gabarit {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espace-4);
+  padding-block: var(--espace-3) var(--espace-8);
+}
+
+.navigation-titre {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.navigation ul {
+  margin: var(--espace-2) 0 0;
+  padding: 0;
+  list-style: none;
+  border-inline-start: 2px solid var(--couleur-bordure);
+}
+
+.navigation a {
+  display: block;
+  padding: 0.5rem var(--espace-2);
+  color: var(--couleur-texte);
+  text-decoration: none;
+}
+
+.navigation a:hover {
+  color: var(--couleur-lien);
+  text-decoration: underline;
+}
+
+.navigation [aria-current='page'] {
+  border-inline-start: 3px solid var(--couleur-accent);
+  margin-inline-start: -2px;
+  color: var(--couleur-accent);
+  font-weight: 600;
+}
+
+.navigation-auteur {
+  margin-block: var(--espace-3) 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.875rem;
+}
+
+.navigation-auteur strong {
+  display: block;
+  color: var(--couleur-texte);
+  font-weight: 600;
+}
+
+.navigation .toc-sous-pages,
+.navigation .toc-boites {
+  margin: 0;
+  border: 0;
+}
+
+.navigation .toc-sous-pages a {
+  padding-block: 0.375rem;
+  padding-inline-start: var(--espace-4);
+  font-size: 0.9375rem;
+}
+
+.navigation .toc-boites {
+  display: none;
+}
+
+.navigation .toc-boites a {
+  padding-block: 0.25rem;
+  padding-inline-start: var(--espace-4);
+  border-radius: 0 var(--rayon-tres-petit) var(--rayon-tres-petit) 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.875rem;
+  transition:
+    background-color var(--duree-courte-4) var(--courbe-standard),
+    color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.navigation .toc-boites [aria-current='location'] {
+  background: var(--couleur-teinte);
+  color: var(--couleur-accent);
+  font-weight: var(--graisse-forte);
+}
+
+@media (min-width: 1200px) {
+  .gabarit {
+    /* Le fil d'Ariane coiffe le contenu seulement : le menu monte jusqu'en haut */
+    grid-template-columns: 19rem minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    gap: var(--espace-2) var(--espace-8);
+  }
+
+  .gabarit > .fil-ariane {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .gabarit > main {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .navigation-contenu {
+    grid-column: 1;
+    grid-row: 1 / span 2;
+    align-self: start;
+    position: sticky;
+    top: calc(var(--hauteur-entete) + var(--espace-3));
+    max-height: calc(100vh - var(--hauteur-entete) - 2 * var(--espace-3));
+    overflow-y: auto;
+  }
+
+  /* Sous 1200 px, la liste passe au-dessus du contenu : les sections suffisent */
+  .navigation .toc-boites {
+    display: block;
+  }
+}
+
+main:focus {
+  outline: none;
+}
+
+main h1 {
+  margin-block-end: 0;
+  font-size: clamp(2.25rem, 4vw, 3.25rem);
+}
+
+.chapeau-guide {
+  font-size: 1.25rem;
+}
+
+.provenance {
+  margin-block-start: var(--espace-6);
+  padding-block-start: var(--espace-2);
+  border-block-start: 1px solid var(--couleur-bordure);
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.875rem;
+}
+
+/* ---- Contenu du guide ---- */
+.guide-contenu {
+  max-width: 54rem;
+}
+
+.guide-contenu h2 {
+  font-size: 2.25rem;
+}
+
+.guide-contenu h3 {
+  font-size: 1.5rem;
+}
+
+.guide-contenu h4 {
+  font-size: 1.25rem;
+}
+
+.guide-contenu :is(h5, h6) {
+  font-size: 1.0625rem;
+}
+
+.guide-contenu :is(h4, h5, h6) {
+  font-weight: var(--graisse-moyenne);
+}
+
+.guide-contenu h2 {
+  margin-block-start: var(--espace-bloc);
+}
+
+.boite {
+  display: flow-root;
+  margin-block-start: var(--espace-bloc);
+  scroll-margin-block-start: var(--espace-3);
+}
+
+.boite > :first-child,
+.boite > .ancre-boite + * {
+  margin-block-start: 0;
+}
+
+/* Hors du flux : elle ne doit pas occuper une case dans les grilles de tuiles */
+.ancre-boite {
+  position: absolute;
+  scroll-margin-block-start: var(--espace-3);
+}
+
+.boite :where(p, ul, ol, table, figure, details, .tableau, .alerte, .encadre) {
+  margin-block: 0 var(--espace-element);
+}
+
+.boite :where(h4, h5, h6) {
+  margin-block: var(--espace-3) var(--espace-1);
+}
+
+.boite ul:not([class]) ul {
+  margin-block: var(--espace-1) 0;
+}
+
+.boite :where(img) {
+  height: auto;
+  max-width: 100%;
+}
+
+/* Une image dans une phrase ou une liste (cadenas d'une base de données) reste sur la ligne */
+.boite :where(p, li) img {
+  display: inline;
+  vertical-align: text-bottom;
+}
+
+.icone-texte {
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  vertical-align: text-bottom;
+}
+
+.chapeau {
+  color: var(--couleur-texte-secondaire);
+  font-style: italic;
+}
+
+.boite small {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8125rem;
+}
+
+/* ---- Onglets ---- */
+.onglets [role='tablist'] {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  border-block-end: 1px solid var(--couleur-bordure);
+}
+
+.onglets [role='tab'] {
+  margin-block-end: -1px;
+  padding: 0.625rem var(--espace-2);
+  border: 0;
+  border-block-end: 3px solid transparent;
+  background: none;
+  color: var(--couleur-texte);
+  font: inherit;
+  font-weight: 500;
+  text-align: start;
+  cursor: pointer;
+}
+
+.onglets [role='tab']:hover {
+  background: var(--couleur-teinte);
+}
+
+.onglets [role='tab'][aria-selected='true'] {
+  border-block-end-color: var(--couleur-accent);
+  color: var(--couleur-accent);
+  font-weight: 600;
+}
+
+.onglets [role='tabpanel'] {
+  display: flow-root;
+  padding-block-start: var(--espace-3);
+}
+
+.onglets [role='tabpanel'][hidden] {
+  display: none;
+}
+
+@media print {
+  .onglets [role='tablist'] {
+    display: none;
+  }
+
+  .onglets [role='tabpanel'][hidden] {
+    display: flow-root;
+  }
+}
+
+/* ---- Accordéons ---- */
+.volet {
+  border-block-end: 1px solid var(--couleur-bordure);
+  margin-block-end: 0;
+  scroll-margin-block-start: var(--espace-3);
+}
+
+.volet:first-of-type {
+  border-block-start: 1px solid var(--couleur-bordure);
+}
+
+.volet + :not(.volet) {
+  margin-block-start: var(--espace-element);
+}
+
+.sommaire {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-2);
+  padding-block: var(--espace-2);
+  cursor: pointer;
+  list-style: none;
+}
+
+.sommaire::-webkit-details-marker {
+  display: none;
+}
+
+.sommaire:hover .titre {
+  color: var(--couleur-lien);
+}
+
+.boite .titre {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.sommaire::after {
+  content: '';
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  margin-inline-end: 0.25rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 200ms ease;
+}
+
+[open] > .sommaire::after {
+  transform: rotate(-135deg);
+}
+
+.volet-contenu {
+  padding-block-end: var(--espace-2);
+}
+
+.toggle-button {
+  color: var(--couleur-lien);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.accessible-toggle > details > :not(summary) {
+  margin-block-start: var(--espace-1);
+}
+
+/* ---- Encadré d'avertissement ---- */
+/* Le cadre épouse son texte, limité à la mesure du texte courant plus ses marges internes */
+.alerte,
+.encadre {
+  box-sizing: border-box;
+  width: fit-content;
+  max-inline-size: 100%;
+}
+
+@media (width >= 600px) {
+  .alerte {
+    max-inline-size: calc(var(--mesure-texte) + 4rem + var(--espace-2) + 2px);
+  }
+
+  .encadre {
+    max-inline-size: calc(var(--mesure-texte) + 2 * var(--espace-2) + 2px);
+  }
+}
+
+.alerte {
+  position: relative;
+  padding: var(--espace-2) var(--espace-2) var(--espace-2) 4rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 0.5rem;
+  background: var(--alerte-fond);
+  overflow: hidden;
+}
+
+.alerte::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2.75rem;
+  background: var(--alerte-avertissement-fond);
+}
+
+.alerte::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0.625rem;
+  width: 1.5rem;
+  height: 1.5rem;
+  translate: 0 -50%;
+  background: var(--alerte-avertissement-icone);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 4 2.5 20h19L12 4Z'/%3E%3Cpath d='M12 10v5M12 17.5v.01'/%3E%3C/svg%3E") center / contain no-repeat;
+}
+
+.alerte > :first-child,
+.encadre > :first-child {
+  margin-block-start: 0;
+}
+
+.alerte > :last-child,
+.encadre > :last-child {
+  margin-block-end: 0;
+}
+
+.encadre {
+  padding: var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 0.5rem;
+  background: var(--alerte-fond);
+}
+
+/* ---- Tableaux ---- */
+.tableau {
+  overflow-x: auto;
+}
+
+.tableau table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+}
+
+.tableau :is(th, td) {
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--couleur-bordure);
+  text-align: start;
+  vertical-align: top;
+}
+
+.tableau th {
+  background: var(--couleur-teinte);
+}
+
+.tableau :is(td, th) > :last-child {
+  margin-block-end: 0;
+}
+
+/* ---- Tuiles et cartes du guide ---- */
+.tuile-wrapper,
+.sift-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(20rem, 100%), 1fr));
+  gap: var(--espace-2);
+  margin-block-end: var(--espace-element);
+}
+
+.frame-light {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 0.5rem;
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.frame-light:hover {
+  border-color: var(--couleur-lien);
+  background: var(--couleur-teinte);
+  color: var(--couleur-texte);
+}
+
+.icone-discipline {
+  flex: none;
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.sift-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: 0.5rem;
+  background: var(--couleur-surface);
+}
+
+.sift-title {
+  font-weight: 600;
+}
+
+.sift-img {
+  border: 1px solid var(--couleur-bordure);
+}
+
+.sift-links {
+  margin-block-start: auto;
+}
+
+/* ---- Disposition reprise de la source ---- */
+.centre {
+  text-align: center;
+}
+
+.accessible-toggle > details > summary {
+  text-align: center;
+}
+
+.flottante {
+  float: left;
+  margin-inline-end: 20px;
+}
+
+.flottante-droite {
+  float: right;
+  margin-block-end: 0.5rem;
+  margin-inline-start: 20px;
+}
+
+/* Une image flottante (oriflamme) ne déborde pas sur l'étape suivante */
+:is(h4, h5, h6):has(> .flottante) {
+  clear: both;
+}
+
+.boite .retrait {
+  margin-inline-start: 120px;
+}
+
+@media (max-width: 600px) {
+  .boite .flottante,
+  .boite .flottante-droite {
+    float: none;
+    display: block;
+    margin-block-end: var(--espace-1);
+    margin-inline-start: 0;
+  }
+
+  .boite .retrait {
+    margin-inline-start: 0;
+  }
+}
+
+/* ---- Accueil ---- */
+.heros {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  width: calc(100% - 2 * var(--gouttiere));
+  max-width: calc(var(--largeur-max) - 2 * var(--gouttiere));
+  min-height: 19rem;
+  margin-inline: auto;
+  border-radius: 0 0 var(--rayon-petit) var(--rayon-petit);
+  background: var(--bleu-fonce);
+  overflow: hidden;
+}
+
+.heros-image {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Voile plus dense sous le texte : le contraste ne dépend pas de la photo */
+.heros::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top right, color-mix(in srgb, var(--couleur-voile) 72%, transparent), transparent 62%);
+}
+
+.heros-texte {
+  position: relative;
+  z-index: 1;
+  padding: var(--espace-4);
+  color: var(--couleur-sur-fonce);
+}
+
+.heros-texte h1 {
+  margin: 0;
+  color: inherit;
+  font-size: clamp(2.25rem, 5vw, 3.5rem);
+}
+
+.heros-texte p {
+  max-width: 24rem;
+  margin: var(--espace-1) 0 0;
+  color: inherit;
+  font-size: 1.25rem;
+  line-height: 1.35;
+}
+
+.accueil {
+  padding-block: var(--espace-5);
+}
+
+/* ---- Recherche d'un guide ---- */
+/* Variante du menu : sélecteur de portée et bouton rond, comme bibweb (ChampRecherche, RechercheMenu) */
+.recherche-guides.recherche-portee {
+  max-width: none;
+  margin: 0;
+  padding: 0.25rem 0.25rem 0.25rem 0.375rem;
+  border-color: var(--couleur-texte-secondaire);
+}
+
+.recherche-portee .segments {
+  display: inline-flex;
+  flex: none;
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-teinte);
+}
+
+.recherche-portee .segments[hidden] {
+  display: none;
+}
+
+.segment span {
+  display: block;
+  padding: 0.625rem 1.125rem;
+  border-radius: var(--rayon-plein);
+  color: var(--couleur-accent);
+  font-size: 0.875rem;
+  font-weight: var(--graisse-moyenne);
+  cursor: pointer;
+  transition:
+    background-color var(--duree-courte-4) var(--courbe-standard),
+    color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.segment input:checked + span {
+  background: var(--bleu-fonce);
+  color: var(--couleur-sur-fonce);
+}
+
+.segment input:focus-visible + span {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+}
+
+.recherche-portee button[type='submit'] {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--taille-cible);
+  min-height: var(--taille-cible);
+  padding: 0;
+  background: var(--couleur-accent);
+  color: var(--couleur-sur-fonce);
+}
+
+.recherche-portee button[type='submit']:hover {
+  background: var(--couleur-lien-survol);
+  color: var(--couleur-sur-fonce);
+}
+
+.recherche-portee input[type='search'] {
+  font-size: max(1rem, 16px);
+}
+
+/* Toujours visible, même quand la liste défile : c'est la suite de la recherche */
+.recherche-guides li.suggestion-tous {
+  position: sticky;
+  bottom: -0.5rem;
+  background: var(--couleur-surface);
+  margin-block-start: 0.25rem;
+  padding-block-start: 0.75rem;
+  border-block-start: 1px solid var(--couleur-bordure);
+  border-radius: 0;
+  color: var(--couleur-accent);
+  font-weight: var(--graisse-moyenne);
+}
+
+@media (max-width: 600px) {
+  .recherche-guides.recherche-portee {
+    flex-wrap: wrap;
+    padding: 0.375rem;
+    border-radius: var(--rayon-grand);
+  }
+
+  .recherche-portee .segments {
+    flex: 1 0 100%;
+  }
+
+  .segment {
+    flex: 1;
+    text-align: center;
+  }
+
+  .recherche-portee input[type='search'] {
+    flex: 1 1 0;
+    padding-inline-start: 0.5rem;
+  }
+}
+
+.recherche-guides {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  max-width: 44rem;
+  margin-inline: auto;
+  padding: 0.375rem 0.375rem 0.375rem var(--espace-3);
+  border: 1px solid var(--rouge-orange);
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-surface);
+  transition: background-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.recherche-guides > svg {
+  flex: none;
+  color: var(--rouge-orange-texte-sur-clair);
+}
+
+/* Le contour de focus englobe tout le champ, bouton compris */
+.recherche-guides:has(input:focus-visible) {
+  outline: 2px solid var(--couleur-focus);
+  outline-offset: 0;
+}
+
+.recherche-guides input {
+  flex: 1;
+  min-width: 0;
+  min-height: 2.75rem;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--couleur-texte);
+  font: inherit;
+}
+
+.recherche-guides input::placeholder {
+  color: var(--couleur-texte-secondaire);
+  opacity: 1;
+}
+
+.recherche-guides input::-webkit-search-cancel-button {
+  cursor: pointer;
+}
+
+.recherche-guides button {
+  flex: none;
+  min-height: 2.75rem;
+  padding-inline: var(--espace-3);
+  border: 0;
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-teinte);
+  color: var(--noir);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.recherche-guides ul {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  inset-inline: 0;
+  max-height: 70vh;
+  margin: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-petit);
+  background: var(--couleur-surface);
+  list-style: none;
+  overflow-y: auto;
+}
+
+/* Pas la mesure de lecture des listes de contenu : les suggestions prennent toute la largeur */
+.recherche-guides li {
+  max-inline-size: none;
+  padding: 0.625rem 0.75rem;
+  border-radius: var(--rayon-tres-petit);
+  color: var(--couleur-texte);
+  cursor: pointer;
+}
+
+.recherche-guides li[aria-selected='true'] {
+  background: var(--couleur-teinte-forte);
+}
+
+.accueil .boite {
+  margin-block-start: var(--espace-blocs);
+}
+
+.accueil .boite:has(> h2:not(.titre-accueil)) {
+  padding-block-start: var(--espace-blocs);
+  border-block-start: 1px solid var(--couleur-bordure);
+}
+
+.accueil h2 {
+  font-size: 1.75rem;
+  font-weight: var(--graisse-forte);
+}
+
+.accueil .boite > h2 {
+  margin-block-end: var(--espace-4);
+}
+
+.accueil .titre-accueil {
+  margin-block-end: var(--espace-4);
+  text-align: center;
+}
+
+.indispensables {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(11rem, 100%), 1fr));
+  gap: var(--espace-3);
+}
+
+.frame {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--espace-2);
+  border: 1px solid var(--rouge-orange);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-teinte);
+  color: var(--couleur-texte);
+  font-weight: var(--graisse-moyenne);
+  text-decoration: none;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.frame .text-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.frame .icone-discipline {
+  width: 2rem;
+  height: 2rem;
+}
+
+.quatres {
+  display: grid;
+  gap: var(--espace-3);
+  margin-block-start: calc(var(--espace-blocs) * -0.5);
+}
+
+.tuile-photo {
+  display: block;
+  border: 1px solid var(--rouge-orange);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  text-decoration: none;
+  overflow: hidden;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.text-wrapper-photo {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+  height: 100%;
+}
+
+.boite .photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.contenutuile {
+  display: flex;
+  flex-direction: column;
+  padding: var(--espace-3);
+}
+
+.contenutuile h2 {
+  margin: 0 0 var(--espace-2);
+  color: var(--couleur-texte);
+  font-size: 1.5rem;
+  line-height: 1.2;
+}
+
+.contenutuile p {
+  font-size: 0.9375rem;
+}
+
+/* Bouton de bibweb (primitives/Button.astro), en texte noir sur le thème orange */
+.bouton-texte {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-end;
+  gap: 8px;
+  min-height: 3.125rem;
+  margin-block-start: auto;
+  padding: 6px 20px 6px 25px;
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-teinte);
+  color: var(--noir);
+  font-size: 0.875rem;
+  letter-spacing: 0.02857em;
+  line-height: 1.3;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.bouton-texte::after,
+.question::after,
+.frame::after {
+  content: '';
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background: currentColor;
+  mask: var(--fleche) center / contain no-repeat;
+  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+.question-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.question-list li {
+  border-block-end: 1px solid var(--couleur-bordure);
+}
+
+.question {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-2);
+  min-height: 3.5rem;
+  padding: 0.5rem 0.75rem;
+  color: var(--couleur-texte);
+  text-decoration: none;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.question::after {
+  color: var(--rouge-orange-texte-sur-clair);
+}
+
+.frame::after {
+  align-self: flex-end;
+  margin-block-start: auto;
+  color: var(--rouge-orange-texte-sur-clair);
+}
+
+.question-image {
+  width: 100%;
+  border-radius: var(--rayon-carte);
+}
+
+/* « Des questions? » : bloc image-fond de bibweb. La photo du contenu devient le fond de
+   la bande, le titre et les liens passent dessus ; le voile garde le texte blanc lisible. */
+.accueil .boite.boite:has(.question-list) {
+  position: relative;
+  display: grid;
+  align-content: center;
+  padding: var(--espace-6) var(--espace-3);
+  border: 0;
+  border-radius: var(--rayon-petit);
+  background: var(--bleu-fonce);
+  color: var(--couleur-sur-fonce);
+  overflow: hidden;
+}
+
+.accueil .boite:has(.question-list)::before {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  background: color-mix(in srgb, var(--couleur-voile) 65%, transparent);
+}
+
+.accueil .boite:has(.question-list) .conteneur-question-image {
+  position: absolute;
+  inset: 0;
+  /* Firefox applique le « span 6 » de .col-md-6 à cet élément positionné : la photo se décalait du padding du bloc */
+  grid-column: auto;
+}
+
+.accueil .boite:has(.question-list) .question-image {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+  object-fit: cover;
+  /* Léger zoom : la photo déborde de la bande, dont le fond bleu ne se voit jamais au bord */
+  transform: scale(1.04);
+}
+
+.accueil .boite:has(.question-list) .row {
+  display: block;
+}
+
+.accueil .boite:has(.question-list) > h2,
+.accueil .boite:has(.question-list) .col-md-6:not(.conteneur-question-image) {
+  position: relative;
+  z-index: 2;
+}
+
+.accueil .boite:has(.question-list) > h2 {
+  margin-block: 0 var(--espace-3);
+  color: inherit;
+  font-size: clamp(2rem, 4vw, 3rem);
+  line-height: 1.1;
+}
+
+.accueil .boite:has(.question-list) .question-list {
+  margin: 0;
+}
+
+.accueil .boite:has(.question-list) li {
+  border-block-end-color: color-mix(in srgb, var(--couleur-sur-fonce) 35%, transparent);
+}
+
+.accueil .boite:has(.question-list) .question,
+.accueil .boite:has(.question-list) .question:hover {
+  padding-inline: 0;
+  background: none;
+  color: var(--couleur-sur-fonce);
+}
+
+.accueil .boite:has(.question-list) .question::after {
+  background: var(--couleur-sur-fonce);
+}
+
+.accueil .boite:has(.question-list) .question:hover {
+  text-decoration: underline;
+}
+
+.accueil .boite:has(.question-list) :focus-visible {
+  outline-color: var(--couleur-sur-fonce);
+}
+
+/* Dès 900 px : la photo reste intacte à gauche, le contenu occupe la moitié droite */
+@media (min-width: 900px) {
+  .accueil .boite.boite:has(.question-list) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    min-height: 32rem;
+    padding: var(--espace-6) var(--espace-5);
+  }
+
+  .accueil .boite:has(.question-list)::before {
+    background: linear-gradient(to right, transparent 20%, color-mix(in srgb, var(--couleur-voile) 72%, transparent) 50%);
+  }
+
+  .accueil .boite:has(.question-list) > h2,
+  .accueil .boite:has(.question-list) .row {
+    grid-column: 2;
+  }
+}
+
+/* Survol : la teinte se fonce et la flèche avance d'un cran, rien d'autre ne
+   bouge. Pointeurs fins seulement : au toucher, l'état resterait après le tapotement. */
+@media (hover: hover) and (pointer: fine) {
+  .frame:hover,
+  .recherche-guides button:hover,
+  .tuile-photo:hover .bouton-texte {
+    background: var(--couleur-teinte-forte);
+    color: var(--noir);
+  }
+
+  .frame:hover {
+    color: var(--couleur-texte);
+  }
+
+  .tuile-photo:hover {
+    background: var(--couleur-teinte);
+    color: var(--couleur-texte);
+  }
+
+  .question:hover {
+    background: var(--couleur-teinte);
+    color: var(--couleur-texte);
+  }
+
+  .recherche-guides li:hover {
+    background: var(--couleur-teinte);
+  }
+
+  .tuile-photo:hover .bouton-texte::after,
+  .question:hover::after,
+  .frame:hover::after {
+    transform: translateX(3px);
+  }
+}
+
+.tuile-photo:focus-visible .bouton-texte::after,
+.question:focus-visible::after,
+.frame:focus-visible::after {
+  transform: translateX(3px);
+}
+
+@media (min-width: 900px) {
+  .quatres {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--espace-6);
+  }
+
+  .col-md-1 {
+    grid-column: span 1;
+  }
+
+  .col-md-2 {
+    grid-column: span 2;
+  }
+
+  .col-md-3 {
+    grid-column: span 3;
+  }
+
+  .col-md-4 {
+    grid-column: span 4;
+  }
+
+  .col-md-5 {
+    grid-column: span 5;
+  }
+
+  .col-md-6 {
+    grid-column: span 6;
+  }
+
+  .col-md-7 {
+    grid-column: span 7;
+  }
+
+  .col-md-8 {
+    grid-column: span 8;
+  }
+
+  .col-md-9 {
+    grid-column: span 9;
+  }
+
+  .col-md-10 {
+    grid-column: span 10;
+  }
+
+  .col-md-11 {
+    grid-column: span 11;
+  }
+
+  .col-md-12 {
+    grid-column: span 12;
+  }
+
+  /* Un enfant sans colonne prend toute la rangée plutôt qu'une seule case */
+  .row > :not([class*='col-md-']) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .text-wrapper-photo {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .boite .photo {
+    height: 12rem;
+  }
+
+  .heros-texte {
+    padding: var(--espace-3);
+  }
+
+  .recherche-guides button {
+    padding-inline: var(--espace-2);
+  }
+
+  .recherche-guides {
+    padding-inline-start: var(--espace-2);
+    gap: 0.5rem;
+  }
+}
+
+/* Menu plus grand dès que la barre a la place de le garder sur une rangée, loupe comprise */
+@media (min-width: 1360px) {
+  .entete-barre > nav a {
+    font-size: 0.8125rem;
+  }
+}
+
+@media (min-width: 1420px) {
+  .entete-barre > nav a {
+    font-size: 0.875rem;
+  }
+}
+
+@media (min-width: 1500px) {
+  .entete-barre > nav a {
+    font-size: 0.9375rem;
+  }
+}
+
+/* La barre tient sur une rangée jusqu'à 1200 px, où le menu mobile prend le relais */
+/* Juste au-dessus du menu mobile : la marque se resserre pour laisser sa rangée au menu */
+@media (1200px <= width < 1260px) {
+  .marque {
+    gap: 0.5rem;
+  }
+
+  .logo-bib svg {
+    width: 6.25rem;
+  }
+
+  .nom-site {
+    padding-inline-start: 0.5rem;
+    font-size: 0.9375rem;
+  }
+}
+
+@media (1200px <= width < 1360px) {
+  .entete-barre {
+    padding-inline: var(--espace-2);
+  }
+
+  .logo-bib svg {
+    width: 7.25rem;
+  }
+
+  .nom-site {
+    font-size: 1.0625rem;
+  }
+
+  .entete-barre > nav ul {
+    gap: 0 0.625rem;
+  }
+
+  .entete-barre > nav a {
+    font-size: 0.75rem;
+  }
+}
+
+/* ---- Menu mobile (bibweb : Entete et PanneauMenu) ---- */
+.outils {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.outils[hidden],
+.voile-menu[hidden],
+.rideau[hidden] {
+  display: none;
+}
+
+.bouton-icone {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--taille-cible);
+  height: var(--taille-cible);
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--couleur-texte);
+  cursor: pointer;
+}
+
+.bouton-menu {
+  width: 50px;
+  height: 50px;
+}
+
+.bouton-loupe .si-ouvert,
+.bouton-menu .si-ouvert,
+.bouton-loupe[aria-expanded='true'] .si-ferme,
+.bouton-menu[aria-expanded='true'] .si-ferme {
+  display: none;
+}
+
+.bouton-loupe[aria-expanded='true'] .si-ouvert,
+.bouton-menu[aria-expanded='true'] .si-ouvert {
+  display: block;
+}
+
+/* « Afficher le menu » n'existe qu'en mode recherche, sous 1200 px */
+.deplier {
+  display: none;
+}
+
+/* Barre de bureau : la loupe seule ; le rideau occupe la largeur de la fenêtre et se réduit à la recherche */
+@media (width >= 1200px) {
+  .entete {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+
+  .bouton-menu,
+  .rideau .surtitre-explorer,
+  .rideau nav,
+  .rideau .poignee {
+    display: none;
+  }
+
+  .entete-barre {
+    flex-wrap: nowrap;
+    gap: var(--espace-1);
+  }
+
+  .entete-barre > nav {
+    margin-inline-start: auto;
+  }
+
+  .voile-menu {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    height: 100vh;
+    background: color-mix(in srgb, var(--couleur-voile) 40%, transparent);
+  }
+
+  .rideau {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    border-block-start: 1px solid var(--couleur-bordure);
+    background: var(--couleur-surface);
+  }
+
+  .feuille {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: end;
+    gap: var(--espace-4);
+    max-width: var(--largeur-max);
+    margin-inline: auto;
+    padding: var(--espace-3) var(--gouttiere) var(--espace-4);
+  }
+
+  .surtitre {
+    margin: 0 0 0.5rem;
+    color: var(--couleur-accent);
+    font-size: 0.8125rem;
+    font-weight: var(--graisse-forte);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .liens-sofia {
+    display: flex;
+    gap: var(--espace-3);
+    min-height: 3.25rem;
+  }
+}
+
+/* Mon dossier, Obtenir un document */
+.liens-sofia {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.liens-sofia a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--taille-cible);
+  color: var(--couleur-texte);
+  text-underline-offset: 0.2em;
+}
+
+.liens-sofia a span {
+  text-decoration: underline;
+  text-decoration-color: var(--couleur-accent);
+}
+
+.liens-sofia svg {
+  flex: none;
+  color: var(--couleur-accent);
+}
+
+.liens-sofia li {
+  display: flex;
+  align-items: center;
+}
+
+/* Sans JavaScript, data-menu-js manque : la barre garde ses liens, sur plusieurs lignes */
+@media (width < 1200px) {
+  html {
+    scroll-padding-top: 5.5rem;
+  }
+
+  html[data-menu-ouvert] {
+    overflow: hidden;
+  }
+
+  .entete {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    padding-block-start: var(--espace-1);
+  }
+
+  :root[data-menu-js] .entete-barre > nav {
+    display: none;
+  }
+
+  :root[data-menu-js] .entete-barre {
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+  }
+
+  .marque {
+    min-width: 0;
+  }
+
+  .logo-bib svg {
+    width: 5.75rem;
+  }
+
+  .nom-site {
+    font-size: 1rem;
+    line-height: 1.2;
+  }
+
+  .entete-barre {
+    width: 100%;
+    max-width: none;
+    padding: 0.5rem 0.5rem 0.5rem var(--espace-2);
+    border-radius: 0;
+  }
+
+  .voile-menu {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    height: 100vh;
+    background: color-mix(in srgb, var(--couleur-voile) 40%, transparent);
+  }
+
+  .rideau {
+    position: absolute;
+    top: 100%;
+    inset-inline: 0;
+    border-block-start: 1px solid var(--couleur-bordure);
+    background: var(--couleur-surface);
+  }
+
+  .feuille {
+    max-height: calc(100dvh - 4.5rem);
+    padding: var(--espace-3) var(--espace-2) 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .surtitre {
+    margin: 0 0 0.75rem;
+    color: var(--couleur-accent);
+    font-size: 0.8125rem;
+    font-weight: var(--graisse-forte);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  /* Côte à côte, comme sur grand écran : sur téléphone étroit, le texte passe à la ligne dans sa colonne */
+  .liens-sofia {
+    display: flex;
+    gap: var(--espace-2);
+    margin-block-end: var(--espace-3);
+    font-size: 0.9375rem;
+    line-height: 1.25;
+  }
+
+  .liens-sofia a {
+    gap: 0.375rem;
+  }
+
+  .pages-menu {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pages-menu li {
+    border-block-end: 1px solid var(--couleur-bordure);
+  }
+
+  .pages-menu a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--espace-2);
+    min-height: 3.5rem;
+    padding-block: 0.5rem;
+    color: var(--couleur-texte);
+    font-size: 1.25rem;
+    line-height: 1.25;
+    text-decoration: none;
+  }
+
+  .pages-menu a::after {
+    content: '';
+    flex: none;
+    width: 24px;
+    height: 24px;
+    background: var(--rouge-orange-texte-sur-clair);
+    mask: var(--fleche) center / contain no-repeat;
+  }
+
+  .pages-menu [aria-current='page'] {
+    color: var(--couleur-accent);
+    font-weight: var(--graisse-forte);
+  }
+
+  .poignee {
+    position: sticky;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    width: calc(100% + 2 * var(--espace-2));
+    margin-block-start: var(--espace-3);
+    margin-inline: calc(var(--espace-2) * -1);
+    padding-block: 1.25rem;
+    border: 0;
+    background: var(--couleur-surface);
+    cursor: pointer;
+  }
+
+  .poignee span {
+    width: 2.5rem;
+    height: 0.3rem;
+    border-radius: var(--rayon-plein);
+    background: var(--couleur-texte-secondaire);
+  }
+
+  /* Mode recherche (loupe) : la recherche seule, puis « Afficher le menu » */
+  .rideau[data-mode='recherche'] .surtitre-explorer,
+  .rideau[data-mode='recherche'] nav {
+    display: none;
+  }
+
+  /* Les suggestions, plus hautes que la feuille courte, flottent sur le voile */
+  .rideau[data-mode='recherche'] .feuille {
+    overflow: visible;
+  }
+
+  .rideau[data-mode='recherche'] .deplier {
+    display: flex;
+    justify-content: center;
+    margin-block-start: calc(var(--espace-2) * -1);
+  }
+
+  .rideau[data-mode='recherche'] .poignee {
+    margin-block-start: 0;
+    padding-block: 0.75rem 1.25rem;
+  }
+
+  .deplier-bouton {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.125rem;
+    min-height: var(--taille-cible);
+    padding: 0.375rem 1.25rem;
+    border: 0;
+    border-radius: var(--rayon-plein);
+    background: transparent;
+    color: var(--couleur-accent);
+    font: inherit;
+    font-size: 0.9375rem;
+    font-weight: var(--graisse-forte);
+    cursor: pointer;
+  }
+
+  .deplier-fleche {
+    transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .deplier-bouton:hover {
+      background: var(--couleur-teinte);
+    }
+
+    .deplier-bouton:hover .deplier-fleche {
+      transform: translateY(3px);
+    }
+  }
+
+  .deplier-bouton:focus-visible .deplier-fleche {
+    transform: translateY(3px);
+  }
+}
+
+/* ---- Portail des disciplines ---- */
+.portail {
+  padding-block: var(--espace-3) var(--espace-5);
+}
+
+.portail h1 {
+  margin-block-start: var(--espace-3);
+}
+
+.portail .boite + .boite {
+  padding-block-start: var(--espace-bloc);
+  border-block-start: 1px solid var(--couleur-bordure);
+}
+
+.portail h3 {
+  font-size: 1.25rem;
+}
+
+.portail h4 {
+  font-size: 1.125rem;
+}
+
+.portail h2 {
+  margin-block: 0 var(--espace-3);
+  font-size: 1.75rem;
+  font-weight: var(--graisse-forte);
+}
+
+/* Carré orange devant les titres des portails ; ceux de Faire de la recherche y mettent leur icône, en masque (bleues sur le site actuel) */
+.portail h2.titre-ancre {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.portail h2.titre-ancre::before {
+  content: '';
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  background: var(--rouge-orange);
+  mask: var(--icone-titre, none) center / contain no-repeat;
+}
+
+.titre-produire {
+  --icone-titre: url('/images/icones/pencil.svg');
+}
+
+.titre-diffuser {
+  --icone-titre: url('/images/icones/book-open-text.svg');
+}
+
+.titre-bibliometrie {
+  --icone-titre: url('/images/icones/chart-scatter.svg');
+}
+
+.titre-gdr {
+  --icone-titre: url('/images/icones/stack.svg');
+}
+
+.titre-droit-auteur {
+  --icone-titre: url('/images/icones/gavel.svg');
+}
+
+/* Titre vide de la source : garde les colonnes alignées, sans titre vide pour les lecteurs d'écran */
+.titre-vide {
+  display: none;
+}
+
+@media (min-width: 900px) {
+  .titre-vide {
+    display: block;
+    height: 2rem; /* la hauteur du carré, plus grande que la ligne du titre */
+    margin-block-end: var(--espace-3);
+  }
+}
+
+.tuile-wrapper > .texte {
+  display: grid;
+}
+
+.tuile-wrapper > .texte > .frame-light {
+  justify-content: space-between;
+}
+
+.tuile-wrapper > .texte > .frame-light::after,
+.sift-link::after {
+  content: '';
+  flex: none;
+  width: 24px;
+  height: 24px;
+  background: var(--rouge-orange-texte-sur-clair);
+  mask: var(--fleche) center / contain no-repeat;
+  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+.sift-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-2);
+  min-height: 3.5rem;
+  margin-block-end: 0.75rem;
+  padding: 0.5rem var(--espace-2);
+  border-inline-start: 3px solid var(--rouge-orange);
+  border-radius: 0 var(--rayon-tres-petit) var(--rayon-tres-petit) 0;
+  background: var(--couleur-teinte);
+  color: var(--couleur-texte);
+  text-decoration: none;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .sift-link:hover {
+    background: var(--couleur-teinte-forte);
+    color: var(--couleur-texte);
+  }
+
+  .tuile-wrapper > .texte > .frame-light:hover::after,
+  .sift-link:hover::after {
+    transform: translateX(3px);
+  }
+}
+
+.tuile-wrapper > .texte > .frame-light:focus-visible::after,
+.sift-link:focus-visible::after {
+  transform: translateX(3px);
+}
+
+.menu-deroulant {
+  position: relative;
+  max-width: 26rem;
+}
+
+/* Une boîte qui ne contient qu'un menu : il se place à côté de son titre, dessous s'il manque de place */
+.portail .boite:has(> h2 + .menu-deroulant:last-child) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espace-1) var(--espace-3);
+}
+
+.portail .boite:has(> h2 + .menu-deroulant:last-child) > * {
+  margin-block: 0;
+}
+
+.portail .boite:has(> h2 + .menu-deroulant:last-child) > .menu-deroulant {
+  flex: 1 1 18rem;
+}
+
+.menu-deroulant > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--espace-2);
+  min-height: var(--taille-cible);
+  padding: 0.5rem var(--espace-2);
+  border: 1px solid var(--rouge-orange);
+  border-radius: var(--rayon-tres-petit);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  cursor: pointer;
+  list-style: none;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.menu-deroulant > summary::-webkit-details-marker {
+  display: none;
+}
+
+.menu-deroulant > summary::after {
+  content: '';
+  flex: none;
+  width: 0.625rem;
+  height: 0.625rem;
+  margin-inline-end: 0.25rem;
+  border-inline-end: 2px solid var(--rouge-orange-texte-sur-clair);
+  border-block-end: 2px solid var(--rouge-orange-texte-sur-clair);
+  transform: rotate(45deg);
+  transition: transform var(--duree-courte-4) var(--courbe-standard);
+}
+
+.menu-deroulant[open] > summary::after {
+  transform: rotate(-135deg);
+}
+
+.menu-deroulant > ul {
+  position: absolute;
+  z-index: 5;
+  top: calc(100% + 0.25rem);
+  inset-inline: 0;
+  max-height: 20rem;
+  margin: 0;
+  padding: 0.5rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-tres-petit);
+  background: var(--couleur-surface);
+  list-style: none;
+  overflow-y: auto;
+}
+
+.menu-deroulant a {
+  display: block;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--rayon-minuscule);
+  color: var(--couleur-texte);
+  text-decoration: none;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .menu-deroulant > summary:hover,
+  .menu-deroulant a:hover {
+    background: var(--couleur-teinte);
+    color: var(--couleur-texte);
+  }
+}
+
+.portail .boite:has(> .frame-bleu),
+.quatre-tuiles-bleues {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(13rem, 100%), 1fr));
+  gap: var(--espace-3);
+}
+
+/* Les tuiles prolongent les colonnes de liens du dessus : pas de filet entre les deux */
+.portail .boite + .boite:has(> .frame-bleu, > .quatre-tuiles-bleues) {
+  padding-block-start: 0;
+  border-block-start: 0;
+}
+
+/* Tuiles des portails disciplinaires, bleues comme sur le site actuel (icônes bleues dans le contenu) */
+.frame-bleu {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: var(--espace-2);
+  border: 1px solid var(--bleu-principal);
+  border-radius: var(--rayon-carte);
+  background: var(--bleu-100);
+  color: var(--couleur-texte);
+  font-weight: var(--graisse-moyenne);
+  text-decoration: none;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.frame-bleu .text-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.frame-bleu .icone-discipline {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+}
+
+.frame-bleu::after {
+  content: '';
+  flex: none;
+  align-self: flex-end;
+  width: 24px;
+  height: 24px;
+  margin-block-start: auto;
+  background: var(--bleu-principal);
+  mask: var(--fleche) center / contain no-repeat;
+  transition: transform var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .frame-bleu:hover {
+    background: var(--bleu-200);
+    color: var(--couleur-texte);
+  }
+
+  .frame-bleu:hover::after {
+    transform: translateX(3px);
+  }
+}
+
+.frame-bleu:focus-visible::after {
+  transform: translateX(3px);
+}
+
+.fil-nouvelles {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fil-nouvelles li {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.125rem var(--espace-3);
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--couleur-bordure);
+}
+
+.fil-nouvelles li > * {
+  grid-column: 1;
+}
+
+/* Colonne vide si le fil n'a pas de date : le titre garde toute la largeur */
+.fil-nouvelles .fil-date {
+  grid-column: 2;
+  grid-row: 1;
+  white-space: nowrap;
+}
+
+.fil-nouvelles li:last-child {
+  border-block-end: 0;
+}
+
+@media (max-width: 600px) {
+  .fil-nouvelles li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .fil-nouvelles .fil-date {
+    grid-column: 1;
+    grid-row: auto;
+    white-space: normal;
+  }
+}
+
+.name-wrapper {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+}
+
+.name-wrapper img {
+  flex: none;
+  border-radius: var(--rayon-minuscule);
+}
+
+/* Le menu défile seul et la fiche reste entière en bas de la colonne. Sur une fenêtre très basse,
+   il n'y aurait plus de place pour le menu : toute la colonne défile, comme par défaut. */
+@media (min-width: 1200px) and (min-height: 640px) {
+  /* Hauteur de l'en-tête fixe retranchée : la fiche reste entière, avant comme après le défilement */
+  .navigation-contenu {
+    display: flex;
+    flex-direction: column;
+    max-height: calc(100vh - var(--hauteur-entete) - 2 * var(--espace-3));
+    overflow: hidden;
+  }
+
+  .navigation-contenu > .navigation {
+    flex: 0 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    /* Le focus ne s'arrête pas dans le fondu */
+    scroll-padding-block: 4rem;
+  }
+
+  /* Barre toujours visible : sur Mac, elle se cache sinon. scrollbar-color l'y laisserait cachée et annulerait ces règles, d'où Firefox à part */
+  .navigation-contenu > .navigation::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  .navigation-contenu > .navigation::-webkit-scrollbar-thumb {
+    border-radius: var(--rayon-plein);
+    background: var(--couleur-texte-secondaire);
+  }
+
+  @supports not selector(::-webkit-scrollbar) {
+    .navigation-contenu > .navigation {
+      scrollbar-width: thin;
+      scrollbar-color: var(--couleur-texte-secondaire) transparent;
+    }
+  }
+
+  /* Le menu continue : le bord qui cache des liens s'estompe, sans disparaître tout à fait */
+  .navigation[data-suite-bas] {
+    mask-image: linear-gradient(to bottom, #000 calc(100% - 4rem), rgb(0 0 0 / 12%));
+  }
+
+  .navigation[data-suite-haut] {
+    mask-image: linear-gradient(to bottom, rgb(0 0 0 / 12%), #000 3rem);
+  }
+
+  .navigation[data-suite-haut][data-suite-bas] {
+    mask-image: linear-gradient(to bottom, rgb(0 0 0 / 12%), #000 3rem, #000 calc(100% - 4rem), rgb(0 0 0 / 12%));
+  }
+
+  .navigation-contenu > aside,
+  .navigation-contenu > .navigation-auteur {
+    flex: none;
+  }
+
+  .navigation-contenu > aside {
+    max-height: 60%;
+    overflow-y: auto;
+  }
+}
+
+/* Vos bibliothécaires : vignettes d'équipe de bibweb (EquipeBibliotheque), toute la carte mène à la fiche */
+.boite .equipe {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+  gap: var(--espace-3);
+  padding: 0;
+  list-style: none;
+}
+
+.vignette {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: var(--espace-3) var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-surface);
+  overflow-wrap: anywhere;
+  text-align: center;
+  transition: border-color var(--duree-courte-4) var(--courbe-standard);
+}
+
+.boite .vignette-photo {
+  display: block;
+  width: 6.5rem;
+  height: 6.5rem;
+  margin-block-end: 0.25rem;
+  border-radius: var(--rayon-plein);
+  object-fit: cover;
+}
+
+.boite .vignette-nom {
+  margin: 0;
+  max-width: none;
+  font-size: 1.0625rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.3;
+}
+
+.vignette-nom a {
+  color: var(--couleur-texte);
+  text-decoration: none;
+}
+
+.vignette-nom a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--rayon-carte);
+}
+
+.boite .vignette-detail {
+  margin: 0;
+  max-width: none;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.vignette:has(a):hover {
+  border-color: var(--rouge-orange);
+}
+
+.vignette:hover .vignette-nom a {
+  color: var(--couleur-lien);
+  text-decoration: underline;
+}
+
+.vignette-nom a:focus-visible {
+  outline: none;
+}
+
+.vignette:has(a:focus-visible) {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+}
+
+/* Fiche sous le menu des guides, comme les vignettes d'équipe de bibweb */
+.profil {
+  margin-block-start: var(--espace-3);
+  padding: var(--espace-3) var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-surface);
+  font-size: 0.875rem;
+  overflow-wrap: anywhere;
+  text-align: center;
+}
+
+.profil-commun .profil-photo {
+  margin-inline: auto;
+  margin-block-end: 0.75rem;
+}
+
+.profil-commun ul {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profil-commun li {
+  font-size: 0.9375rem;
+}
+
+.profil-commun a {
+  display: inline-block;
+  min-height: 24px;
+}
+
+/* Une adresse par ligne, sous « Nous écrire : » */
+.profil-commun .profil-courriel {
+  display: block;
+  width: fit-content;
+  margin-inline: auto;
+}
+
+.profil-titre {
+  margin: 0 0 0.75rem;
+  max-width: none;
+  color: var(--couleur-accent);
+  font-size: 0.8125rem;
+  font-weight: var(--graisse-forte);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.profil-personne {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--couleur-texte);
+  text-decoration: none;
+}
+
+a.profil-personne:hover {
+  color: var(--couleur-lien);
+  text-decoration: underline;
+}
+
+.profil-photo {
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: var(--rayon-plein);
+  object-fit: cover;
+}
+
+.profil-nom {
+  font-size: 1.0625rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.3;
+}
+
+/* Ressources de LibGuides : liens, documents, livres, bases de données */
+.liste-ressources {
+  padding: 0;
+  list-style: none;
+}
+
+.liste-ressources > li {
+  padding-block: 0.5rem;
+}
+
+.liste-ressources small {
+  display: block;
+  color: var(--couleur-texte-secondaire);
+}
+
+.liste-ressources .ressource-type {
+  display: inline;
+}
+
+.ressource-description {
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.9375rem;
+}
+
+/* Carrousel (Carousel1 de bibweb) : défilement natif, utilisable sans JavaScript */
+.boite .carrousel-piste {
+  display: flex;
+  gap: var(--espace-2);
+  margin: 0;
+  padding: 0.25rem 0.25rem var(--espace-1);
+  list-style: none;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  scroll-snap-type: x proximity;
+  scroll-padding-inline: 0.25rem;
+}
+
+.carrousel-piste > li {
+  flex: 0 0 10.5rem;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 0.75rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-surface);
+  font-size: 0.875rem;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.boite .carrousel-piste img {
+  width: 100%;
+  height: 10rem;
+  object-fit: contain;
+}
+
+.carrousel-piste p {
+  margin: 0;
+  max-width: none;
+}
+
+.carrousel-controles {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  margin-block-start: 0.5rem;
+}
+
+.carrousel-controles[hidden] {
+  display: none;
+}
+
+.carrousel-controles button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--taille-cible);
+  height: var(--taille-cible);
+  border: 1px solid var(--rouge-orange);
+  border-radius: 50%;
+  background: var(--couleur-surface);
+  color: var(--rouge-orange-texte-sur-clair);
+  cursor: pointer;
+  transition: background-color var(--duree-moyenne-1) var(--courbe-standard);
+}
+
+.carrousel-controles button:first-child svg {
+  rotate: 180deg;
+}
+
+.carrousel-controles button[aria-disabled='true'] {
+  border-color: var(--couleur-bordure);
+  color: var(--couleur-texte-secondaire);
+  cursor: default;
+  opacity: 0.6;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .carrousel-controles button:not([aria-disabled='true']):hover {
+    background: var(--couleur-teinte);
+  }
+}
+
+/* Description d'un livre : un dépliant discret dans la liste, sans l'allure d'un accordéon */
+.ressource-plus {
+  margin-block-start: 0.25rem;
+  font-size: 0.875rem;
+}
+
+.ressource-plus > summary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-height: 1.5rem;
+  color: var(--couleur-lien);
+  cursor: pointer;
+  list-style: none;
+}
+
+.ressource-plus > summary::-webkit-details-marker {
+  display: none;
+}
+
+.ressource-plus > summary::before {
+  content: '';
+  flex: none;
+  width: 0.4rem;
+  height: 0.4rem;
+  border-inline-end: 2px solid currentColor;
+  border-block-end: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform var(--duree-courte-4) var(--courbe-standard);
+}
+
+.ressource-plus[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.ressource-plus > summary:hover {
+  text-decoration: underline;
+}
+
+.ressource-plus > .ressource-description {
+  margin-block-start: 0.25rem;
+}
+
+.livre {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--espace-2);
+}
+
+.boite .couverture {
+  flex: none;
+  width: 3.75rem;
+  border-radius: var(--rayon-minuscule);
+}
+
+.boite iframe {
+  display: block;
+  max-width: 100%;
+  border: 0;
+}
+
+/* Vidéos : 16:9 sur toute la largeur disponible, quelle que soit la taille écrite dans la source */
+.boite iframe[src*='youtube'],
+.boite iframe[src*='panopto'] {
+  width: 100%;
+  max-width: 45rem;
+  height: auto;
+  aspect-ratio: 16 / 9;
+}
+
+.boite pre {
+  padding: var(--espace-2);
+  border-radius: var(--rayon-tres-petit);
+  background: var(--couleur-teinte);
+  overflow-x: auto;
+  font-size: 0.875rem;
+}
+
+.indent {
+  margin-inline-start: var(--espace-3);
+}
+
+.texte-petit {
+  font-size: 0.875rem;
+}
+
+.icon-line {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-block: 0.5rem;
+}
+
+.icon-line img {
+  flex: none;
+  width: 22px;
+}
+
+.portail .boite:has(> .frame) {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+  gap: var(--espace-3);
+}
+
+.fil-ariane ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.5rem;
+  margin: 0;
+  padding: 0;
+  font-size: 0.875rem;
+  list-style: none;
+}
+
+.fil-ariane li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Chevron de bibweb (coquille/FilAriane.astro) */
+.fil-ariane li + li::before {
+  content: '';
+  width: 0.4em;
+  height: 0.4em;
+  border-block-start: 1.5px solid currentColor;
+  border-inline-end: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  opacity: 0.6;
+}
+
+/* Cible de 24 px de haut au moins (WCAG 2.5.8) */
+.fil-ariane a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+}
+
+.fil-ariane [aria-current='page'] {
+  color: var(--couleur-texte);
+  font-weight: var(--graisse-forte);
+}
+
+/* ---- Mouvement, repris de bibweb (docs/CONVENTIONS.md, « Mouvement ») ---- */
+
+/* Accordéons et dépliants : hauteur et opacité (la hauteur est la seule exception à « transform et
+   opacity » : rien d'autre ne fait glisser le contenu qui suit). Le menu déroulant flotte par-dessus
+   la page : il n'est pas concerné, sa liste serait coupée. */
+@supports (interpolate-size: allow-keywords) and selector(::details-content) {
+  details:not(.menu-deroulant) {
+    interpolate-size: allow-keywords;
+  }
+
+  details:not(.menu-deroulant)::details-content {
+    block-size: 0;
+    overflow-y: clip;
+    opacity: 0;
+    transition:
+      block-size var(--duree-moyenne-1) var(--courbe-emphase),
+      opacity var(--duree-moyenne-1) var(--courbe-emphase),
+      content-visibility var(--duree-moyenne-1) allow-discrete;
+  }
+
+  details:not(.menu-deroulant)[open]::details-content {
+    block-size: auto;
+    opacity: 1;
+  }
+
+  details.sans-transition::details-content {
+    transition: none;
+  }
+}
+
+/* Menu déroulant : fondu et petit glissement à l'ouverture */
+.menu-deroulant > ul {
+  transition:
+    opacity var(--duree-courte-4) var(--courbe-standard-deceleree),
+    translate var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+@starting-style {
+  .menu-deroulant[open] > ul {
+    opacity: 0;
+    translate: 0 -0.25rem;
+  }
+}
+
+/* Trait de l'onglet actif : il glisse ; sans JavaScript, c'est la bordure de l'onglet */
+.onglets [role='tablist'] {
+  position: relative;
+}
+
+.onglet-trait {
+  display: none;
+}
+
+[data-onglets-anime] .onglet-trait {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  height: 3px;
+  background: var(--couleur-accent);
+  transition:
+    translate var(--duree-courte-4) var(--courbe-emphase-deceleree),
+    width var(--duree-courte-4) var(--courbe-emphase-deceleree);
+}
+
+[data-onglets-anime] [role='tab'][aria-selected='true'] {
+  border-block-end-color: transparent;
+}
+
+.onglets[data-onglets-anime] [role='tabpanel'] {
+  transition: opacity var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+@starting-style {
+  .onglets[data-onglets-anime] [role='tabpanel'] {
+    opacity: 0;
+  }
+}
+
+/* Pastille du sélecteur de recherche */
+.recherche-portee .segments {
+  position: relative;
+}
+
+.segment {
+  position: relative;
+  z-index: 1;
+}
+
+.indicateur {
+  position: absolute;
+  inset-block: 0;
+  left: 0;
+  border-radius: var(--rayon-plein);
+  background: var(--bleu-fonce);
+}
+
+.segments.pret .indicateur {
+  transition:
+    translate var(--duree-courte-4) var(--courbe-emphase-deceleree),
+    width var(--duree-courte-4) var(--courbe-emphase-deceleree);
+}
+
+.segment input:checked + span {
+  background: none;
+}
+
+/* Couleurs forcées : les fonds tombent, or la pastille et le trait disent quel choix est actif */
+@media (forced-colors: active) {
+  .indicateur,
+  [data-onglets-anime] .onglet-trait {
+    display: none;
+  }
+
+  .segment input:checked + span {
+    background: Highlight;
+    color: HighlightText;
+    forced-color-adjust: none;
+  }
+
+  .onglets [role='tab'] {
+    border-block-end-color: Canvas;
+  }
+
+  [data-onglets-anime] [role='tab'][aria-selected='true'] {
+    border-block-end-color: Highlight;
+  }
+}
+
+/* Rideau : la feuille descend de derrière l'en-tête, puis ses groupes suivent en léger décalage. Le
+   découpage ne retient que le haut : les suggestions peuvent dépasser le bas du panneau. Fermeture
+   plus brève, par le même chemin. */
+.rideau {
+  clip-path: inset(0 -100vw -200vh -100vw);
+  transition: display var(--duree-moyenne-1) allow-discrete;
+}
+
+.rideau[hidden] {
+  transition-duration: var(--duree-courte-4);
+}
+
+.feuille {
+  background: var(--couleur-surface);
+  transition: transform var(--duree-moyenne-1) var(--courbe-emphase-deceleree);
+}
+
+.rideau[hidden] .feuille {
+  transform: translateY(-100%);
+  transition-duration: var(--duree-courte-4);
+  transition-timing-function: var(--courbe-standard);
+}
+
+@starting-style {
+  .rideau:not([hidden]) .feuille {
+    transform: translateY(-100%);
+  }
+}
+
+.feuille > * {
+  transition:
+    opacity var(--duree-moyenne-1) var(--courbe-emphase-deceleree),
+    translate var(--duree-moyenne-1) var(--courbe-emphase-deceleree);
+  transition-delay: var(--duree-courte-2);
+}
+
+.feuille > :nth-child(2) {
+  transition-delay: calc(var(--duree-courte-2) + var(--duree-courte-1));
+}
+
+.feuille > :nth-child(n + 3) {
+  transition-delay: calc(var(--duree-courte-2) + 2 * var(--duree-courte-1));
+}
+
+@starting-style {
+  .rideau:not([hidden]) .feuille > * {
+    opacity: 0;
+    translate: 0 -0.5rem;
+  }
+}
+
+.rideau[hidden] .feuille > * {
+  opacity: 0;
+  transition-delay: 0s;
+  transition-duration: var(--duree-courte-3);
+}
+
+.voile-menu {
+  transition:
+    opacity var(--duree-moyenne-1) var(--courbe-emphase-deceleree),
+    display var(--duree-moyenne-1) allow-discrete;
+}
+
+.voile-menu[hidden] {
+  opacity: 0;
+  transition-duration: var(--duree-courte-4);
+}
+
+@starting-style {
+  .voile-menu:not([hidden]) {
+    opacity: 0;
+  }
+}
+
+/* Passage d'une page à l'autre sur mobile, comme les écrans d'une application : la nouvelle page
+   glisse depuis la droite ; au retour, le mouvement s'inverse. L'en-tête reste en place. Seulement
+   sous 900 px ; les navigateurs sans @view-transition naviguent comme avant. */
+@media (width < 900px) and (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+
+  .entete {
+    view-transition-name: entete;
+  }
+
+  :root[data-vt-historique] {
+    scroll-behavior: auto;
+  }
+
+  ::view-transition-old(root) {
+    animation: page-sortie-gauche var(--duree-moyenne-4) var(--courbe-emphase-deceleree) both;
+  }
+
+  ::view-transition-new(root) {
+    animation: page-entree-droite var(--duree-moyenne-4) var(--courbe-emphase-deceleree) both;
+  }
+
+  :root:active-view-transition-type(retour)::view-transition-old(root) {
+    z-index: 1;
+    animation-name: page-sortie-droite;
+  }
+
+  :root:active-view-transition-type(retour)::view-transition-new(root) {
+    animation-name: page-entree-gauche;
+  }
+}
+
+@keyframes page-entree-droite {
+  from {
+    translate: 100% 0;
+  }
+}
+
+@keyframes page-sortie-gauche {
+  to {
+    translate: -30% 0;
+    filter: brightness(0.9);
+  }
+}
+
+@keyframes page-entree-gauche {
+  from {
+    translate: -30% 0;
+    filter: brightness(0.9);
+  }
+}
+
+@keyframes page-sortie-droite {
+  to {
+    translate: 100% 0;
+  }
+}
+
+/* Un zone qui défile contient ses textes masqués, placés en absolu : sinon ils font déborder toute la page */
+.carrousel-piste,
+.tableau,
+.boite pre {
+  position: relative;
+}
+
+/* Cible d'au moins 24 px (WCAG 2.5.8) : sur un lien en ligne, ce remplissage agrandit la zone sans déplacer le texte */
+:where(.boite a:not([class], .fil-nouvelles a)) {
+  padding-block: 3px;
+}
+
+/* Interligne des listes de carrousel : les cibles de deux lignes voisines ne se chevauchent pas */
+.carrousel-piste li li {
+  line-height: 1.55;
+}
+
+/* ---- Lien externe, sur tout le site (lib/liens-externes) : flèche diagonale ---- */
+.lien-externe::before {
+  content: '';
+  display: inline-block;
+  width: 0.75em;
+  height: 0.75em;
+  margin-inline-start: 0.25em;
+  background: currentColor;
+  mask: var(--fleche-externe) center / contain no-repeat;
+}
+
+/* Lien externe qui porte sa propre flèche : elle passe en diagonale, comme les autres */
+:is(.question, .frame, .frame-bleu, .sift-link, .tuile-wrapper > .texte > .frame-light, .tuile-photo)[target='_blank'] {
+  &::after,
+  & .bouton-texte::after {
+    mask-image: var(--fleche-externe);
+  }
+
+  /* Elle avance dans son sens : vers le haut à droite */
+  &:focus-visible::after,
+  &:focus-visible .bouton-texte::after {
+    transform: translate(3px, -3px);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::after,
+    &:hover .bouton-texte::after {
+      transform: translate(3px, -3px);
+    }
+  }
+}
+
+/* Les cartes portent déjà leur pastille fléchée */
+:is(.question, .frame, .frame-light, .frame-bleu, .sift-link, .tuile-photo, footer, .vignette, .profil) .lien-externe::before {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .lien-externe::before {
+    forced-color-adjust: none;
+    background: LinkText;
+  }
+}
+
+/* ---- Bases de données de A à Z ---- */
+.bouton-lien {
+  min-height: var(--taille-cible);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--couleur-lien);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.bouton-lien[hidden] {
+  display: none;
+}
+
+.filtres-bases {
+  display: grid;
+  gap: var(--espace-2);
+  margin-block-start: var(--espace-3);
+  padding: var(--espace-2) var(--espace-3);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-surface);
+}
+
+.filtres-bases[hidden] {
+  display: none;
+}
+
+.filtres-bases label {
+  display: block;
+  margin-block-end: 0.25rem;
+  font-size: 0.875rem;
+  font-weight: var(--graisse-moyenne);
+}
+
+.filtres-bases :is(input, select) {
+  box-sizing: border-box;
+  width: 100%;
+  min-height: var(--taille-cible);
+  padding-inline: 0.75rem;
+  border: 1px solid var(--couleur-texte-secondaire);
+  border-radius: var(--rayon-tres-petit);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font: inherit;
+}
+
+.filtres-choix {
+  display: grid;
+  gap: var(--espace-2);
+}
+
+/* Recherche et menus côte à côte : quatre sur grand écran, deux et deux ensuite ; sur téléphone, les menus se replient */
+@media (width >= 700px) {
+  .filtres-bases {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: end;
+  }
+
+  .filtres-choix {
+    display: contents;
+  }
+}
+
+@media (width >= 1000px) {
+  .filtres-bases {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.filtres-bouton {
+  display: none;
+  justify-self: start;
+  min-height: var(--taille-cible);
+  padding-inline: var(--espace-2);
+  border: 1px solid var(--couleur-texte-secondaire);
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font: inherit;
+  font-weight: var(--graisse-moyenne);
+  cursor: pointer;
+}
+
+@media (width < 700px) {
+  .filtres-bouton {
+    display: block;
+  }
+
+  .filtres-choix:not([data-ouvert]) {
+    display: none;
+  }
+}
+
+.bases-alphabet {
+  margin-block-start: var(--espace-3);
+  background: var(--couleur-fond);
+}
+
+.bases-alphabet ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.125rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bases-alphabet a {
+  display: grid;
+  place-items: center;
+  min-width: 2rem;
+  min-height: var(--taille-cible);
+  padding-inline: 0.25rem;
+  border-radius: var(--rayon-tres-petit);
+  font-weight: var(--graisse-moyenne);
+  text-decoration: none;
+}
+
+.bases-alphabet a[href]:hover {
+  background: var(--couleur-teinte);
+}
+
+.bases-alphabet a[aria-current],
+.bases-alphabet a[aria-current]:hover {
+  background: var(--couleur-fond-fort);
+  color: var(--couleur-sur-fonce);
+}
+
+.bases-alphabet a:not([href]) {
+  color: var(--couleur-texte-secondaire);
+  font-weight: var(--graisse-normale);
+}
+
+/* L'alphabet suit le défilement sur grand écran seulement : sur téléphone, il prendrait trop de hauteur */
+@media (width >= 1200px) and (min-height: 550px) {
+  html:has(.bases-alphabet) {
+    scroll-padding-top: calc(var(--hauteur-entete) + 3.5rem);
+  }
+
+  .bases-alphabet {
+    position: sticky;
+    /* Glisse sous l'en-tête : sa hauteur réelle varie d'un pixel selon l'arrondi, aucun jour ne doit paraître */
+    top: calc(var(--hauteur-entete) - 2px);
+    z-index: 5;
+    padding-block: 0.25rem;
+    border-block-end: 1px solid var(--couleur-bordure);
+  }
+
+  .bases-alphabet li {
+    flex: 1;
+  }
+
+  .bases-groupe {
+    scroll-margin-top: 0;
+  }
+}
+
+.bases-grille {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--espace-3);
+  margin-block-start: var(--espace-2);
+}
+
+.bases-resultat {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--espace-1) var(--espace-2);
+}
+
+.bases-compte {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: var(--graisse-forte);
+  line-height: 1.25;
+}
+
+.bases-actifs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bases-actifs:empty {
+  display: none;
+}
+
+.bases-actifs li {
+  max-inline-size: none;
+}
+
+.bases-actifs button {
+  min-height: 2rem;
+  padding: 0.125rem 0.75rem;
+  border: 1px solid var(--couleur-texte-secondaire);
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-teinte);
+  color: var(--couleur-texte);
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+}
+
+.bases-actifs button:hover {
+  background: var(--couleur-teinte-forte);
+}
+
+.bases-laterale h2 {
+  margin-block: var(--espace-3) var(--espace-1);
+  padding-block-end: 0.25rem;
+  border-block-end: 1px solid var(--couleur-bordure);
+  font-size: 1.5rem;
+}
+
+.bases-laterale p {
+  margin-block: 0 var(--espace-1);
+}
+
+.bases-legende {
+  width: auto;
+  max-inline-size: none;
+}
+
+.bases-laterale .liste-ressources {
+  margin: 0;
+}
+
+/* Sur une colonne, les nouveautés passent avant la liste : réduites aux noms, et retirées pendant un filtrage */
+@media (width < 1000px) {
+  .bases-grille[data-filtre] .bases-laterale {
+    display: none;
+  }
+
+  .bases-laterale .liste-ressources :is(.ressource-description, small, details) {
+    display: none;
+  }
+}
+
+@media (width >= 1000px) {
+  .bases-grille {
+    grid-template-columns: minmax(0, 1fr) 20rem;
+    grid-template-rows: auto 1fr;
+    column-gap: var(--espace-6);
+  }
+
+  .bases-laterale {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+
+  .bases-laterale .ressource-description {
+    font-size: 0.875rem;
+  }
+}
+
+/* Les groupes hors de l'écran ne sont ni mis en page ni peints : la liste compte près de 700 fiches */
+.bases-groupe {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 60rem;
+}
+
+.bases-groupe + .bases-groupe,
+.bases-vedettes + .bases-trouvees,
+.bases-vedettes ~ .bases-groupe {
+  margin-block-start: var(--espace-3);
+}
+
+:is(.bases-groupe, .bases-vedettes) h2 {
+  margin-block: 0 var(--espace-1);
+  padding-block-end: 0.25rem;
+  border-block-end: 1px solid var(--couleur-bordure);
+  font-size: 1.75rem;
+}
+
+.bases-vedettes h2 {
+  font-size: 1.5rem;
+}
+
+:is(.bases-groupe, .bases-vedettes, .bases-trouvees) .liste-ressources {
+  margin: 0;
+}
+
+.bases-liste .liste-ressources > li,
+.bases-laterale .liste-ressources > li {
+  padding-block: 0.75rem;
+  border-block-end: 1px solid var(--couleur-bordure);
+}
+
+.bases-liste .liste-ressources > li:last-child,
+.bases-laterale .liste-ressources > li:last-child {
+  border-block-end: 0;
+}
+
+.bases-vide ul {
+  padding-inline-start: var(--espace-3);
+}
+
+.base-titre {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.125rem 0.625rem;
+}
+
+.base-nom {
+  font-weight: var(--graisse-forte);
+}
+
+.base-pastille {
+  padding: 0.0625rem 0.5rem;
+  border-radius: var(--rayon-tres-petit);
+  background: var(--vert-fonce);
+  color: var(--couleur-sur-fonce);
+  font-size: 0.75rem;
+  font-weight: var(--graisse-forte);
+  white-space: nowrap;
+}
+
+.base-acces {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.8125rem;
+}
+
+.base-acces img {
+  flex: none;
+}
+
+.bases-laterale p.base-acces {
+  color: inherit;
+  font-size: inherit;
+}
+
+.liste-ressources small.base-fournisseur {
+  margin-block-start: 0.125rem;
+  font-size: 0.8125rem;
+}
+
+/* Suggestions, comme dans bibweb : source, flèche, titre ; le titre passe sous la source si la ligne manque de place */
+.recherche-guides li[role='option']:has(.option-source) {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.125rem var(--espace-1);
+}
+
+.option-source {
+  flex-shrink: 0;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.875rem;
+  font-weight: var(--graisse-forte);
+}
+
+.option-fleche {
+  flex-shrink: 0;
+  color: var(--couleur-texte-secondaire);
+}
+
+.option-titre {
+  flex: 1 1 10rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+/* Intitulé plus long que le champ sur téléphone : le bouton se réduit à sa loupe, un seul pictogramme */
+.recherche-guides input:placeholder-shown {
+  text-overflow: ellipsis;
+}
+
+.recherche-guides:not(.recherche-portee) button svg {
+  display: none;
+}
+
+@media (width < 600px) {
+  .recherche-guides:not(.recherche-portee) > svg {
+    display: none;
+  }
+
+  .recherche-guides:not(.recherche-portee) button {
+    display: grid;
+    place-items: center;
+    min-width: 2.75rem;
+    padding-inline: 0;
+  }
+
+  .recherche-guides:not(.recherche-portee) button svg {
+    display: block;
+  }
+
+  .recherche-guides:not(.recherche-portee) button span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* ---- Page de résultats (comme bibweb : pages/resultats.astro) ---- */
+.resultats .recherche-guides {
+  max-width: 48rem;
+  margin-block-start: var(--espace-3);
+  margin-inline: 0;
+}
+
+.resultats-sofia {
+  width: auto;
+  max-width: 48rem;
+  margin-block: var(--espace-3) 0;
+}
+
+.resultats-sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-1);
+  min-width: 0;
+  margin: var(--espace-3) 0 var(--espace-2);
+  padding: 0;
+  border: 0;
+}
+
+.resultats-sources[hidden] {
+  display: none;
+}
+
+.resultats-source {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: var(--taille-cible);
+  padding: 0.375rem 1rem;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-surface);
+  color: var(--couleur-texte);
+  font-size: 0.9375rem;
+  font-weight: var(--graisse-moyenne);
+  cursor: pointer;
+}
+
+/* Le bouton radio couvre la pastille : clavier et lecteurs d'écran natifs */
+.resultats-source input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.resultats-source:hover {
+  background: var(--couleur-teinte);
+}
+
+.resultats-source:has(input:checked) {
+  border-color: var(--couleur-fond-fort);
+  background: var(--couleur-fond-fort);
+  color: var(--couleur-sur-fonce);
+}
+
+.resultats-source:has(input:focus-visible) {
+  outline: 3px solid var(--couleur-focus);
+  outline-offset: 2px;
+}
+
+.resultats-compte {
+  padding: 0 0.5rem;
+  border-radius: var(--rayon-plein);
+  background: color-mix(in srgb, currentColor 12%, transparent);
+  font-size: 0.8125rem;
+}
+
+.resultats-compte:empty {
+  display: none;
+}
+
+.resultats-etat {
+  margin: var(--espace-3) 0 var(--espace-1);
+  color: var(--couleur-texte-secondaire);
+}
+
+.resultats-sources:not([hidden]) + .resultats-etat {
+  margin-block-start: 0;
+}
+
+.resultats-liste {
+  max-width: 48rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.resultats-liste li {
+  max-inline-size: none;
+}
+
+.resultats-liste li + li {
+  border-block-start: 1px solid var(--couleur-bordure);
+}
+
+.resultat {
+  display: block;
+  padding-block: var(--espace-2);
+  color: var(--couleur-accent);
+  text-decoration: none;
+}
+
+.resultat-ligne {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--espace-1);
+}
+
+.resultat-titre {
+  min-width: 0;
+  font-size: 1.0625rem;
+  font-weight: var(--graisse-forte);
+  overflow-wrap: anywhere;
+}
+
+.resultat:hover .resultat-titre {
+  text-decoration: underline;
+}
+
+.resultat-extrait {
+  display: block;
+  margin-block-start: 0.25rem;
+  color: var(--couleur-texte-secondaire);
+  font-size: 0.9375rem;
+}
+
+.resultats-plus {
+  min-height: var(--taille-cible);
+  margin-block-start: var(--espace-2);
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--couleur-accent);
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-surface);
+  color: var(--couleur-accent);
+  font: inherit;
+  font-weight: var(--graisse-forte);
+  cursor: pointer;
+}
+
+.resultats-plus[hidden] {
+  display: none;
+}
+
+.resultats-plus:hover {
+  background: var(--couleur-teinte);
+}
+
+@media (forced-colors: active) {
+  .resultats-source:has(input:checked) {
+    border: 2px solid SelectedItem;
+  }
+}

@@ -1,0 +1,178 @@
+---
+/*
+ * Bouton « Retour en haut de la page », repris de bibweb (coquille/RetourHaut),
+ * en orange. Il apparaît après un écran et demi de défilement ; masqué, il sort
+ * de l'ordre de tabulation. Sans JS, il reste masqué. Au clic, le focus revient
+ * au début du document : le Tab suivant atteint le lien d'évitement (WCAG 2.4.3).
+ * Contraste du pictogramme blanc sur l'orange : 3,45:1 (WCAG 1.4.11 demande 3:1).
+ * Infobulle au survol et au focus, qu'Échap ferme (WCAG 1.4.13).
+ */
+import { ArrowUpIcon } from '@phosphor-icons/react/dist/ssr/ArrowUp'
+---
+
+<button type="button" class="retour-haut" data-retour-haut aria-label="Retour en haut de la page">
+  <ArrowUpIcon size={24} weight="bold" aria-hidden="true" />
+</button>
+
+<script>
+  const bouton = document.querySelector<HTMLButtonElement>('[data-retour-haut]')!
+  let enAttente = false
+  const mettreAJour = () => {
+    enAttente = false
+    bouton.toggleAttribute('data-visible', scrollY > innerHeight * 1.5)
+  }
+  addEventListener(
+    'scroll',
+    () => {
+      if (enAttente) return
+      enAttente = true
+      requestAnimationFrame(mettreAJour)
+    },
+    { passive: true },
+  )
+  addEventListener('resize', mettreAJour, { passive: true })
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && bouton.matches(':hover, :focus-visible')) bouton.setAttribute('data-infobulle-fermee', '')
+  })
+  for (const evenement of ['pointerleave', 'blur']) bouton.addEventListener(evenement, () => bouton.removeAttribute('data-infobulle-fermee'))
+  mettreAJour()
+
+  bouton.addEventListener('click', () => {
+    scrollTo({ top: 0 })
+    // Point de départ de la navigation au clavier : le haut du document
+    const corps = document.body
+    corps.setAttribute('tabindex', '-1')
+    corps.style.outline = 'none'
+    corps.focus({ preventScroll: true })
+    corps.addEventListener(
+      'blur',
+      () => {
+        corps.removeAttribute('tabindex')
+        corps.style.removeProperty('outline')
+      },
+      { once: true },
+    )
+  })
+</script>
+
+<style>
+  .retour-haut {
+    position: fixed;
+    z-index: var(--z-entete);
+    right: 1rem;
+    bottom: 1rem;
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background-color: var(--rouge-orange);
+    box-shadow: var(--ombre-2);
+    color: var(--couleur-sur-fonce);
+    cursor: pointer;
+    visibility: hidden;
+    opacity: 0;
+    translate: 0 0.75rem;
+    transition:
+      opacity var(--duree-courte-4) var(--courbe-standard-acceleree),
+      translate var(--duree-courte-4) var(--courbe-standard-acceleree),
+      visibility 0s linear var(--duree-courte-4),
+      background-color var(--duree-courte-4) var(--courbe-standard);
+  }
+
+  .retour-haut[data-visible] {
+    visibility: visible;
+    opacity: 1;
+    translate: 0 0;
+    transition:
+      opacity var(--duree-moyenne-1) var(--courbe-standard-deceleree),
+      translate var(--duree-moyenne-1) var(--courbe-standard-deceleree),
+      visibility 0s,
+      background-color var(--duree-courte-4) var(--courbe-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .retour-haut:hover {
+      background-color: var(--rouge-orange-texte-sur-clair);
+    }
+  }
+
+  /* Infobulle : le nom est déjà porté par aria-label, d'où le texte de remplacement vide ; ::before relie la bulle au bouton pour le pointeur */
+  .retour-haut::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 100%;
+    bottom: 0;
+    width: 8px;
+  }
+
+  .retour-haut::after {
+    content: 'Retour en haut' / '';
+    position: absolute;
+    top: 50%;
+    right: calc(100% + 8px);
+    padding: 0.25rem 0.625rem;
+    border-radius: var(--rayon-tres-petit);
+    background: var(--bleu-fonce);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--couleur-surface) 35%, transparent);
+    color: var(--couleur-sur-fonce);
+    font-size: 0.875rem;
+    font-weight: var(--graisse-moyenne);
+    line-height: 1.4;
+    white-space: nowrap;
+    translate: 0 -50%;
+    visibility: hidden;
+    opacity: 0;
+    transition:
+      opacity var(--duree-courte-4) var(--courbe-standard),
+      visibility 0s linear var(--duree-courte-4);
+  }
+
+  .retour-haut[data-visible]:hover:not([data-infobulle-fermee])::after,
+  .retour-haut[data-visible]:focus-visible:not([data-infobulle-fermee])::after {
+    visibility: visible;
+    opacity: 1;
+    transition:
+      opacity var(--duree-courte-4) var(--courbe-standard) 80ms,
+      visibility 0s linear 80ms;
+  }
+
+  .retour-haut[data-visible]:focus-visible:not([data-infobulle-fermee])::after {
+    transition: none;
+  }
+
+  .retour-haut:focus-visible {
+    outline: 3px solid var(--bleu-fonce);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--couleur-surface);
+  }
+
+  .retour-haut :global(svg) {
+    display: block;
+  }
+
+  @media (min-width: 900px) {
+    .retour-haut {
+      right: 1.5rem;
+      bottom: 1.5rem;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .retour-haut {
+      border: 2px solid ButtonText;
+      background-color: ButtonFace;
+      color: ButtonText;
+    }
+  }
+
+  @media print {
+    .retour-haut {
+      display: none;
+    }
+  }
+</style>

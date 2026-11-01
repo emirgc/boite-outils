@@ -1,0 +1,163 @@
+---
+/*
+ * Page 404, reprise de bibweb (pages/404.astro) : les causes probables, la
+ * recherche préremplie avec les mots de l'adresse demandée, les pages les plus
+ * demandées et un lien pour signaler le lien brisé. Liens et recherche sont
+ * ceux de la boîte à outils.
+ */
+import RechercheGuides from '@/components/RechercheGuides.astro'
+import Base from '@/layouts/Base.astro'
+
+const LIENS = [
+  { libelle: 'Ressources par discipline', href: '/disciplines/' },
+  { libelle: 'Citer ses sources', href: '/citer/' },
+  { libelle: 'Bases de données A à Z', href: '/bases-de-donnees/' },
+  { libelle: 'Rechercher dans Sofia', href: 'https://umontreal.on.worldcat.org/discovery?lang=fr' },
+]
+---
+
+<Base titre="Page non trouvée | Boîte à outils | Les bibliothèques UdeM" sansRetroaction>
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="contenu-principal" class="page-404" tabindex="-1">
+    <img src="/images/404/im-um-404.webp" alt="Erreur 404" class="illustration" />
+    <h1>Désolés... nous n'avons pas trouvé ce que vous demandez.</h1>
+    <p class="causes">L'adresse est peut-être mal tapée, ou la page a été déplacée ou supprimée.</p>
+
+    <div class="champ-404" data-recherche-404>
+      <RechercheGuides id="recherche-404" />
+    </div>
+
+    <h2 class="sous-titre">Ces pages peuvent vous aider</h2>
+    <ul class="liens">
+      {
+        LIENS.map(({ libelle, href }) => (
+          <li>
+            <a href={href}>{libelle}</a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <p class="signaler">
+      Ce lien brisé vient de notre site? <a href="https://bib.umontreal.ca/nous-joindre/nous-ecrire/">Signalez-le-nous</a>.
+    </p>
+
+    <a class="retour" href="/">Retour à la page d'accueil</a>
+  </main>
+</Base>
+
+<script>
+  // Mots de l'adresse demandée dans le champ : /droit-civil/ → « droit civil ». Rien pour les extensions et les chiffres seuls.
+  const champ = document.querySelector<HTMLInputElement>('[data-recherche-404] input[type=search]')
+  if (champ) {
+    let chemin = location.pathname
+    try {
+      chemin = decodeURIComponent(chemin)
+    } catch {
+      // adresse mal encodée : on garde le texte brut
+    }
+    const mots = chemin
+      .replace(/\.[a-z0-9]+$/i, '')
+      .split(/[/\-_.+]+/)
+      .filter((mot) => mot && !/^\d+$/.test(mot))
+      .join(' ')
+    if (mots) champ.value = mots
+  }
+</script>
+
+<style>
+  .page-404 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 32px 16px 48px;
+    text-align: center;
+  }
+
+  .page-404:focus {
+    outline: none;
+  }
+
+  .illustration {
+    width: min(60vw, 300px);
+    height: auto;
+    margin-bottom: 24px;
+  }
+
+  /* max-width et coupure : un mot de 2rem tient dans 320 px même avec le texte agrandi */
+  h1 {
+    max-width: 40rem;
+    margin: 0 0 16px;
+    color: var(--couleur-texte);
+    font-size: 2rem;
+    overflow-wrap: anywhere;
+  }
+
+  .causes {
+    max-width: 36rem;
+    margin: 0 0 32px;
+  }
+
+  /* Un champ de recherche centré se lit mal */
+  .champ-404 {
+    width: min(100%, 36rem);
+    text-align: start;
+  }
+
+  .sous-titre {
+    margin: 40px 0 12px;
+    font-size: 1.25rem;
+  }
+
+  .liens {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px 24px;
+    margin: 0 0 32px;
+    padding: 0;
+    list-style: none;
+  }
+
+  .liens a {
+    display: inline-block;
+    padding-block: 6px;
+  }
+
+  .signaler {
+    max-width: 36rem;
+    margin: 0 0 32px;
+    color: var(--couleur-texte-secondaire);
+    font-size: 0.9375rem;
+  }
+
+  .retour {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--taille-cible);
+    padding: 0.5rem 1.25rem;
+    border: 1px solid var(--couleur-accent);
+    border-radius: var(--rayon-plein);
+    color: var(--couleur-accent);
+    font-weight: var(--graisse-forte);
+    text-decoration: none;
+  }
+
+  .retour:hover {
+    background: var(--couleur-teinte);
+  }
+
+  @media (min-width: 900px) {
+    .page-404 {
+      padding-block: 64px 96px;
+    }
+
+    h1 {
+      font-size: 2.75rem;
+    }
+
+    .causes {
+      font-size: 1.125rem;
+    }
+  }
+</style>

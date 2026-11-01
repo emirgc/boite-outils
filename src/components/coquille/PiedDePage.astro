@@ -1,0 +1,658 @@
+---
+/*
+ * Pied de page repris tel quel de bibweb (coquille/PiedDePage.astro), avec ses
+ * liens internes rendus absolus.
+ *
+ * - Titre centré en Figtree, puis deux colonnes de liens séparées par un
+ *   filet (« Besoin d'aide? », « Sites connexes ») et le sceau des
+ *   bibliothèques à droite, derrière un filet lui aussi. Sous 900 px : tout
+ *   est centré et empilé, le sceau en dernier.
+ * - « Besoin d'aide? » : liens à pictogramme, puis l'urgence, puis YouTube et
+ *   Instagram (à gauche, sous les liens). « Sites connexes » : une pastille de
+ *   la couleur de chaque service devant son nom, comme dans studio·bib.
+ * - Barre du bas, bleue, sur une ligne dès 900 px : droits et licence à
+ *   gauche, liens légaux et « Paramètres des témoins » à droite. Sous 900 px,
+ *   droits et licence empilés, puis les liens à la suite sur une ou deux
+ *   lignes.
+ * - Sous 900 px, le pied reste court : « Besoin d'aide? » (urgence et
+ *   réseaux compris) reste ouvert ; « Sites connexes » devient un volet
+ *   replié (motif Disclosure de l'APG : le h3 porte
+ *   un bouton aria-expanded qui montre ou cache sa liste). Le bouton n'est
+ *   ajouté que par le script, sous 900 px : sans JS ou sur grand écran, les
+ *   listes sont visibles et les titres restent de simples titres.
+ *
+ * Corrections par rapport à la source :
+ * - icônes YouTube et Instagram nommées (elles n'avaient aucun texte) ;
+ * - le titre est un h2 et ceux des colonnes des h3 (un h4 sautait des niveaux) ;
+ * - le sceau, lien vers l'accueil, garde un nom accessible par son alt ;
+ * - les pastilles de couleur sont décoratives (aria-hidden) : le nom du
+ *   service porte le sens.
+ */
+import { CaretDownIcon } from '@phosphor-icons/react/dist/ssr/CaretDown'
+import { SirenIcon } from '@phosphor-icons/react/dist/ssr/Siren'
+import { COLONNES_PIED, LIENS_QUEUE_PIED, RESEAUX_PIED, URGENCE } from '@/data/navigation'
+import Licence from './pied/Licence.astro'
+import RetourHaut from './RetourHaut.astro'
+---
+
+{/* theme-clair : déjà foncé, le pied garde ses couleurs dans les deux thèmes */}
+<footer class="pied theme-clair">
+  <RetourHaut />
+  <div class="local">
+    <div class="interieur">
+      <div class="signature">
+        <a class="signature-sceau" href="https://bib.umontreal.ca/">
+          <img src="/images/logo-bib/logo-bib-sceau-bleu.svg" alt="Les bibliothèques, Université de Montréal – Accueil" width="302" height="302" loading="lazy" decoding="async" />
+        </a>
+        <h2 class="titre">Les bibliothèques de l'Université de Montréal</h2>
+      </div>
+
+      <div class="colonnes">
+        {
+          COLONNES_PIED.map(({ titre, liens }, i) => (
+            <div class="colonne" data-pliable-pied={i > 0 ? '' : undefined}>
+              <h3 class="sous-titre">{titre}</h3>
+              <ul class:list={['liste', { 'liste-sites': liens.some((l) => l.fonction) }]} id={`pied-liste-${i}`}>
+                {liens.map(({ libelle, href, rel, Icone, point, fonction }) => (
+                  <li>
+                    <a href={href} rel={rel}>
+                      {Icone && <Icone size={18} aria-hidden="true" />}
+                      {point && <span class="point" style={`--point: ${point}`} aria-hidden="true" />}
+                      {fonction ? (
+                        <span>
+                          {libelle}
+                          <span class="fonction">{fonction}</span>
+                        </span>
+                      ) : (
+                        libelle
+                      )}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              {i === 0 && (
+                <Fragment>
+                  <p class="urgence">
+                    <a href={URGENCE.href}>
+                      <span class="sirene">
+                        <SirenIcon size={18} aria-hidden="true" />
+                      </span>
+                      {URGENCE.libelle}
+                    </a>
+                  </p>
+                  <ul class="reseaux">
+                    {RESEAUX_PIED.map(({ libelle, href, Icone }) => (
+                      <li>
+                        <a href={href} aria-label={libelle}>
+                          <Icone size={24} aria-hidden="true" />
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </Fragment>
+              )}
+            </div>
+          ))
+        }
+
+        <template data-chevron-pied>
+          {/* className : icône React, `class` n'atteindrait pas le svg (ni la
+              rotation ni le retrait au retour sur grand écran ne le trouvaient) */}
+          <CaretDownIcon className="chevron" size={18} weight="bold" aria-hidden="true" />
+        </template>
+
+        <div class="colonne colonne-logo">
+          <a href="https://bib.umontreal.ca/">
+            <img src="/images/logo-bib/logo-bib-sceau-bleu.svg" alt="Les bibliothèques, Université de Montréal – Accueil" width="302" height="302" loading="lazy" decoding="async" />
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="queue">
+    <div class="interieur rangee-queue">
+      <div class="groupe-queue">
+        <Licence />
+      </div>
+      <div class="groupe-queue liens-queue">
+        {LIENS_QUEUE_PIED.map(({ libelle, href }) => <a href={href}>{libelle}</a>)}
+        <button type="button" class="parametres-temoins" data-parametres-temoins>Paramètres des témoins</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Volets repliables sous 900 px (voir l'en-tête du composant)
+  const etroit = window.matchMedia('(width < 900px)')
+  const chevron = document.querySelector<HTMLTemplateElement>('[data-chevron-pied]')
+
+  function preparerVolets() {
+    for (const colonne of document.querySelectorAll<HTMLElement>('[data-pliable-pied]')) {
+      const titre = colonne.querySelector('.sous-titre')!
+      const liste = colonne.querySelector<HTMLElement>('.liste')!
+      const bouton = titre.querySelector('button')
+      if (etroit.matches && !bouton) {
+        const nouveau = document.createElement('button')
+        nouveau.type = 'button'
+        nouveau.className = 'bascule'
+        nouveau.setAttribute('aria-expanded', 'false')
+        nouveau.setAttribute('aria-controls', liste.id)
+        nouveau.append(...titre.childNodes)
+        if (chevron) nouveau.append(chevron.content.cloneNode(true))
+        nouveau.addEventListener('click', () => {
+          const ouvert = nouveau.getAttribute('aria-expanded') !== 'true'
+          nouveau.setAttribute('aria-expanded', String(ouvert))
+          // L'ouverture s'anime après un clic seulement, jamais au chargement
+          liste.dataset.anime = ''
+          liste.hidden = !ouvert
+        })
+        titre.append(nouveau)
+        liste.hidden = true
+      } else if (!etroit.matches && bouton) {
+        bouton.querySelector('.chevron')?.remove()
+        titre.replaceChildren(...bouton.childNodes)
+        delete liste.dataset.anime
+        liste.hidden = false
+      }
+    }
+  }
+  preparerVolets()
+  etroit.addEventListener('change', preparerVolets)
+
+  document.querySelector('[data-parametres-temoins]')?.addEventListener('click', (e) => {
+    e.preventDefault()
+    window.dispatchEvent(new Event('bib:parametres-temoins'))
+  })
+</script>
+
+<style>
+  .pied {
+    font-size: 1rem;
+  }
+
+  .interieur {
+    width: 100%;
+    max-width: var(--largeur-max);
+    margin-inline: auto;
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  a,
+  button {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  a:hover,
+  button:hover {
+    color: inherit;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  /* Le bleu du focus global se perd sur les fonds bleus du pied de page
+     (:global : les boutons des volets sont créés par le script, sans
+     l'attribut de portée d'Astro) */
+  .pied :global(:focus-visible) {
+    outline-color: var(--couleur-surface);
+  }
+
+  /* ---- Partie locale ---- */
+  .local {
+    padding: 32px 24px 24px;
+    background-color: var(--bleu-fonce);
+    color: var(--couleur-sur-fonce);
+  }
+
+  .titre {
+    margin: 0 0 24px;
+    font-family: var(--police-sans);
+    font-size: 1.25rem;
+    font-weight: var(--graisse-forte);
+    line-height: 1.3;
+    text-align: center;
+  }
+
+  .colonnes {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 32px;
+  }
+
+  .colonne {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+  }
+
+  .sous-titre {
+    margin: 0 0 12px;
+    font-family: var(--police-sans);
+    font-size: 1rem;
+    font-weight: var(--graisse-forte);
+    line-height: 1.3;
+  }
+
+  .liste {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Liens resserrés : 36 px de haut, au-dessus des 24 px de WCAG 2.5.8 */
+  .colonne a {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 36px;
+    font-size: 0.875rem;
+    font-weight: var(--graisse-normale);
+    line-height: 1.4;
+  }
+
+  .colonne :global(svg) {
+    flex-shrink: 0;
+  }
+
+  /* Sites connexes : des tuiles, chacune avec sa pastille, son nom et ce que
+     fait le site ; une par ligne, deux dès 1200 px (plus bas) */
+  .liste-sites {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    width: 100%;
+  }
+
+  .liste-sites a {
+    align-items: flex-start;
+    width: 100%;
+    height: 100%;
+    padding: 10px 12px;
+    box-sizing: border-box;
+    border-radius: var(--rayon-petit);
+    background-color: color-mix(in srgb, var(--couleur-surface) 7%, transparent);
+    font-weight: var(--graisse-moyenne);
+    text-decoration: none;
+    transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  }
+
+  /* La tuile qui s'éclaircit suffit à signaler le survol : pas de soulignement */
+  .liste-sites a:hover {
+    text-decoration: none;
+  }
+
+  .liste-sites .point {
+    margin-top: 0.3em;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .liste-sites a:hover {
+      background-color: color-mix(in srgb, var(--couleur-surface) 14%, transparent);
+    }
+  }
+
+  .fonction {
+    display: block;
+    color: color-mix(in srgb, currentColor 78%, transparent);
+    margin-top: 2px;
+    font-size: 0.8125rem;
+    font-weight: var(--graisse-normale);
+    line-height: 1.3;
+  }
+
+  /* Pastille de la couleur du service ; un liseré clair la garde visible sur
+     le bleu foncé, même pour les teintes sombres (Papyrus) */
+  .point {
+    flex-shrink: 0;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-radius: 50%;
+    background-color: var(--point);
+    box-shadow: 0 0 0 1px color-mix(in srgb, var(--couleur-surface) 45%, transparent);
+  }
+
+  .urgence {
+    margin: 12px 0 0;
+  }
+
+  .sirene {
+    display: inline-flex;
+    color: var(--rouge-orange);
+  }
+
+  /* YouTube et Instagram, sous les liens de la première colonne */
+  .reseaux {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  /* Cibles de 40 px autour des icônes sociales (WCAG 2.5.8 demande 24 px) */
+  .reseaux a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    min-height: 40px;
+    border-radius: 50%;
+    transition: background-color var(--duree-courte-4) var(--courbe-standard);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .reseaux a:hover {
+      background-color: color-mix(in srgb, var(--couleur-surface) 14%, transparent);
+      text-decoration: none;
+    }
+  }
+
+  .colonne-logo {
+    order: 5;
+  }
+
+  .colonne-logo img {
+    display: block;
+    width: 120px;
+    max-width: 100%;
+    height: auto;
+  }
+
+  /* Téléphone : le sceau et le titre signent le pied en tête, puis tout
+     s'aligne à gauche dessous : « Besoin d'aide? » sur toute la largeur,
+     « Sites connexes » dessous. Le sceau des grands
+     écrans (dans les colonnes) est masqué : un seul est rendu visible, et
+     display: none le retire aussi de l'arbre d'accessibilité. */
+  .signature-sceau {
+    flex-shrink: 0;
+  }
+
+  .signature-sceau img {
+    display: block;
+    width: 72px;
+    height: auto;
+  }
+
+  @media (width < 900px) {
+    /* Le titre passe sous le sceau s'il ne tient plus à côté (texte
+       agrandi à 200 % sur 320 px, WCAG 1.4.4 et 1.4.10) */
+    .signature {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .signature .titre {
+      flex: 1 1 10rem;
+      min-width: 0;
+      margin: 0;
+      overflow-wrap: break-word;
+      text-align: left;
+    }
+
+    /* « Besoin d'aide? » ouvert, puis le volet « Sites connexes » entre
+       deux filets */
+    .colonnes {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+    }
+
+    .colonne:first-child {
+      margin-bottom: 24px;
+    }
+
+    .colonne[data-pliable-pied] {
+      align-items: stretch;
+      border-top: 1px solid color-mix(in srgb, var(--couleur-surface) 25%, transparent);
+    }
+
+    [data-pliable-pied]:last-of-type {
+      border-bottom: 1px solid color-mix(in srgb, var(--couleur-surface) 25%, transparent);
+    }
+
+    [data-pliable-pied] .sous-titre {
+      margin: 0;
+    }
+
+    /* Tout le titre est la cible (48 px de haut, WCAG 2.5.8) */
+    .sous-titre :global(.bascule) {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      width: 100%;
+      min-height: 3rem;
+      padding: 0;
+      border: 0;
+      background: none;
+      color: inherit;
+      font: inherit;
+      text-align: start;
+      cursor: pointer;
+    }
+
+    .sous-titre :global(.chevron) {
+      flex-shrink: 0;
+      transition: rotate var(--duree-courte-4) var(--courbe-standard);
+    }
+
+    .sous-titre :global([aria-expanded='true'] .chevron) {
+      rotate: 180deg;
+    }
+
+    [data-pliable-pied] .liste {
+      padding-bottom: 16px;
+    }
+
+    /* display: flex de .liste l'emporterait sur l'attribut hidden */
+    [data-pliable-pied] .liste[hidden] {
+      display: none;
+    }
+
+    /* Ouverture en hauteur, comme les accordéons du contenu ; display en
+       allow-discrete : la liste reste visible jusqu'à la fin de la fermeture */
+    @supports (interpolate-size: allow-keywords) {
+      [data-pliable-pied] .liste[data-anime] {
+        interpolate-size: allow-keywords;
+        overflow-y: clip;
+        transition:
+          block-size var(--duree-moyenne-1) var(--courbe-emphase),
+          padding-bottom var(--duree-moyenne-1) var(--courbe-emphase),
+          opacity var(--duree-moyenne-1) var(--courbe-emphase),
+          display var(--duree-moyenne-1) allow-discrete;
+      }
+
+      [data-pliable-pied] .liste[data-anime][hidden] {
+        block-size: 0;
+        padding-bottom: 0;
+        opacity: 0;
+      }
+
+      @starting-style {
+        [data-pliable-pied] .liste[data-anime]:not([hidden]) {
+          block-size: 0;
+          padding-bottom: 0;
+          opacity: 0;
+        }
+      }
+    }
+
+    .colonne a {
+      overflow-wrap: anywhere;
+    }
+
+    .colonne {
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .colonne-logo {
+      display: none;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .signature-sceau {
+      display: none;
+    }
+  }
+
+  @media (min-width: 900px) {
+    .local {
+      padding-inline: 64px;
+    }
+
+    .colonnes {
+      display: grid;
+      /* Les deux colonnes extérieures de même largeur : le sceau fait
+         pendant à « Besoin d'aide? » de part et d'autre des sites */
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 0;
+    }
+
+    .colonne {
+      align-items: flex-start;
+      padding-inline: 32px;
+      text-align: left;
+    }
+
+    .colonne:first-child {
+      padding-left: 0;
+    }
+
+    /* Filet entre chaque colonne, sceau compris (~ et non + : le <template>
+       du chevron sépare la dernière colonne de liens du sceau) */
+    .colonne ~ .colonne {
+      align-self: stretch;
+      border-left: 1px solid color-mix(in srgb, var(--couleur-surface) 20%, transparent);
+    }
+
+    .colonne-logo {
+      order: 0;
+      align-items: center;
+      justify-content: center;
+      padding-right: 0;
+    }
+
+    .colonne-logo img {
+      width: 220px;
+    }
+  }
+
+  /* Deux tuiles par ligne ; la dernière, si elle est seule, prend toute la
+     largeur plutôt que de laisser une case vide */
+  @media (min-width: 1200px) {
+    .liste-sites {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .liste-sites li:last-child:nth-child(odd) {
+      grid-column: 1 / -1;
+    }
+  }
+
+  /* ---- Barre du bas ---- */
+  .queue {
+    background-color: var(--bleu-principal);
+    color: var(--couleur-sur-fonce);
+  }
+
+  /* Pas de traits entre les éléments : quand la barre passe à la ligne, un
+     trait se retrouverait seul en bout de ligne */
+  .rangee-queue,
+  .groupe-queue {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px 24px;
+  }
+
+  .rangee-queue {
+    /* Marge de chaque côté : le bouton « Retour en haut », fixé en bas à
+       droite (4,5 rem du bord sur mobile, 7 rem dès 900 px, à gauche de la
+       poignée des liens rapides), ne recouvre jamais le texte de la barre */
+    padding: 12px 4.5rem;
+    font-size: 13px;
+    line-height: 1.2;
+    letter-spacing: 0.14px;
+  }
+
+  /* Cibles de 24 px de haut au moins (WCAG 2.5.8) */
+  .groupe-queue > a,
+  .groupe-queue > :global(.licence) a,
+  .rangee-queue button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 24px;
+  }
+
+  /* Sur petit écran, « Paramètres des témoins » est une commande : cible de
+     44 px de haut (--taille-cible) sans changer son apparence. La zone déborde
+     de 10 px en haut et en bas. */
+  .rangee-queue button {
+    position: relative;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: var(--graisse-normale);
+    letter-spacing: inherit;
+    cursor: pointer;
+  }
+
+  .rangee-queue button::after {
+    content: '';
+    position: absolute;
+    inset: calc((24px - var(--taille-cible)) / 2) 0;
+  }
+
+  /* Petit écran : une colonne centrée */
+  @media (width < 900px) {
+    .rangee-queue,
+    .groupe-queue {
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    /* Les liens légaux à la suite, centrés, plutôt qu'un par ligne */
+    .liens-queue {
+      flex-direction: row;
+      gap: 4px 20px;
+    }
+
+    .rangee-queue {
+      padding-block: 16px;
+      text-align: center;
+    }
+  }
+
+  @media (min-width: 900px) {
+    /* Même marge que le bloc du dessus (64 px sur .local) : la licence
+       commence à l'aplomb de « Besoin d'aide? ». À droite, 7,5 rem du bord
+       au total, pour le bouton « Retour en haut » */
+    .queue {
+      padding-inline: 64px;
+    }
+
+    .rangee-queue {
+      justify-content: space-between;
+      padding-inline: 0 calc(7.5rem - 64px);
+    }
+
+    .rangee-queue button::after {
+      content: none;
+    }
+  }
+</style>

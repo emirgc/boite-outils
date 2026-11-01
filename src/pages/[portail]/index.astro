@@ -1,0 +1,53 @@
+---
+/*
+ * Portails de la boîte à outils (Ressources par discipline, Trouver et évaluer,
+ * Citer ses sources, Faire de la recherche, et les 12 portails disciplinaires) : des guides LibGuides d'une seule
+ * page, dont la mise en forme vient des classes de leur contenu.
+ */
+import FilAriane from '@/components/coquille/FilAriane.astro'
+import Base from '@/layouts/Base.astro'
+import { ancetres, guide, PORTAILS } from '@/lib/libguides'
+import { lienAncre } from '@/lib/nettoyage'
+
+export async function getStaticPaths() {
+  return Promise.all(
+    PORTAILS.map(async (id) => {
+      const { sections } = await guide(id)
+      return { params: { portail: sections[0].chemin.slice(1, -1) }, props: { id } }
+    }),
+  )
+}
+
+const { nom, description, sections } = await guide(Astro.props.id)
+const parents = await ancetres(Astro.props.id)
+---
+
+<Base titre={`${nom} | Boîte à outils | Les bibliothèques UdeM`} description={description} sansRetroaction>
+  <main id="contenu-principal" class="portail conteneur" tabindex="-1" data-revelation="zone">
+    <FilAriane maillons={[{ libelle: 'Site des bibliothèques', href: 'https://bib.umontreal.ca/' }, { libelle: 'La boîte à outils', href: '/' }, ...parents, { libelle: nom }]} />
+    <h1>{nom}</h1>
+    {
+      sections.flatMap((s) => s.boites).map((boite) => (
+        <section class="boite" id={`s-lg-box-${boite.id}`}>
+          {boite.ancre && <span class="ancre-boite" id={boite.ancre} />}
+          {boite.nom && <h2 id={boite.idTitre} class="titre-ancre">{boite.nom}<Fragment set:html={lienAncre(boite.idTitre!, boite.nom)} /></h2>}
+          <Fragment set:html={boite.html} />
+        </section>
+      ))
+    }
+  </main>
+  <script>
+    // Menus déroulants : un clic ailleurs ou Échap les referme
+    const menus = [...document.querySelectorAll<HTMLDetailsElement>('.menu-deroulant')]
+    document.addEventListener('click', (e) => {
+      for (const menu of menus) if (!menu.contains(e.target as Node)) menu.open = false
+    })
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Escape') return
+      const ouvert = menus.find((menu) => menu.open)
+      if (!ouvert) return
+      ouvert.open = false
+      ouvert.querySelector('summary')!.focus()
+    })
+  </script>
+</Base>

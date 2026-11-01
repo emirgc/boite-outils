@@ -1,0 +1,10 @@
+---
+/* Fil d'Ariane (motif Breadcrumb de l'APG), comme dans bibweb : le dernier maillon est la page courante. */
+const { maillons } = Astro.props as { maillons: { libelle: string; href?: string }[] }
+---
+
+<nav class="fil-ariane" aria-label="Fil d'Ariane">
+  <ol>
+    {maillons.map(({ libelle, href }) => <li>{href ? <a href={href}>{libelle}</a> : <span aria-current="page">{libelle}</span>}</li>)}
+  </ol>
+</nav>

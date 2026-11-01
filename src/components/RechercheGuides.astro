@@ -1,0 +1,218 @@
+---
+/*
+ * Recherche d'un guide ou d'une base de données : suggestions au fil de la frappe,
+ * parmi les guides publiés et la liste A à Z (motif « combobox » de l'APG). La liste (/guides.json) n'est chargée
+ * qu'au premier usage. Sans suggestion choisie, le formulaire mène à la page
+ * de résultats du site, qui cherche aussi dans le contenu des guides.
+ *
+ * Les boutons radio désignent un formulaire inexistant (attribut `form`) : ils
+ * ne partent pas avec la requête. Sans JavaScript, le sélecteur reste masqué.
+ */
+import { MagnifyingGlassIcon } from '@phosphor-icons/react/dist/ssr/MagnifyingGlass'
+
+// `portee` : sélecteur Boîte à outils / Sofia, comme la recherche du menu de bibweb (RechercheMenu)
+const { id, portee = false } = Astro.props as { id: string; portee?: boolean }
+---
+
+<form class:list={['recherche-guides', { 'recherche-portee': portee }]} role="search" action="/resultats/" method="get" data-recherche-guides>
+  <label class="visuellement-masque" for={`${id}-champ`}>Chercher un guide ou une base de données</label>
+  {
+    portee ? (
+      <span class="segments" role="radiogroup" aria-label="Où chercher" hidden data-segments>
+        <span class="indicateur" aria-hidden="true"></span>
+        {[['guides', 'La boîte à outils'], ['sofia', 'Sofia']].map(([valeur, libelle], i) => (
+          <label class="segment">
+            <input type="radio" class="visuellement-masque" name={`${id}-portee`} form={`${id}-portee`} value={valeur} checked={i === 0} />
+            <span>{libelle}</span>
+          </label>
+        ))}
+      </span>
+    ) : (
+      <MagnifyingGlassIcon size={22} aria-hidden="true" />
+    )
+  }
+  <input
+    id={`${id}-champ`}
+    type="search"
+    name="q"
+    maxlength="260"
+    placeholder="Chercher un guide ou une base de données"
+    autocomplete="off"
+    role="combobox"
+    aria-autocomplete="list"
+    aria-expanded="false"
+    aria-controls={`${id}-suggestions`}
+  />
+  {
+    portee ? (
+      <button type="submit" aria-label="Rechercher"><MagnifyingGlassIcon size={22} weight="bold" aria-hidden="true" /></button>
+    ) : (
+      <button type="submit"><MagnifyingGlassIcon size={22} weight="bold" aria-hidden="true" /><span>Rechercher</span></button>
+    )
+  }
+  <ul id={`${id}-suggestions`} role="listbox" aria-label="Suggestions" hidden></ul>
+  <p class="visuellement-masque" role="status"></p>
+</form>
+
+<script>
+  import { filtrerGuides, urlSofia } from '@/lib/recherche-guides'
+
+  let guides: Promise<{ nom: string; url: string; base?: boolean; autres?: string }[]> | undefined
+  const chargerGuides = (): NonNullable<typeof guides> => (guides ??= fetch('/guides.json').then((reponse) => reponse.json()).catch(() => []))
+
+  // Une adresse absolue quitte le site (lib/liens-externes)
+  const aller = (url: string) => {
+    if (/^https?:/.test(url)) open(url, '_blank', 'noopener')
+    else location.href = url
+  }
+  const marqueExterne = () => {
+    const marque = document.createElement('span')
+    marque.className = 'lien-externe'
+    const annonce = document.createElement('span')
+    annonce.className = 'visuellement-masque'
+    annonce.textContent = ' (nouvelle fenêtre)'
+    marque.append(annonce)
+    return marque
+  }
+
+  document.querySelectorAll<HTMLFormElement>('[data-recherche-guides]').forEach((formulaire) => {
+    const champ = formulaire.querySelector<HTMLInputElement>('input[type="search"]')!
+    const liste = formulaire.querySelector('ul')!
+    const annonce = formulaire.querySelector('[role="status"]')!
+    const segments = formulaire.querySelector<HTMLElement>('[data-segments]')
+    const intitule = champ.placeholder
+    // Sur téléphone, l'intitulé complet déborde du champ : il reste entier dans l'étiquette, pour les lecteurs d'écran
+    const exemple = matchMedia('(width < 600px)').matches ? 'Guide ou base de données' : intitule
+    champ.placeholder = exemple
+    let actif = -1
+    let dansSofia = false
+
+    // La pastille glisse vers le choix actif, comme dans bibweb ; mesurée dès que le panneau s'affiche
+    const placerPastille = () => {
+      const choisi = segments?.querySelector<HTMLInputElement>('input:checked')?.closest<HTMLElement>('.segment')
+      const pastille = segments?.querySelector<HTMLElement>('.indicateur')
+      if (!choisi || !pastille || !choisi.offsetWidth) return
+      pastille.style.width = `${choisi.offsetWidth}px`
+      pastille.style.translate = `${choisi.offsetLeft}px 0`
+      requestAnimationFrame(() => segments!.classList.add('pret'))
+    }
+    if (segments) {
+      segments.hidden = false
+      new ResizeObserver(placerPastille).observe(segments)
+    }
+    segments?.addEventListener('change', (e) => {
+      dansSofia = (e.target as HTMLInputElement).value === 'sofia'
+      placerPastille()
+      champ.placeholder = dansSofia ? 'Livres, articles, films…' : exemple
+      champ.labels![0].textContent = dansSofia ? 'Chercher dans Sofia' : intitule
+      liste.replaceChildren()
+      fermer()
+      annonce.textContent = ''
+      champ.focus()
+    })
+    formulaire.addEventListener('submit', (e) => {
+      if (!dansSofia || !champ.value.trim()) return
+      e.preventDefault()
+      location.href = urlSofia(champ.value.trim())
+    })
+
+    const options = () => [...liste.children] as HTMLElement[]
+
+    function fermer() {
+      liste.hidden = true
+      actif = -1
+      champ.setAttribute('aria-expanded', 'false')
+      champ.removeAttribute('aria-activedescendant')
+    }
+
+    async function afficher() {
+      if (dansSofia) return
+      const tous = await chargerGuides()
+      const trouves = filtrerGuides(tous, champ.value)
+      liste.replaceChildren(
+        ...trouves.map((guide, i) => {
+          const option = document.createElement('li')
+          option.id = `${liste.id}-${i}`
+          option.role = 'option'
+          // Comme dans bibweb, lu « Guide : Droit » ; la flèche est visuelle
+          const source = document.createElement('span')
+          source.className = 'option-source'
+          source.textContent = guide.base ? 'Base de données' : 'Guide'
+          const fleche = document.createElement('span')
+          fleche.className = 'option-fleche'
+          fleche.setAttribute('aria-hidden', 'true')
+          fleche.textContent = '→'
+          const separateur = document.createElement('span')
+          separateur.className = 'visuellement-masque'
+          separateur.textContent = ' : '
+          const titre = document.createElement('span')
+          titre.className = 'option-titre'
+          titre.textContent = guide.nom
+          option.append(source, fleche, separateur, titre)
+          if (guide.base) option.append(marqueExterne())
+          option.dataset.url = guide.url
+          return option
+        }),
+      )
+      const requete = champ.value.trim()
+      if (requete) {
+        const tousResultats = document.createElement('li')
+        tousResultats.id = `${liste.id}-tous`
+        tousResultats.role = 'option'
+        tousResultats.className = 'suggestion-tous'
+        tousResultats.textContent = `Tous les résultats pour « ${requete} »`
+        tousResultats.dataset.url = `${formulaire.getAttribute('action')}?q=${encodeURIComponent(requete)}`
+        liste.append(tousResultats)
+      }
+      fermer()
+      if (requete) {
+        liste.hidden = false
+        champ.setAttribute('aria-expanded', 'true')
+        // Champ bas dans la page : la liste entre à l'écran. Pas dans le rideau, où la page ne défile pas
+        if (!segments) liste.scrollIntoView({ block: 'nearest' })
+      }
+      const suggeres = trouves.length === 1 ? '1 suggestion' : `${trouves.length} suggestions`
+      annonce.textContent = !champ.value.trim() ? '' : trouves.length ? suggeres : 'Aucune suggestion : Entrée lance la recherche dans tout le contenu'
+    }
+
+    function activer(i: number) {
+      options()[actif]?.setAttribute('aria-selected', 'false')
+      actif = i
+      const option = options()[i]
+      option.setAttribute('aria-selected', 'true')
+      option.scrollIntoView({ block: 'nearest' })
+      champ.setAttribute('aria-activedescendant', option.id)
+    }
+
+    champ.addEventListener('focus', chargerGuides, { once: true })
+    champ.addEventListener('input', afficher)
+    champ.addEventListener('blur', fermer)
+    champ.addEventListener('keydown', (e) => {
+      const nombre = options().length
+      if (e.key === 'Escape') {
+        if (liste.hidden) champ.value = ''
+        else {
+          // Liste ouverte : Échap la ferme seule, sans effacer la saisie (navigateur) ni fermer le menu (Base.astro)
+          e.preventDefault()
+          e.stopPropagation()
+        }
+        fermer()
+      } else if (!liste.hidden && e.key === 'ArrowDown') {
+        e.preventDefault()
+        activer((actif + 1) % nombre)
+      } else if (!liste.hidden && e.key === 'ArrowUp') {
+        e.preventDefault()
+        activer((actif - 1 + nombre) % nombre)
+      } else if (e.key === 'Enter' && actif >= 0) {
+        e.preventDefault()
+        aller(options()[actif].dataset.url!)
+      }
+    })
+    // mousedown : avant le blur du champ, qui fermerait la liste
+    liste.addEventListener('mousedown', (e) => {
+      e.preventDefault()
+      const option = (e.target as Element).closest<HTMLElement>('[role="option"]')
+      if (option) aller(option.dataset.url!)
+    })
+  })
+</script>

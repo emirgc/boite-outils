@@ -1,0 +1,165 @@
+---
+/*
+ * Page de résultats (/resultats/?q=…), la suite du champ de recherche et de
+ * « Tous les résultats » : les guides, leur contenu et les bases de données
+ * (index-recherche.json, voir integrations/index-recherche.mjs), avec un
+ * filtre par source et la même recherche dans Sofia.
+ *
+ * Page statique : la requête est lue dans l'URL par le script, l'index se
+ * charge à l'arrivée. Le formulaire est un vrai GET vers la page elle-même.
+ */
+import RechercheGuides from '@/components/RechercheGuides.astro'
+import FilAriane from '@/components/coquille/FilAriane.astro'
+import Base from '@/layouts/Base.astro'
+
+const SOURCES = [
+  { cle: 'tout', libelle: 'Toutes les sources' },
+  { cle: 'guide', libelle: 'Guides' },
+  { cle: 'base', libelle: 'Bases de données' },
+]
+---
+
+<Base titre="Résultats de recherche | Boîte à outils | Les bibliothèques UdeM" sansRetroaction>
+  <meta slot="head" name="robots" content="noindex" />
+  <main id="contenu-principal" class="portail conteneur resultats" tabindex="-1" data-page-resultats>
+    <FilAriane maillons={[{ libelle: 'Site des bibliothèques', href: 'https://bib.umontreal.ca/' }, { libelle: 'La boîte à outils', href: '/' }, { libelle: 'Résultats de recherche' }]} />
+    <h1>Résultats de recherche</h1>
+    <RechercheGuides id="resultats" />
+
+    <p class="encadre resultats-sofia">
+      Vous vouliez voir les documents offerts sur un sujet particulier?{' '}
+      <a href="https://umontreal.on.worldcat.org/discovery?lang=fr" data-lien-sofia>Relancez votre recherche dans notre catalogue Sofia!</a>
+    </p>
+
+    <fieldset class="resultats-sources" hidden data-sources>
+      <legend class="visuellement-masque">Source</legend>
+      {
+        SOURCES.map(({ cle, libelle }, i) => (
+          <label class="resultats-source">
+            <input type="radio" name="source" value={cle} checked={i === 0} />
+            <span>{libelle}</span>
+            <span class="resultats-compte" data-compte={cle} />
+          </label>
+        ))
+      }
+    </fieldset>
+
+    <p class="resultats-etat" role="status" data-statut>
+      <noscript>La recherche demande JavaScript.</noscript>
+    </p>
+
+    {/* role="list" : Safari retire la sémantique de liste avec list-style: none */}
+    <ul class="resultats-liste" role="list" data-liste></ul>
+    <button type="button" class="resultats-plus" hidden data-plus>Afficher plus de résultats</button>
+
+    <template data-modele>
+      <li>
+        <a class="resultat">
+          <span class="resultat-ligne">
+            <span class="option-source"></span>
+            <span class="option-fleche" aria-hidden="true">→</span>
+            <span class="visuellement-masque"> : </span>
+            <span class="resultat-titre"></span>
+            <span class="lien-externe"><span class="visuellement-masque"> (nouvelle fenêtre)</span></span>
+          </span>
+          <span class="resultat-extrait"></span>
+        </a>
+      </li>
+    </template>
+  </main>
+</Base>
+
+<script>
+  import { chercher, motsDe, urlSofia, type EntreeRecherche } from '@/lib/recherche-guides'
+
+  const PAR_PAGE = 20
+
+  const page = document.querySelector<HTMLElement>('[data-page-resultats]')!
+  const $ = <T extends Element>(s: string) => page.querySelector<T>(s)!
+  const champ = $<HTMLInputElement>('input[type="search"]')
+  const sources = $<HTMLFieldSetElement>('[data-sources]')
+  const statut = $<HTMLElement>('[data-statut]')
+  const liste = $<HTMLElement>('[data-liste]')
+  const plus = $<HTMLButtonElement>('[data-plus]')
+  const modele = $<HTMLTemplateElement>('[data-modele]')
+  const radios = [...page.querySelectorAll<HTMLInputElement>('input[name="source"]')]
+
+  const requete = new URLSearchParams(location.search).get('q')?.trim() ?? ''
+  let resultats: EntreeRecherche[] = []
+  let montres = PAR_PAGE
+
+  champ.value = requete
+  if (requete) {
+    document.title = `« ${requete} » – ${document.title}`
+    $<HTMLAnchorElement>('[data-lien-sofia]').href = urlSofia(requete)
+  }
+
+  const deSource = (source: string) => resultats.filter((r) => source === 'tout' || (source === 'base') === Boolean(r.base))
+  const accords = (n: number) => `${n} résultat${n > 1 ? 's' : ''} pour « ${requete} »`
+
+  function element({ titre, page: nomPage, url, extrait, base }: EntreeRecherche) {
+    const li = modele.content.firstElementChild!.cloneNode(true) as HTMLElement
+    const lien = li.querySelector('a')!
+    lien.href = url
+    li.querySelector('.option-source')!.textContent = base ? 'Base de données' : 'Guide'
+    li.querySelector('.resultat-titre')!.textContent = nomPage ? `${titre} : ${nomPage}` : titre
+    // Une adresse absolue quitte le site (lib/liens-externes)
+    if (/^https?:/.test(url)) {
+      lien.target = '_blank'
+      lien.rel = 'noopener'
+    } else li.querySelector('.lien-externe')!.remove()
+    const resume = li.querySelector('.resultat-extrait')!
+    if (extrait) resume.textContent = extrait
+    else resume.remove()
+    return li
+  }
+
+  function rendre() {
+    const visibles = deSource(radios.find((r) => r.checked)!.value)
+    liste.replaceChildren(...visibles.slice(0, montres).map(element))
+    plus.hidden = visibles.length <= montres
+    statut.textContent = visibles.length ? accords(visibles.length) : `Aucun résultat pour « ${requete} » dans cette source.`
+  }
+
+  // Sans index (serveur de développement, fichier absent) : les titres seulement
+  const lireIndex = async (): Promise<EntreeRecherche[]> => {
+    const reponse = await fetch('/index-recherche.json')
+    if (reponse.ok) return reponse.json()
+    const guides: { nom: string; url: string; base?: boolean; autres?: string }[] = await (await fetch('/guides.json')).json()
+    return guides.map(({ nom, url, base, autres }) => ({ titre: nom, url, base, mots: motsDe(`${nom} ${autres ?? ''}`).join(' ') }))
+  }
+
+  if (!requete) statut.textContent = 'Tapez votre recherche ci-dessus.'
+  else {
+    statut.textContent = 'Chargement des résultats…'
+    lireIndex()
+      .then((index) => {
+        resultats = chercher(index, requete)
+        for (const radio of radios) page.querySelector(`[data-compte="${radio.value}"]`)!.textContent = String(deSource(radio.value).length)
+        sources.hidden = false
+        if (resultats.length) rendre()
+        else {
+          sources.hidden = true
+          statut.textContent = `Aucun résultat pour « ${requete} ».`
+        }
+      })
+      .catch(() => {
+        statut.textContent = "Les résultats n'ont pas pu être chargés. Réessayez dans un moment."
+      })
+  }
+
+  for (const radio of radios) {
+    radio.addEventListener('change', () => {
+      montres = PAR_PAGE
+      rendre()
+    })
+  }
+
+  plus.addEventListener('click', () => {
+    const premierNouveau = montres
+    montres += PAR_PAGE
+    rendre()
+    // Le focus va au premier résultat ajouté, pas en haut de la liste
+    liste.children[premierNouveau]?.querySelector('a')?.focus()
+  })
+</script>

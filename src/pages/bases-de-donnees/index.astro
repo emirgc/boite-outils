@@ -1,0 +1,318 @@
+---
+/*
+ * Bases de données de A à Z, lues dans l'API de LibGuides : recherche, filtres,
+ * alphabet, liste, et à côté la légende et les nouveautés. Sans JavaScript, la
+ * liste complète reste là et l'alphabet mène aux ancres. Avec lui, les filtres
+ * apparaissent ; ils portent les noms de az.php (q, s, t, v, a) et suivent l'adresse.
+ */
+import FicheBase from '@/components/FicheBase.astro'
+import FilAriane from '@/components/coquille/FilAriane.astro'
+import { LIENS_NOUS_JOINDRE } from '@/data/navigation'
+import Base from '@/layouts/Base.astro'
+import { basesDeDonnees } from '@/lib/libguides'
+import { normaliser } from '@/lib/recherche-guides'
+
+const bases = await basesDeDonnees()
+const options = (valeurs: { id: string; nom: string }[]) => {
+  const parId = new Map<string, { id: string; nom: string; n: number }>()
+  for (const { id, nom } of valeurs) parId.set(id, { id, nom, n: (parId.get(id)?.n ?? 0) + 1 })
+  return [...parId.values()].sort((a, b) => a.nom.localeCompare(b.nom, 'fr', { sensitivity: 'base' }))
+}
+const filtres = [
+  { nom: 's', libelle: 'Sujet', valeurs: options(bases.flatMap((b) => b.sujets)) },
+  { nom: 't', libelle: 'Type de base de données', valeurs: options(bases.flatMap((b) => b.types)) },
+  { nom: 'v', libelle: 'Fournisseur ou éditeur', valeurs: options(bases.flatMap((b) => b.fournisseur ?? [])) },
+]
+const clef = (texte: string) => (/^[a-z]/.test(normaliser(texte)) ? normaliser(texte)[0] : 'autres')
+const groupes = Object.groupBy(bases, (b) => clef(b.texte))
+const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((l) => ({ libelle: l, cle: l.toLowerCase() })).concat({ libelle: '#', cle: 'autres' })
+const compte = (n: number) => (n === 1 ? '1 base de données trouvée' : `${n} bases de données trouvées`)
+const nouveautes = bases.filter((b) => b.nouveau || b.essai)
+const logoUdem = bases.flatMap((b) => b.acces).find((a) => a.libelle.startsWith('Réservé'))?.icone
+const ACCES_PROXY = 'https://studio.bib.umontreal.ca/informatique/proxy'
+const AVIS = 'https://bib.umontreal.ca/a-propos/nos-collections#avis-sur-lutilisation-des-ressources-electroniques'
+---
+
+<Base titre="Bases de données de A à Z | Boîte à outils | Les bibliothèques UdeM" description="Trouvez les meilleures bases de données pour vos recherches." sansRetroaction>
+  <main id="contenu-principal" class="portail conteneur bases" tabindex="-1">
+    <FilAriane maillons={[{ libelle: 'Site des bibliothèques', href: 'https://bib.umontreal.ca/' }, { libelle: 'La boîte à outils', href: '/' }, { libelle: 'Bases de données de A à Z' }]} />
+    <h1>Bases de données de A à Z</h1>
+    <p class="chapeau-guide">Trouvez les meilleures bases de données pour vos recherches.</p>
+
+    <form id="bases-filtres" class="filtres-bases" role="search" aria-label="Chercher et filtrer les bases de données" hidden data-filtres>
+      <div>
+        <label for="bases-q">Titre, description ou autre nom</label>
+        <input id="bases-q" type="search" name="q" maxlength="260" autocomplete="off" />
+      </div>
+      <button type="button" class="filtres-bouton" aria-expanded="false" aria-controls="bases-choix" data-plier>Filtres<span data-nombre></span></button>
+      <div id="bases-choix" class="filtres-choix" data-choix>
+        {
+          filtres.map(({ nom, libelle, valeurs }) => (
+            <div>
+              <label for={`bases-${nom}`}>{libelle}</label>
+              <select id={`bases-${nom}`} name={nom}>
+                <option value="">Tous</option>
+                {valeurs.map((v) => <option value={v.id} data-nom={v.nom}>{v.nom} ({v.n})</option>)}
+              </select>
+            </div>
+          ))
+        }
+      </div>
+    </form>
+
+    <nav class="bases-alphabet" aria-label="Bases par première lettre">
+      <ul>
+        <li><a href="/bases-de-donnees/" data-lettre="" aria-current="true">Tous</a></li>
+        {alphabet.map(({ libelle, cle }) => <li><a href={groupes[cle] ? `#lettre-${cle}` : undefined} data-lettre={cle}>{libelle}</a></li>)}
+      </ul>
+    </nav>
+
+    <div class="bases-grille" data-grille>
+      <div class="bases-resultat">
+        <p class="bases-compte" role="status" data-compte>{compte(bases.length)}</p>
+        <ul class="bases-actifs" data-actifs></ul>
+        <button type="reset" form="bases-filtres" class="bouton-lien" hidden data-effacer>Effacer les filtres</button>
+      </div>
+
+      <section class="bases-laterale" aria-label="Légende et nouveautés">
+        <div class="encadre bases-legende">
+          <p class="base-acces">
+            {logoUdem && <img src={logoUdem} alt="" width="20" height="20" />}
+            <span>Réservé à la communauté UdeM (<a href={ACCES_PROXY}>accès Proxy</a>)</span>
+          </p>
+          <p><a href={AVIS}>Avis sur l'utilisation des ressources électroniques</a></p>
+        </div>
+        {
+          nouveautes.length > 0 && (
+            <>
+              <h2>Nouveautés / Bases de données à l'essai</h2>
+              <p>Les bases de données suivantes sont des ajouts récents ou sont en cours d'évaluation en vue de leur future acquisition.</p>
+              <ul class="liste-ressources">
+                {nouveautes.map((b) => <li><FicheBase base={b} /></li>)}
+              </ul>
+            </>
+          )
+        }
+      </section>
+
+      <div class="bases-liste">
+        <div class="bases-vide" hidden data-vide>
+          <p>Aucune base de données ne correspond à votre recherche. Vous pouvez :</p>
+          <ul>
+            <li><button type="reset" form="bases-filtres" class="bouton-lien">Effacer les filtres</button></li>
+            <li><a href="https://umontreal.on.worldcat.org/" data-sofia>Chercher dans Sofia</a></li>
+            <li><a href={LIENS_NOUS_JOINDRE[0].href}>{LIENS_NOUS_JOINDRE[0].libelle}</a></li>
+          </ul>
+        </div>
+        <section class="bases-vedettes" hidden data-vedettes>
+          <h2>Recommandées pour <span data-vedettes-sujet></span></h2>
+          <ul class="liste-ressources"></ul>
+        </section>
+        <section class="bases-trouvees" aria-label="Résultats de la recherche" hidden data-trouvees>
+          <ul class="liste-ressources"></ul>
+        </section>
+        {
+          alphabet.filter(({ cle }) => groupes[cle]).map(({ libelle, cle }) => (
+            <section class="bases-groupe" id={`lettre-${cle}`} data-groupe>
+              <h2>{libelle}</h2>
+              <ul class="liste-ressources">
+                {groupes[cle]!.map((b) => (
+                  <li data-base data-s={b.sujets.map((s) => s.id).join(' ')} data-t={b.types.map((t) => t.id).join(' ')} data-v={b.fournisseur?.id} data-vedette={b.vedettes.join(' ') || undefined}>
+                    <FicheBase base={b} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))
+        }
+      </div>
+    </div>
+  </main>
+  <script>
+    import { baseVisible, compterChoix, motsDe, trierResultats, urlSofia, type EntreeBase, type FiltresBases } from '@/lib/recherche-guides'
+
+    const formulaire = document.querySelector<HTMLFormElement>('[data-filtres]')!
+    const grille = document.querySelector<HTMLElement>('[data-grille]')!
+    const statut = document.querySelector<HTMLElement>('[data-compte]')!
+    const effacer = document.querySelector<HTMLButtonElement>('[data-effacer]')!
+    const actifs = document.querySelector<HTMLElement>('[data-actifs]')!
+    const vide = document.querySelector<HTMLElement>('[data-vide]')!
+    const sofia = document.querySelector<HTMLAnchorElement>('[data-sofia]')!
+    const sectionVedettes = document.querySelector<HTMLElement>('[data-vedettes]')!
+    const listeVedettes = sectionVedettes.querySelector('ul')!
+    const sectionTrouvees = document.querySelector<HTMLElement>('[data-trouvees]')!
+    const listeTrouvees = sectionTrouvees.querySelector('ul')!
+    const plier = document.querySelector<HTMLButtonElement>('[data-plier]')!
+    const choix = document.querySelector<HTMLElement>('[data-choix]')!
+    const nombre = document.querySelector<HTMLElement>('[data-nombre]')!
+    const groupes = [...document.querySelectorAll<HTMLElement>('[data-groupe]')]
+    const liens = [...document.querySelectorAll<HTMLAnchorElement>('[data-lettre]')]
+    const champ = formulaire.querySelector<HTMLInputElement>('#bases-q')!
+    const menus = { s: formulaire.querySelector<HTMLSelectElement>('#bases-s')!, t: formulaire.querySelector<HTMLSelectElement>('#bases-t')!, v: formulaire.querySelector<HTMLSelectElement>('#bases-v')! }
+    const CHOIX = ['s', 't', 'v'] as const
+    const liste = (valeur?: string) => valeur?.split(' ') ?? []
+    const texteDe = (noeuds: Iterable<Element>) => [...noeuds].map((n) => n.textContent).join(' ')
+
+    type Entree = EntreeBase & { li: HTMLElement; ul: HTMLElement; vedettes: Map<string, number> }
+    const entrees: Entree[] = [...document.querySelectorAll<HTMLElement>('[data-base]')].map((li) => ({
+      li,
+      ul: li.parentElement!,
+      groupe: li.closest<HTMLElement>('[data-groupe]')!.id,
+      titre: motsDe(texteDe(li.querySelectorAll('.base-nom [data-cherche]'))),
+      mots: motsDe(texteDe(li.querySelectorAll('[data-cherche]'))),
+      s: liste(li.dataset.s),
+      t: liste(li.dataset.t),
+      v: liste(li.dataset.v),
+      vedettes: new Map(liste(li.dataset.vedette).map((v) => v.split(':')).map(([id, rang]) => [id, Number(rang)])),
+    }))
+
+    const parametres = new URLSearchParams(location.search)
+    let lettre = !parametres.get('q') && liens.some((a) => a.dataset.lettre === parametres.get('a')) ? parametres.get('a')! : ''
+    let deplacees = false
+    let attente: ReturnType<typeof setTimeout> | undefined
+
+    const nomChoisi = (menu: HTMLSelectElement) => menu.selectedOptions[0]?.dataset.nom ?? ''
+
+    /** Étiquettes retirables : une par filtre actif */
+    function afficherActifs(filtres: FiltresBases) {
+      const etiquettes: [string, string][] = []
+      if (filtres.q.trim()) etiquettes.push(['q', `« ${filtres.q.trim()} »`])
+      if (lettre) etiquettes.push(['a', `Lettre ${liens.find((a) => a.dataset.lettre === lettre)!.textContent}`])
+      for (const c of CHOIX) if (filtres[c]) etiquettes.push([c, nomChoisi(menus[c])])
+      actifs.replaceChildren(
+        ...etiquettes.map(([cle, libelle]) => {
+          const li = document.createElement('li')
+          const bouton = document.createElement('button')
+          bouton.type = 'button'
+          bouton.dataset.retirer = cle
+          bouton.setAttribute('aria-label', `Retirer le filtre : ${libelle}`)
+          bouton.textContent = `${libelle} ×`
+          li.append(bouton)
+          return li
+        }),
+      )
+      return etiquettes.length
+    }
+
+    function appliquer() {
+      const valeurs = new FormData(formulaire)
+      const filtres = Object.fromEntries(['q', ...CHOIX].map((c) => [c, String(valeurs.get(c) ?? '')])) as unknown as FiltresBases
+      const recherche = motsDe(filtres.q).length > 0
+
+      // Les fiches déplacées (résultats, recommandées) reprennent leur place avant tout calcul
+      if (deplacees) for (const e of entrees) e.ul.append(e.li)
+      deplacees = false
+
+      const visibles = entrees.filter((e) => baseVisible(e, filtres, lettre))
+      const montrees = new Set(visibles)
+      for (const e of entrees) e.li.hidden = !montrees.has(e)
+
+      const vedettes = !recherche && !lettre && filtres.s ? visibles.filter((e) => e.vedettes.has(filtres.s)).sort((a, b) => a.vedettes.get(filtres.s)! - b.vedettes.get(filtres.s)!) : []
+      const trouvees = recherche ? trierResultats(visibles, filtres.q) : []
+      deplacees = vedettes.length + trouvees.length > 0
+      listeVedettes.replaceChildren(...vedettes.map((e) => e.li))
+      listeTrouvees.replaceChildren(...trouvees.map((e) => e.li))
+      sectionVedettes.hidden = !vedettes.length
+      sectionTrouvees.hidden = !trouvees.length
+      if (vedettes.length) document.querySelector('[data-vedettes-sujet]')!.textContent = nomChoisi(menus.s)
+      for (const groupe of groupes) groupe.hidden = !groupe.querySelector('[data-base]:not([hidden])')
+
+      // Une lettre reste à sa place, inactive si les menus ne lui laissent rien ; la recherche ne compte pas, cliquer une lettre l'efface
+      const sansRecherche = { ...filtres, q: '' }
+      const lettresDispo = new Set(entrees.filter((e) => baseVisible(e, sansRecherche)).map((e) => e.groupe))
+      for (const a of liens) {
+        const cle = a.dataset.lettre!
+        if (!cle || lettresDispo.has(`lettre-${cle}`)) a.setAttribute('href', cle ? `#lettre-${cle}` : location.pathname)
+        else a.removeAttribute('href')
+        if (cle === lettre) a.setAttribute('aria-current', 'true')
+        else a.removeAttribute('aria-current')
+      }
+
+      // Menus : nombres selon les autres filtres ; un choix sans résultat disparaît, sauf celui qui est sélectionné
+      const comptes = compterChoix(entrees, filtres, lettre)
+      for (const c of CHOIX) {
+        for (const option of menus[c].options) {
+          if (!option.value) continue
+          const n = comptes[c].get(option.value) ?? 0
+          const texte = `${option.dataset.nom} (${n})`
+          if (option.textContent !== texte) option.textContent = texte
+          const absent = n === 0 && !option.selected
+          option.hidden = absent
+          option.disabled = absent
+        }
+      }
+
+      const nbActifs = afficherActifs(filtres)
+      const nbMenus = CHOIX.filter((c) => filtres[c]).length
+      nombre.textContent = nbMenus ? ` (${nbMenus})` : ''
+      effacer.hidden = nbActifs === 0
+      grille.toggleAttribute('data-filtre', nbActifs > 0)
+      vide.hidden = visibles.length > 0
+      sofia.href = filtres.q.trim() ? urlSofia(filtres.q.trim()) : 'https://umontreal.on.worldcat.org/'
+
+      const adresse = new URL(location.href)
+      const etat: [string, string][] = [['q', filtres.q.trim()], ['s', filtres.s], ['t', filtres.t], ['v', filtres.v], ['a', lettre]]
+      for (const [c, valeur] of etat) {
+        if (valeur) adresse.searchParams.set(c, valeur)
+        else adresse.searchParams.delete(c)
+      }
+      history.replaceState(history.state, '', adresse)
+
+      // Annoncé après la frappe : une lecture à chaque lettre couperait la saisie
+      clearTimeout(attente)
+      attente = setTimeout(() => {
+        const n = visibles.length
+        statut.textContent = n === 0 ? 'Aucune base de données trouvée' : n === 1 ? '1 base de données trouvée' : `${n} bases de données trouvées`
+      }, 300)
+    }
+
+    champ.value = parametres.get('q') ?? ''
+    for (const c of CHOIX) menus[c].value = parametres.get(c) ?? ''
+    formulaire.hidden = false
+
+    formulaire.addEventListener('input', (e) => {
+      // Une recherche porte sur toutes les lettres : la lettre choisie cacherait des résultats
+      if (e.target === champ && champ.value.trim()) lettre = ''
+      appliquer()
+    })
+    formulaire.addEventListener('submit', (e) => e.preventDefault())
+    // L'événement précède la remise à zéro des champs
+    formulaire.addEventListener('reset', () => setTimeout(() => {
+      lettre = ''
+      appliquer()
+      champ.focus()
+    }))
+    plier.addEventListener('click', () => {
+      const ouvert = plier.getAttribute('aria-expanded') !== 'true'
+      plier.setAttribute('aria-expanded', String(ouvert))
+      choix.toggleAttribute('data-ouvert', ouvert)
+    })
+    document.querySelector('.bases-alphabet')!.addEventListener('click', (e) => {
+      const a = (e.target as Element).closest<HTMLAnchorElement>('a[href]')
+      const clic = e as MouseEvent
+      if (!a || clic.metaKey || clic.ctrlKey || clic.shiftKey) return
+      e.preventDefault()
+      lettre = a.dataset.lettre!
+      champ.value = ''
+      appliquer()
+      a.focus({ preventScroll: true })
+      // Déjà défilé, le début des résultats serait hors de vue : on y revient (sous l'alphabet, par scroll-padding)
+      const haut = grille.getBoundingClientRect().top
+      if (haut < a.getBoundingClientRect().bottom || haut > innerHeight * 0.8) grille.scrollIntoView()
+    })
+    actifs.addEventListener('click', (e) => {
+      const bouton = (e.target as Element).closest<HTMLButtonElement>('[data-retirer]')
+      if (!bouton) return
+      const position = [...actifs.children].indexOf(bouton.parentElement!)
+      const cle = bouton.dataset.retirer!
+      if (cle === 'q') champ.value = ''
+      else if (cle === 'a') lettre = ''
+      else menus[cle as (typeof CHOIX)[number]].value = ''
+      appliquer()
+      // Le bouton retiré disparaît : le focus va à l'étiquette suivante, sinon au champ de recherche
+      const suivant = actifs.querySelectorAll('button')[position] ?? actifs.querySelector('li:last-child button')
+      ;(suivant ?? champ).focus()
+    })
+    appliquer()
+  </script>
+</Base>

@@ -1,0 +1,31 @@
+---
+/* Une base de données : la même fiche dans la liste A à Z et dans les nouveautés. Seul ce qui porte data-cherche compte pour la recherche. */
+import type { basesDeDonnees } from '@/lib/libguides'
+
+const { base } = Astro.props as { base: Awaited<ReturnType<typeof basesDeDonnees>>[number] }
+---
+
+<div class="base-titre">
+  <a class="base-nom" href={base.href}><span data-cherche set:html={base.nom} /></a>
+  {base.nouveau && <span class="base-pastille">Nouveau</span>}
+  {base.essai && <span class="base-pastille">À l'essai</span>}
+  {
+    base.acces.map(({ libelle, href, icone }) => (
+      <span class="base-acces">
+        <img src={icone} alt="" width="16" height="16" loading="lazy" />
+        {href ? <a href={href}>{libelle}</a> : libelle}
+      </span>
+    ))
+  }
+</div>
+{base.description && <div class="ressource-description" data-cherche set:html={base.description} />}
+{base.autresNoms && <small data-cherche>Autres noms : {base.autresNoms}</small>}
+{base.fournisseur && <small class="base-fournisseur" data-cherche>{base.fournisseur.nom}</small>}
+{
+  base.plus && (
+    <details class="ressource-plus">
+      <summary>Plus d'information<span class="visuellement-masque"> sur {base.texte}</span></summary>
+      <div class="ressource-description" data-cherche set:html={base.plus} />
+    </details>
+  )
+}
