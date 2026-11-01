@@ -6,6 +6,7 @@
  */
 import FilAriane from '@/components/coquille/FilAriane.astro'
 import Base from '@/layouts/Base.astro'
+import { descriptionDe } from '@/lib/extrait'
 import { ancetres, guide, PORTAILS } from '@/lib/libguides'
 import { lienAncre } from '@/lib/nettoyage'
 
@@ -22,7 +23,7 @@ const { nom, description, sections } = await guide(Astro.props.id)
 const parents = await ancetres(Astro.props.id)
 ---
 
-<Base titre={`${nom} | Boîte à outils | Les bibliothèques UdeM`} description={description} sansRetroaction>
+<Base titre={`${nom} | Boîte à outils UdeM`} description={descriptionDe(description, sections.flatMap((s) => s.boites).map((b) => b.html).join(' '))} sansRetroaction>
   <main id="contenu-principal" class="portail conteneur" tabindex="-1" data-revelation="zone">
     <FilAriane maillons={[{ libelle: 'Site des bibliothèques', href: 'https://bib.umontreal.ca/' }, { libelle: 'La boîte à outils', href: '/' }, ...parents, { libelle: nom }]} />
     <h1>{nom}</h1>

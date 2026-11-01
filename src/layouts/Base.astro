@@ -29,7 +29,12 @@ import { LIENS_SOFIA } from '@/data/navigation'
 import Retroaction from '@/components/coquille/Retroaction.astro'
 
 // Pages de premier niveau (accueil, portails) : pas de rétroaction, comme dans bibweb
-const { titre, description, sansRetroaction = false } = Astro.props as { titre: string; description?: string; sansRetroaction?: boolean }
+const { titre, description, sansRetroaction = false, noindex = false } = Astro.props as { titre: string; description?: string; sansRetroaction?: boolean; noindex?: boolean }
+const DESCRIPTION_SITE = 'Des ressources et des conseils de recherche choisis par les spécialistes des Bibliothèques de l’Université de Montréal.'
+const resume = description || DESCRIPTION_SITE
+const canonique = new URL(Astro.url.pathname, Astro.site).href
+// Hors production, rien n'est indexé : l'ancien site reste la référence (voir astro.config.mjs)
+const indexable = !noindex && process.env.SITE_ENV === 'production'
 
 const MENU_RIDEAU_ID = 'menu-mobile'
 const MENU = [
@@ -48,8 +53,18 @@ const MENU = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="preload" href={figtreeLatin} as="font" type="font/woff2" crossorigin />
     <title>{titre}</title>
-    {description && <meta name="description" content={description} />}
-    <meta name="robots" content="noindex" />
+    <meta name="description" content={resume} />
+    {!indexable && <meta name="robots" content="noindex" />}
+    {!noindex && <link rel="canonical" href={canonique} />}
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fr_CA" />
+    <meta property="og:site_name" content="La boîte à outils des Bibliothèques UdeM" />
+    <meta property="og:title" content={titre} />
+    <meta property="og:description" content={resume} />
+    <meta property="og:url" content={canonique} />
+    <meta property="og:image" content={new URL('/images/logo-udem-bib.png', Astro.site).href} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@bibUdeM" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     {/* Sens du glissement entre deux pages, sur mobile (voir guide.css) : « retour » pour le bouton

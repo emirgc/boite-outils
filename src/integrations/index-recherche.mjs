@@ -7,18 +7,13 @@ import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import * as cheerio from 'cheerio'
+import { BLOCS, espaces, extrait as couper, TITRES } from '../lib/extrait.ts'
 import { motsDe } from '../lib/recherche-guides.ts'
 
 const CHEMIN_BASES = '/bases-de-donnees/'
 const LONGUEUR_EXTRAIT = 180
-const BLOCS = 'p, div, li, ul, ol, dt, dd, tr, td, th, br, h1, h2, h3, h4, h5, h6, section, details, summary, blockquote, pre, figure, figcaption'
-const TITRES = 'h1, h2, h3, h4, h5, h6, summary'
 
-const espaces = (texte) => texte.replace(/\s+/g, ' ').trim()
-const extrait = (texte) => {
-  const propre = espaces(texte)
-  return propre.length <= LONGUEUR_EXTRAIT ? propre : `${propre.slice(0, LONGUEUR_EXTRAIT).replace(/\s+\S*$/, '')}…`
-}
+const extrait = (texte) => couper(texte, LONGUEUR_EXTRAIT)
 // Chaque mot une seule fois : l'ordre ne sert pas, seul le titre compte au classement
 const motsDistincts = (texte) => [...new Set(motsDe(texte))].join(' ')
 

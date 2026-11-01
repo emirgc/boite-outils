@@ -259,8 +259,9 @@ function construireCatalogue(guides: GuideApi[]) {
   const routes: { idGuide: number; idPage: string; chemin: string; cacheKey: string }[] = []
   // Liens et fil d'Ariane d'une page dépendent des autres guides : un guide renommé ou déplacé invalide tout
   const plan = publies.map((g) => [g.id, g.name, racineDe(g), pagesAffichees(g).map((p) => [p.id, p.name])]).sort((a, b) => Number(a[0]) - Number(b[0]))
-  // Le middleware échappe à l'empreinte de code d'Astro : son résultat sur un exemple entre dans la clé
-  const empreinte = createHash('sha256').update(JSON.stringify(plan) + marquerLiensExternes('<a href="https://x"><img alt="i"></a><a href="https://x">t</a>')).digest('hex')
+  // Le middleware échappe à l'empreinte de code d'Astro : son résultat sur un exemple entre dans la clé.
+  // SITE_ENV aussi : passer en production doit retirer le noindex des pages en cache.
+  const empreinte = createHash('sha256').update(JSON.stringify(plan) + marquerLiensExternes('<a href="https://x"><img alt="i"></a><a href="https://x">t</a>') + process.env.SITE_ENV).digest('hex')
   // Fils RSS et widgets changent sans toucher à la date du guide : relus au moins une fois par semaine
   const semaine = Math.floor(Date.now() / (7 * 24 * 3600 * 1000))
   for (const g of publies) {

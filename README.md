@@ -139,6 +139,17 @@ L'index `/index-recherche.json` vient de `src/integrations/index-recherche.mjs`.
 
 Ce panneau ne commande pas les contenus intégrés aux guides. Les vidéos YouTube, Panopto ou Vimeo se chargent à l'affichage de la page : la phrase de bibweb sur le chargement de YouTube au clic n'est donc pas reprise ici.
 
+## Référencement
+
+**Le site n'est indexable qu'en production.** `astro.config.mjs` déduit `SITE_ENV` de la branche git : `production` donne `production`, toute autre donne `preprod`. La variable peut être forcée au build. Hors production, chaque page porte `noindex` et `robots.txt` interdit tout : l'ancien site reste la référence tant qu'il est en ligne. `SITE_ENV` entre dans la clé de cache, donc changer d'environnement regénère les pages.
+
+Chaque page indexable reçoit une adresse canonique, des balises Open Graph et un fil d'Ariane en `BreadcrumbList`. `/resultats/` et la page 404 restent en `noindex`.
+
+- **Description :** la première page d'un guide reprend sa description si elle fait au moins 50 caractères. Les autres pages reprennent le début de leur texte, sans les titres (`src/lib/extrait.ts`).
+- **Sitemap :** `src/integrations/sitemap.mjs` écrit `/sitemap.xml` à partir de `dist/`, ce qui couvre les pages reprises du cache.
+- **Adresse du site :** `site` dans `astro.config.mjs` sert aux adresses canoniques et au sitemap. Les aperçus restent en `noindex`.
+- **Anciennes adresses :** les guides gardent leur chemin, mais les pages internes de LibGuides sont en `c.php?g=…&p=…`. Un site statique ne peut pas lire ces paramètres : il faudra des redirections chez l'hébergeur à la bascule.
+
 ## Arborescence
 
 ```

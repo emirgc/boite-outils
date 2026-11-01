@@ -1,11 +1,24 @@
 // @ts-check
 import { defineConfig } from 'astro/config'
+import { execSync } from 'node:child_process'
 import { fileURLToPath } from 'node:url'
 import react from '@astrojs/react'
 import indexRecherche from './src/integrations/index-recherche.mjs'
+import sitemap from './src/integrations/sitemap.mjs'
+
+// Comme bibweb : seule la branche production est indexée (robots.txt, balise robots) ; SITE_ENV peut le forcer
+const branche = () => {
+  try {
+    return execSync('git rev-parse --abbrev-ref HEAD', { stdio: ['ignore', 'pipe', 'ignore'] }).toString().trim()
+  } catch {
+    return ''
+  }
+}
+process.env.SITE_ENV ||= branche() === 'production' ? 'production' : 'preprod'
 
 export default defineConfig({
-  integrations: [react(), indexRecherche()],
+  site: 'https://boite-outils.bib.umontreal.ca',
+  integrations: [react(), indexRecherche(), sitemap()],
   build: { concurrency: 8 },
   // Une page dont le cacheKey (voir routesGuides) et le code n'ont pas changé n'est ni rendue ni relue dans LibGuides
   experimental: { incrementalBuild: true },

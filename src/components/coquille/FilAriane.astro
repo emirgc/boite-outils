@@ -1,7 +1,15 @@
 ---
 /* Fil d'Ariane (motif Breadcrumb de l'APG), comme dans bibweb : le dernier maillon est la page courante. */
 const { maillons } = Astro.props as { maillons: { libelle: string; href?: string }[] }
+// Le même fil pour les moteurs de recherche ; < échappé : un titre ne doit pas pouvoir fermer le script
+const donnees = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: maillons.map(({ libelle, href }, i) => ({ '@type': 'ListItem', position: i + 1, name: libelle, item: new URL(href ?? Astro.url.pathname, Astro.site).href })),
+}).replaceAll('<', '\\u003c')
 ---
+
+<script type="application/ld+json" is:inline set:html={donnees} />
 
 <nav class="fil-ariane" aria-label="Fil d'Ariane">
   <ol>

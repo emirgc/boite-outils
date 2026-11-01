@@ -5,6 +5,7 @@
  */
 import FilAriane from '@/components/coquille/FilAriane.astro'
 import Base from '@/layouts/Base.astro'
+import { descriptionDe } from '@/lib/extrait'
 import { ancetres, guide, routesGuides } from '@/lib/libguides'
 import { estCollectif, lienAncre } from '@/lib/nettoyage'
 import { LIEN_NOUS_ECRIRE, LIENS_NOUS_JOINDRE } from '@/data/navigation'
@@ -31,10 +32,14 @@ const imageCommune = fichesPage.find((p) => estCollectif(p.nom))?.photo
 // Une même adresse peut revenir dans plusieurs fiches de la page
 const courrielsEquipe = [...new Set(fichesPage.filter((p) => estCollectif(p.nom)).flatMap((p) => p.courriels ?? []).flat())]
 const enCommun = fichesPage.some((p) => estCollectif(p.nom)) || (!fichesPage.length && Boolean(auteur && estCollectif(auteur)))
+// Deux pages de même nom dans un guide (sous deux sections) : le nom de la section les distingue dans le titre
+const homonyme = sections.some((s) => s !== section && s.nom === section.nom)
+const sectionParente = homonyme ? sections.find((s) => s.id === section.parent)?.nom : undefined
+const nomPage = sectionParente ? `${section.nom} – ${sectionParente}` : section.nom
 const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA', { dateStyle: 'long', timeZone: 'America/Montreal' })
 ---
 
-<Base titre={`${section.nom} | ${nom} | Boîte à outils | Les bibliothèques UdeM`} description={description}>
+<Base titre={`${nomPage} | ${nom} | Boîte à outils UdeM`} description={descriptionDe(description, section.boites.map((b) => b.html).join(' '), premierePage)}>
   {/* Sans JavaScript, les onglets ne servent à rien : tous les panneaux s'affichent */}
   <noscript slot="head"><style is:inline>.onglets [role='tablist'] { display: none; } .onglets [role='tabpanel'][hidden] { display: block; }</style></noscript>
   <div class="conteneur gabarit">
