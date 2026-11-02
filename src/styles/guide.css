@@ -2995,8 +2995,8 @@ a.profil-personne::after {
   }
 }
 
-/* Les cartes portent déjà leur pastille fléchée */
-:is(.question, .frame, .frame-light, .frame-bleu, .sift-link, .tuile-photo, footer, .vignette, .profil) .lien-externe::before {
+/* Les cartes portent déjà leur pastille fléchée ; le fil d'Ariane reste sobre */
+:is(.question, .frame, .frame-light, .frame-bleu, .sift-link, .tuile-photo, footer, .vignette, .profil, .fil-ariane) .lien-externe::before {
   display: none;
 }
 
