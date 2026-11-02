@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, estCollectif, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, reecrireLien } from './nettoyage.ts'
+import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, estCollectif, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, reecrireLien, titreFiche } from './nettoyage.ts'
 
 const ctx = { idGuide: 748086, urlGuide: 'https://boite-outils.bib.umontreal.ca/trouver-evaluer/fiabilite-information', chemins: new Map([['10', '/'], ['20', '/vingt/']]) }
 const propre = (html: string, ancres = new Map<string, string>()) => nettoyerContenu(html, 1, '10', ctx, ancres)
@@ -8,6 +8,11 @@ const propre = (html: string, ancres = new Map<string, string>()) => nettoyerCon
 test('retire scripts, gestionnaires, styles et liens javascript', () => {
   const html = propre('<p style="color:red" onclick="x()">a<script>alert(1)</script> <a href="javascript:alert(1)">b</a></p>')
   assert.equal(html, '<p>a b</p>')
+})
+
+test('titre de fiche : une seule forme pour bibliothécaire, les autres titres restent', () => {
+  for (const titre of ['Votre bibliothécaire', 'Votre bibliothécaire ', 'Vos bibliothécaires', 'Bibliothécaire', 'Bibliothécaire ', 'Bibliothécaire disciplinaire', 'bibliothécaire :']) assert.equal(titreFiche(titre), 'Bibliothécaire', titre)
+  for (const titre of ['Librarian', 'Bibliothécaire formateur', 'Bibliothécaire - Santé publique', 'Technicien(ne) en documentation', 'Équipe de soutien REL - Volet projet']) assert.equal(titreFiche(titre), titre)
 })
 
 test('réécrit les liens internes au guide et laisse les autres absolus', () => {

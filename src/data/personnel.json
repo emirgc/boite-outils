@@ -2,18 +2,21 @@
  {
   "id": "alain-borsi",
   "nomComplet": "Alain Borsi",
+  "fonction": "Directeur(trice)",
   "photo": "alain-borsi.webp",
   "disciplines": []
  },
  {
   "id": "alex-sandrine-lavallee-masse",
   "nomComplet": "Alex-Sandrine Lavallée-Masse",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "alex-sandrine-lavallee-masse.webp",
   "disciplines": []
  },
  {
   "id": "alexandre-amar-zifkin",
   "nomComplet": "Alexandre Amar-Zifkin",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "alexandre-amar-zifkin.webp",
   "disciplines": [
    "Ophtalmologie",
@@ -25,12 +28,14 @@
  {
   "id": "amelie-bernard",
   "nomComplet": "Amélie Bernard",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "amelie-bernard.webp",
   "disciplines": []
  },
  {
   "id": "amelie-elizabeth-levesque",
   "nomComplet": "Amélie Elizabeth Lévesque",
+  "fonction": "Chef(fe) de service",
   "photo": "amelie-elizabeth-levesque.webp",
   "disciplines": [
    "Référence et offre pédagogique de première ligne"
@@ -39,6 +44,7 @@
  {
   "id": "aminata-keita",
   "nomComplet": "Aminata Keita",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "aminata-keita.webp",
   "disciplines": [
    "Bibliothéconomie et sciences de l'information",
@@ -48,6 +54,7 @@
  {
   "id": "amy-bergeron",
   "nomComplet": "Amy Bergeron",
+  "fonction": "Bibliothécaire",
   "photo": "amy-bergeron.webp",
   "disciplines": [
    "Offre pédagogique en bibliothèque"
@@ -56,18 +63,21 @@
  {
   "id": "ann-marie-sotomayor",
   "nomComplet": "Ann Marie Sotomayor",
+  "fonction": "Technicien(ne) en coordination du travail de bureau",
   "photo": "ann-mary-sotomayor.webp",
   "disciplines": []
  },
  {
   "id": "anne-dubois-mercier",
   "nomComplet": "Anne Dubois Mercier",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "anne-dubois-mercier.webp",
   "disciplines": []
  },
  {
   "id": "anne-hakier",
   "nomComplet": "Anne Hakier",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "anne-hakier.webp",
   "disciplines": [
    "Géographie",
@@ -77,18 +87,21 @@
  {
   "id": "anne-julie-tremblay",
   "nomComplet": "Anne-Julie Tremblay",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "anne-marie-brien",
   "nomComplet": "Anne-Marie Brien",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "anne-marie-brien.webp",
   "disciplines": []
  },
  {
   "id": "anne-marie-lalonde",
   "nomComplet": "Anne-Marie Lalonde",
+  "fonction": "Bibliothécaire",
   "photo": "anne-marie-lalonde.webp",
   "disciplines": [
    "Gestion des collections"
@@ -97,18 +110,21 @@
  {
   "id": "annick-charette",
   "nomComplet": "Annick Charette",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "anny-levesque",
   "nomComplet": "Anny Lévesque",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "anny-levesque.webp",
   "disciplines": []
  },
  {
   "id": "audrey-attia",
   "nomComplet": "Audrey Attia",
+  "fonction": "Chef(fe) de service",
   "photo": "audrey-attia.webp",
   "disciplines": [
    "Soutien à la recherche et à l’enseignement"
@@ -117,6 +133,7 @@
  {
   "id": "audrey-begin-poissant",
   "nomComplet": "Audrey Bégin-Poissant",
+  "fonction": "Chargé(e) de projets numériques",
   "photo": "audrey-begin-poisson.webp",
   "disciplines": [
    "Projets numériques et numérisation"
@@ -125,6 +142,7 @@
  {
   "id": "benjamin-constantineau",
   "nomComplet": "Benjamin Constantineau",
+  "fonction": "Chef(fe) de service",
   "photo": "benjamin-constantineau.webp",
   "disciplines": [
    "Circulation",
@@ -135,24 +153,28 @@
  {
   "id": "benoit-mayrand",
   "nomComplet": "Benoit Mayrand",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "benoit-mayrand.webp",
   "disciplines": []
  },
  {
   "id": "billie-bergeron",
   "nomComplet": "Billie Bergeron",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "busch-antenor-alexandre",
   "nomComplet": "Busch Antenor Alexandre",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "caroline-patenaude",
   "nomComplet": "Caroline Patenaude",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "caroline-patenaude.webp",
   "disciplines": [
    "Sociologie",
@@ -164,6 +186,7 @@
  {
   "id": "catherine-fortier",
   "nomComplet": "Catherine Fortier",
+  "fonction": "Chef(fe) de service",
   "photo": "catherine-fortier.webp",
   "disciplines": [
    "Soutien à la recherche et à l’enseignement"
@@ -172,6 +195,7 @@
  {
   "id": "cathy-bingoye",
   "nomComplet": "Cathy Bingoye",
+  "fonction": "Bibliothécaire",
   "photo": "cathy-bingoye.webp",
   "disciplines": [
    "Gestion des données de recherche",
@@ -181,18 +205,21 @@
  {
   "id": "chantal-desrosiers",
   "nomComplet": "Chantal Desrosiers",
+  "fonction": "Technicien(ne) en coordination du travail de bureau",
   "photo": "chantal-desrosiers.webp",
   "disciplines": []
  },
  {
   "id": "chantal-taillon",
   "nomComplet": "Chantal Taillon",
+  "fonction": "Technicien(ne) en coordination du travail de bureau",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "chloe-sinotte",
   "nomComplet": "Chloé Sinotte",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "chloe-sinotte.webp",
   "disciplines": [
    "Santé publique",
@@ -203,18 +230,21 @@
  {
   "id": "christian-belanger",
   "nomComplet": "Christian Bélanger",
+  "fonction": "Chef(fe) de service",
   "photo": "christian-belanger.webp",
   "disciplines": []
  },
  {
   "id": "clotilde-rajalu",
   "nomComplet": "Clotilde Rajalu",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "cynthia-gagne",
   "nomComplet": "Cynthia Gagné",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "cynthia-gagne.webp",
   "disciplines": [
    "Sciences biologiques",
@@ -224,12 +254,14 @@
  {
   "id": "danny-letourneau",
   "nomComplet": "Danny Létourneau",
+  "fonction": "Chef(fe) de bibliothèque",
   "photo": "danny-letourneau.webp",
   "disciplines": []
  },
  {
   "id": "david-patenaude",
   "nomComplet": "David Patenaude",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "david-patenaude.webp",
   "disciplines": [
    "Criminologie",
@@ -243,6 +275,7 @@
  {
   "id": "delphine-cado",
   "nomComplet": "Delphine Cado",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "delphine-cado.webp",
   "disciplines": [
    "Sciences infirmières et gérontologie"
@@ -251,6 +284,7 @@
  {
   "id": "denis-arvisais",
   "nomComplet": "Denis Arvisais",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "denis-arvisais.webp",
   "disciplines": [
    "Études médicales postdoctorales (programmes de résidence)",
@@ -261,18 +295,21 @@
  {
   "id": "diane-gagnon",
   "nomComplet": "Diane Gagnon",
+  "fonction": "Technicien(ne) en coordination du travail de bureau",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "diane-moreau",
   "nomComplet": "Diane Moreau",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "diane-moreau.webp",
   "disciplines": []
  },
  {
   "id": "dominic-desaulniers",
   "nomComplet": "Dominic Desaulniers",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "dominic-desaulniers.webp",
   "disciplines": [
    "Psychologie",
@@ -284,6 +321,7 @@
  {
   "id": "emilie-dalpe",
   "nomComplet": "Émilie Dalpé",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "emilie-dalpe.webp",
   "disciplines": [
    "Littératures de langue française",
@@ -297,6 +335,7 @@
  {
   "id": "emilie-walsh",
   "nomComplet": "Émilie Walsh",
+  "fonction": "Bibliothécaire",
   "photo": null,
   "disciplines": [
    "Ressources électroniques et licences"
@@ -305,6 +344,7 @@
  {
   "id": "emir-chouchane",
   "nomComplet": "Emir Chouchane",
+  "fonction": "Conseiller(ère)",
   "photo": "emir-chouchane.webp",
   "disciplines": [
    "Médiation technologique"
@@ -313,6 +353,7 @@
  {
   "id": "eric-bouchard",
   "nomComplet": "Éric Bouchard",
+  "fonction": "Bibliothécaire",
   "photo": "eric-bouchard.webp",
   "disciplines": [
    "Livres rares et collections spéciales"
@@ -321,30 +362,35 @@
  {
   "id": "eric-romano",
   "nomComplet": "Éric Romano",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "fanny-c-brochu",
   "nomComplet": "Fanny C. Brochu",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "fanny-c-brochu.webp",
   "disciplines": []
  },
  {
   "id": "fatima-zahra-ouadrhiri",
   "nomComplet": "Fatima Zahra Ouadrhiri",
+  "fonction": "Technicien(ne) en coordination du travail de bureau",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "france-nadeau",
   "nomComplet": "France Nadeau",
+  "fonction": "Directeur(trice)",
   "photo": "france-nadeau.webp",
   "disciplines": []
  },
  {
   "id": "francois-constantin-d-amour",
   "nomComplet": "François Constantin-D’Amour",
+  "fonction": "Bibliothécaire",
   "photo": "francois-constantin-d-amour.webp",
   "disciplines": [
    "Service Accessibilité"
@@ -353,30 +399,35 @@
  {
   "id": "francois-xavier-panaccio",
   "nomComplet": "François-Xavier Panaccio",
+  "fonction": "Technopédagogue",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "frederic-tremblay",
   "nomComplet": "Frédéric Tremblay",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "frederic-tremblay.webp",
   "disciplines": []
  },
  {
   "id": "gabrielle-mathieu-dupuis",
   "nomComplet": "Gabrielle Mathieu-Dupuis",
+  "fonction": "Chef(fe) de service",
   "photo": "gabrielle-mathieu-dupuis.webp",
   "disciplines": []
  },
  {
   "id": "genevieve-lemarier",
   "nomComplet": "Geneviève Lemarier",
+  "fonction": "Chef(fe) de service",
   "photo": "genevieve-lemarier.webp",
   "disciplines": []
  },
  {
   "id": "ginette-denyse-melancon-bolduc",
   "nomComplet": "Ginette-Denyse Melançon-Bolduc",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "ginette-melancon-bolduc.webp",
   "disciplines": [
    "Aménagement"
@@ -385,6 +436,7 @@
  {
   "id": "graham-lavender",
   "nomComplet": "Graham Lavender",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "graham-lavender.webp",
   "disciplines": [
    "Science politique",
@@ -397,18 +449,21 @@
  {
   "id": "guillaume-viart",
   "nomComplet": "Guillaume Viart",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": "guillaume-viart.webp",
   "disciplines": []
  },
  {
   "id": "guy-blondeau",
   "nomComplet": "Guy Blondeau",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "guylaine-brazeau",
   "nomComplet": "Guylaine Brazeau",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "guylaine-brazeau.webp",
   "disciplines": [
    "Gestion des collections"
@@ -417,6 +472,7 @@
  {
   "id": "hugo-bernier",
   "nomComplet": "Hugo Bernier",
+  "fonction": "Bibliothécaire",
   "photo": null,
   "disciplines": [
    "Expérience numérique en recherche"
@@ -425,6 +481,7 @@
  {
   "id": "indiana-delsart",
   "nomComplet": "Indiana Delsart",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "indiana-delsart.webp",
   "disciplines": [
    "Mathématiques",
@@ -437,6 +494,7 @@
  {
   "id": "isabelle-giguere",
   "nomComplet": "Isabelle Giguère",
+  "fonction": "Bibliothécaire",
   "photo": "isabelle-giguere.webp",
   "disciplines": [
    "Dépôt de données de recherche Borealis"
@@ -445,18 +503,21 @@
  {
   "id": "isabelle-lagadec",
   "nomComplet": "Isabelle Lagadec",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "jason-madooray",
   "nomComplet": "Jason Madooray",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "jason-madooray.webp",
   "disciplines": []
  },
  {
   "id": "jean-francois-durnin",
   "nomComplet": "Jean-François Durnin",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "jean-francois-durnin.webp",
   "disciplines": [
    "Sciences de l'éducation"
@@ -465,12 +526,14 @@
  {
   "id": "jeremy-prime",
   "nomComplet": "Jérémy Prime",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "jeremy-prime.webp",
   "disciplines": []
  },
  {
   "id": "jessica-legault",
   "nomComplet": "Jessica Legault",
+  "fonction": "Bibliothécaire",
   "photo": "jessica-legault.webp",
   "disciplines": [
    "Périodiques"
@@ -479,36 +542,42 @@
  {
   "id": "joanna-bodnar",
   "nomComplet": "Joanna Bodnar",
+  "fonction": "Technicien(ne) en coordination du travail de bureau",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "josee-vachon",
   "nomComplet": "Josée Vachon",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "josee-vachon.webp",
   "disciplines": []
  },
  {
   "id": "josee-viel",
   "nomComplet": "Josée Viel",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "josee-viel.webp",
   "disciplines": []
  },
  {
   "id": "judith-fafard-larose",
   "nomComplet": "Judith Fafard-Larose",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "judith-fafard-larose.webp",
   "disciplines": []
  },
  {
   "id": "julie-ouellette",
   "nomComplet": "Julie Ouellette",
+  "fonction": "Chef(fe) de service",
   "photo": "julie-ouellette.webp",
   "disciplines": []
  },
  {
   "id": "julie-trepanier",
   "nomComplet": "Julie Trépanier",
+  "fonction": "Chef(fe) de service",
   "photo": "julie-trepanier.webp",
   "disciplines": [
    "Référence et offre pédagogique de première ligne"
@@ -517,6 +586,7 @@
  {
   "id": "juliette-tirard-collet",
   "nomComplet": "Juliette Tirard-Collet",
+  "fonction": "Bibliothécaire",
   "photo": "juliette-tirard-collet.webp",
   "disciplines": [
    "Communication et image de marque"
@@ -525,6 +595,7 @@
  {
   "id": "justine-menard",
   "nomComplet": "Justine Ménard",
+  "fonction": "Bibliothécaire",
   "photo": "justine-menard.webp",
   "disciplines": [
    "Ressources électroniques et ententes consortiales"
@@ -533,18 +604,21 @@
  {
   "id": "karine-theriault-dube",
   "nomComplet": "Karine Thériault-Dubé",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "karine-theriault-dube.webp",
   "disciplines": []
  },
  {
   "id": "khalid-jouamaa",
   "nomComplet": "Khalid Jouamaa",
+  "fonction": "Directeur(trice)",
   "photo": "khalid-jouamaa.webp",
   "disciplines": []
  },
  {
   "id": "laurence-charest",
   "nomComplet": "Laurence Charest",
+  "fonction": "Bibliothécaire",
   "photo": "laurence-charest.webp",
   "disciplines": [
    "Papyrus"
@@ -553,24 +627,28 @@
  {
   "id": "lucie-geoffroy",
   "nomComplet": "Lucie Geoffroy",
+  "fonction": "Bibliothécaire",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "ly-kieng-tir",
   "nomComplet": "Ly Kieng Tir",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "ly-kieng-tir.webp",
   "disciplines": []
  },
  {
   "id": "magalie-beaudoin",
   "nomComplet": "Magalie Beaudoin",
+  "fonction": "Responsable ressources financières et matérielles",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "magdalena-oriental",
   "nomComplet": "Magdalena Oriental",
+  "fonction": "Responsable",
   "photo": "magdalena-oriental.webp",
   "disciplines": [
    "Ressources humaines"
@@ -579,6 +657,7 @@
  {
   "id": "marc-olivier-croteau",
   "nomComplet": "Marc-Olivier Croteau",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "marc-olivier-croteau.webp",
   "disciplines": [
    "Communication",
@@ -588,12 +667,14 @@
  {
   "id": "mariana-frimu",
   "nomComplet": "Mariana Frimu",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "mariane-leonard",
   "nomComplet": "Mariane Léonard",
+  "fonction": "Chef(fe) de service",
   "photo": "mariane-leonard.webp",
   "disciplines": [
    "Référence et offre pédagogique de première ligne"
@@ -602,6 +683,7 @@
  {
   "id": "marie-claude-poirier",
   "nomComplet": "Marie-Claude Poirier",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "marie-claude-poirier.webp",
   "disciplines": [
    "Médecine vétérinaire"
@@ -610,24 +692,28 @@
  {
   "id": "marie-france-bernier",
   "nomComplet": "Marie-France Bernier",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "marie-france-bernier.webp",
   "disciplines": []
  },
  {
   "id": "marie-france-laliberte",
   "nomComplet": "Marie-France Laliberté",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "marie-france-laliberte.webp",
   "disciplines": []
  },
  {
   "id": "marie-josee-lapalme",
   "nomComplet": "Marie-Josée Lapalme",
+  "fonction": "Technicien(ne) en muséologie",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "marie-pierre-gadoua",
   "nomComplet": "Marie-Pierre Gadoua",
+  "fonction": "Conseiller(ère)",
   "photo": "marie-pierre-gadoua.webp",
   "disciplines": [
    "Engagement et innovation sociale"
@@ -636,6 +722,7 @@
  {
   "id": "marjorie-gauchier",
   "nomComplet": "Marjorie Gauchier",
+  "fonction": "Bibliothécaire",
   "photo": "marjorie-gauchier.webp",
   "disciplines": [
    "Droit d'auteur"
@@ -644,12 +731,14 @@
  {
   "id": "martin-sevigny",
   "nomComplet": "Martin Sévigny",
+  "fonction": "Directeur(trice)",
   "photo": "martin-sevigny.webp",
   "disciplines": []
  },
  {
   "id": "maryna-beaulieu",
   "nomComplet": "Maryna Beaulieu",
+  "fonction": "Directeur(trice)",
   "photo": "maryna-beaulieu.webp",
   "disciplines": [
    "Prêt entre bibliothèques"
@@ -658,6 +747,7 @@
  {
   "id": "mathieu-murray-samuel",
   "nomComplet": "Mathieu Murray-Samuel",
+  "fonction": "Bibliothécaire",
   "photo": "mathieu-murray-samuel.webp",
   "disciplines": [
    "Monographies"
@@ -666,12 +756,14 @@
  {
   "id": "mathieu-nicolas-tardif",
   "nomComplet": "Mathieu Nicolas Tardif",
+  "fonction": "Chef(fe) de service",
   "photo": "mathieu-tardif.webp",
   "disciplines": []
  },
  {
   "id": "mathieu-pigeon",
   "nomComplet": "Mathieu Pigeon",
+  "fonction": "Bibliothécaire",
   "photo": "mathieu-pigeon.webp",
   "disciplines": [
    "Édition savante et libre-accès"
@@ -680,12 +772,14 @@
  {
   "id": "mathieu-proulx",
   "nomComplet": "Mathieu Proulx",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "mathieu-thomas",
   "nomComplet": "Mathieu Thomas",
+  "fonction": "Bibliothécaire",
   "photo": "mathieu-thomas.webp",
   "disciplines": [
    "Livres rares et collections spéciales"
@@ -694,18 +788,21 @@
  {
   "id": "maude-lethiecq-normand",
   "nomComplet": "Maude Lethiecq-Normand",
+  "fonction": "Chef(fe) de service",
   "photo": "maude-lethiecq-normand.webp",
   "disciplines": []
  },
  {
   "id": "melanie-lachapelle",
   "nomComplet": "Mélanie Lachapelle",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "melanie-lachapelle.webp",
   "disciplines": []
  },
  {
   "id": "melanie-masse",
   "nomComplet": "Mélanie Massé",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "melanie-masse.webp",
   "disciplines": [
    "Aménagement"
@@ -714,12 +811,14 @@
  {
   "id": "monica-audet",
   "nomComplet": "Monica Audet",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "monica-audet.webp",
   "disciplines": []
  },
  {
   "id": "morgane-de-bellefeuille",
   "nomComplet": "Morgane De Bellefeuille",
+  "fonction": "Directeur(trice)",
   "photo": "morgane-de-bellefeuille.webp",
   "disciplines": [
    "Direction adjointe"
@@ -728,6 +827,7 @@
  {
   "id": "mylene-therrien",
   "nomComplet": "Mylène Therrien",
+  "fonction": "Responsable",
   "photo": "mylene-therrien.webp",
   "disciplines": [
    "Circulation",
@@ -737,6 +837,7 @@
  {
   "id": "myriam-boyer",
   "nomComplet": "Myriam Boyer",
+  "fonction": "Chef(fe) de service",
   "photo": "myriam-boyer.webp",
   "disciplines": [
    "Gestion des collections et numérisation"
@@ -745,6 +846,7 @@
  {
   "id": "nadege-arsa",
   "nomComplet": "Nadège Arsa",
+  "fonction": "Bibliothécaire",
   "photo": "nadege-arsa.webp",
   "disciplines": [
    "Collections"
@@ -753,36 +855,42 @@
  {
   "id": "nancy-theberge",
   "nomComplet": "Nancy Théberge",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "nancy-theberge.webp",
   "disciplines": []
  },
  {
   "id": "nancy-turgeon",
   "nomComplet": "Nancy Turgeon",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "natalia-jabinschi",
   "nomComplet": "Natalia Jabinschi",
+  "fonction": "Analyste en informatique",
   "photo": "natalia-jabinschi.webp",
   "disciplines": []
  },
  {
   "id": "nathalie-poulin",
   "nomComplet": "Nathalie Poulin",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "nathalie-poulin.webp",
   "disciplines": []
  },
  {
   "id": "nima-behforouz",
   "nomComplet": "Nima Behforouz",
+  "fonction": "Bibliothécaire",
   "photo": "nima-behforouz.webp",
   "disciplines": []
  },
  {
   "id": "nino-gabrielli",
   "nomComplet": "Nino Gabrielli",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "nino-gabrielli.webp",
   "disciplines": [
    "Philosophie",
@@ -795,12 +903,14 @@
  {
   "id": "noemie-gervais",
   "nomComplet": "Noémie Gervais",
+  "fonction": "Technicien(ne) en documentation",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "pascal-martinolli",
   "nomComplet": "Pascal Martinolli",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "pascal-martinolli.webp",
   "disciplines": [
    "Histoire",
@@ -810,12 +920,14 @@
  {
   "id": "pierre-yves-lafleur",
   "nomComplet": "Pierre-Yves Lafleur",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "rose-carine-henriquez",
   "nomComplet": "Rose Carine Henriquez",
+  "fonction": "Bibliothécaire",
   "photo": "rose-carine-henriquez.webp",
   "disciplines": [
    "Référence et offre pédagogique de première ligne",
@@ -825,6 +937,7 @@
  {
   "id": "sara-bouhlal",
   "nomComplet": "Sara Bouhlal",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "sara-bouhlal.webp",
   "disciplines": [
    "Droit"
@@ -833,6 +946,7 @@
  {
   "id": "sarah-cherrier",
   "nomComplet": "Sarah Cherrier",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "sarah-cherrier.webp",
   "disciplines": [
    "Audiologie",
@@ -845,12 +959,14 @@
  {
   "id": "sarah-julie-richard",
   "nomComplet": "Sarah-Julie Richard",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "sarah-julie-richard.webp",
   "disciplines": []
  },
  {
   "id": "simon-blais-longtin",
   "nomComplet": "Simon Blais Longtin",
+  "fonction": "Bibliothécaire",
   "photo": "simon-blais-longtin.webp",
   "disciplines": [
    "Soutien à utilisation de l'intelligence artificielle générative"
@@ -859,6 +975,7 @@
  {
   "id": "simon-pierre-crevier",
   "nomComplet": "Simon-Pierre Crevier",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "simon-pierre-crevier.webp",
   "disciplines": [
    "Santé publique",
@@ -869,36 +986,42 @@
  {
   "id": "siv-kham-chao",
   "nomComplet": "Siv Kham Chao",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "siv-kham-chao.webp",
   "disciplines": []
  },
  {
   "id": "sophie-brisebois",
   "nomComplet": "Sophie Brisebois",
+  "fonction": "Directeur(trice)",
   "photo": "sophie-brisebois.webp",
   "disciplines": []
  },
  {
   "id": "sosthene-yamale",
   "nomComplet": "Sosthène Yamalé",
+  "fonction": "Administrateur(trice) de systèmes",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "stephanie-gagnon",
   "nomComplet": "Stéphanie Gagnon",
+  "fonction": "Directeur(trice) général(e)",
   "photo": "stephanie-gagnon.webp",
   "disciplines": []
  },
  {
   "id": "stephanie-hainault",
   "nomComplet": "Stéphanie Hainault",
+  "fonction": "Chargé(e) de projets numériques",
   "photo": "stephanie-hainault.webp",
   "disciplines": []
  },
  {
   "id": "stephanie-lariviere-roberge",
   "nomComplet": "Stéphanie Larivière-Roberge",
+  "fonction": "Chef(fe) de service",
   "photo": "stephanie-lariviere-roberge.webp",
   "disciplines": [
    "Référence et offre pédagogique de première ligne",
@@ -908,6 +1031,7 @@
  {
   "id": "stephanie-pham-dang",
   "nomComplet": "Stéphanie Pham-Dang",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "stephanie-pham-dang.webp",
   "disciplines": [
    "Droit"
@@ -916,6 +1040,7 @@
  {
   "id": "sylvie-fontaine",
   "nomComplet": "Sylvie Fontaine",
+  "fonction": "Chef(fe) de service",
   "photo": "sylvie-fontaine.webp",
   "disciplines": [
    "Soutien à la recherche et à l’enseignement"
@@ -924,6 +1049,7 @@
  {
   "id": "taline-ekmekjian",
   "nomComplet": "Taline Ekmekjian",
+  "fonction": "Bibliothécaire",
   "photo": null,
   "disciplines": [
    "Soutien aux synthèses de connaissance"
@@ -932,6 +1058,7 @@
  {
   "id": "tanya-buchet",
   "nomComplet": "Tanya Buchet",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "tanya-buchet.webp",
   "disciplines": [
    "Études médicales de premier cycle (Doctorat en médecine)",
@@ -942,6 +1069,7 @@
  {
   "id": "tara-landry",
   "nomComplet": "Tara Landry",
+  "fonction": "Chef(fe) de service",
   "photo": "tara-landry.webp",
   "disciplines": [
    "Soutien à la recherche et à l’enseignement"
@@ -950,6 +1078,7 @@
  {
   "id": "tatiana-bobeica-talpa",
   "nomComplet": "Tatiana Bobeica Talpa",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "tatiana-bobeica-talpa.webp",
   "disciplines": [
    "Médecine dentaire",
@@ -960,12 +1089,14 @@
  {
   "id": "thien-huong-che-quang",
   "nomComplet": "Thien-Huong Che-Quang",
+  "fonction": "Technicien(ne) en administration",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "thien-sa-hoang",
   "nomComplet": "Thiên Sa Hoàng",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "thien-sa-hoang.webp",
   "disciplines": [
    "Pharmacie et pharmacologie",
@@ -975,12 +1106,14 @@
  {
   "id": "thierry-caballero",
   "nomComplet": "Thierry Caballero",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "thomas-gagnon-van-leeuwen",
   "nomComplet": "Thomas Gagnon-van Leeuwen",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": null,
   "disciplines": [
    "Droit"
@@ -989,6 +1122,7 @@
  {
   "id": "valerie-bastien",
   "nomComplet": "Valérie Bastien",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "valerie-bastien.webp",
   "disciplines": [
    "Sciences de l’éducation",
@@ -1000,6 +1134,7 @@
  {
   "id": "valerie-rioux",
   "nomComplet": "Valérie Rioux",
+  "fonction": "Bibliothécaire disciplinaire",
   "photo": "valerie-rioux.webp",
   "disciplines": [
    "Histoire de l'art",
@@ -1012,12 +1147,14 @@
  {
   "id": "vanessa-martin",
   "nomComplet": "Vanessa Martin",
+  "fonction": "Technicien(ne) en coordination du travail de bureau",
   "photo": "vanessa-martin.webp",
   "disciplines": []
  },
  {
   "id": "viviane-angers",
   "nomComplet": "Viviane Angers",
+  "fonction": "Bibliothécaire",
   "photo": "viviane-angers.webp",
   "disciplines": [
    "Référence et offre pédagogique de première ligne",
@@ -1031,6 +1168,7 @@
  {
   "id": "viviane-st-arnaud",
   "nomComplet": "Viviane St-Arnaud",
+  "fonction": "Bibliothécaire",
   "photo": "viviane-st-arnaud.webp",
   "disciplines": [
    "Prêt entre bibliothèques"
@@ -1039,18 +1177,21 @@
  {
   "id": "wassif-cheik",
   "nomComplet": "Wassif Cheik",
+  "fonction": "Technicien(ne) en soutien informatique",
   "photo": null,
   "disciplines": []
  },
  {
   "id": "yacine-mansar",
   "nomComplet": "Yacine Mansar",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "yacine-mansar.webp",
   "disciplines": []
  },
  {
   "id": "yan-vallee",
   "nomComplet": "Yan Vallée",
+  "fonction": "Technicien(ne) en documentation",
   "photo": "yan-vallee.webp",
   "disciplines": []
  }

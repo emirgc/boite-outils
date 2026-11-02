@@ -12,7 +12,7 @@ import * as cheerio from 'cheerio'
 import personnel from '@/data/personnel.json'
 import { jourMontreal, lirePagesAvecFil } from './fils'
 import { marquerLiensExternes } from './liens-externes'
-import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, slugifier, type SectionBrute } from './nettoyage'
+import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, slugifier, titreFiche, type SectionBrute } from './nettoyage'
 
 const API = 'https://lgapi-ca.libapps.com/1.2'
 const SITE = 'https://boite-outils.bib.umontreal.ca'
@@ -151,12 +151,20 @@ function vignettePersonne(nom: string, photo: string | undefined, fonction: stri
 function lireProfil($: cheerio.CheerioAPI, boite: ReturnType<cheerio.CheerioAPI>) {
   const fiche = boite.find('.s-lib-profile-container').first()
   const nom = fiche.find('.s-lib-profile-name').text().trim()
-  const titre = boite.children('.s-lib-box-title').text().trim().replace(/^\.$/, '')
   const personne = trouverPersonne(nom)
+  const titreBoite = boite.children('.s-lib-box-title').text().trim().replace(/^\.$/, '')
+  // Sans titre, ou avec un titre qui ne dit rien de la personne (« Nous joindre ») : la fonction du répertoire, si elle y figure
+  const titre = !titreBoite || /^((pour )?nous joindre|contact)\s*:?$/i.test(titreBoite) ? personne?.fonction || titreBoite : titreBoite
   const imageSource = fiche.find('.s-lib-profile-image img').attr('src')
   const photo = personne ? photoPersonne(personne.photo) : imageSource?.replace(/^\/\//, 'https://')
   const courriels = fiche.find('a[href^="mailto:"]').toArray().map((a) => adressesDe($(a).attr('href')!))
-  return { titre, nom, photo, href: personne && fichePersonne(personne.nomComplet), courriels }
+  return { titre: titreFiche(titre), nom, photo, href: personne && fichePersonne(personne.nomComplet), courriels }
+}
+
+/** Fiche du propriétaire d'un guide sans boîte de profil, si le répertoire de bibweb le connaît */
+function ficheProprietaire(nom: string | undefined) {
+  const personne = nom ? trouverPersonne(nom) : undefined
+  return personne && { titre: titreFiche(personne.fonction), nom: personne.nomComplet, photo: photoPersonne(personne.photo), href: fichePersonne(personne.nomComplet), courriels: [] as string[][] }
 }
 
 /** Boîtes d'une page publique, dans l'ordre d'affichage, avec leurs assets */
@@ -345,13 +353,16 @@ async function chargerGuide(idGuide: number) {
     }),
   )
 
+  // Le nom seulement : l'API donne aussi le courriel, qui n'a pas à être publié
+  const auteur = guide.owner && `${guide.owner.first_name} ${guide.owner.last_name}`.trim()
+
   return {
     nom: guide.name.trim(),
     description: (guide.description ?? '').trim(),
     misAJour: guide.updated,
     racine: racineDe(guide),
-    // Le nom seulement : l'API donne aussi le courriel, qui n'a pas à être publié
-    auteur: guide.owner && `${guide.owner.first_name} ${guide.owner.last_name}`.trim(),
+    auteur,
+    ficheAuteur: ficheProprietaire(auteur),
     sections: nettoyerGuide(sections, {
       idGuide,
       urlGuide: guide.friendly_url || `${SITE}/c.php?g=${idGuide}`,

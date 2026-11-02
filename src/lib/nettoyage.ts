@@ -569,6 +569,9 @@ export function nettoyerContenu(html: string, idAsset: number, idPage: string, c
 /** Fiche ou responsable d'un guide écrit en commun : une équipe, pas une personne */
 export const estCollectif = (nom: string) => /^(nous joindre|notre équipe|bibliothèques udem|bibliothécaires en |équipe |soutien pour )/i.test(nom.trim())
 
+/** Titre d'une fiche : les variantes du même métier (« Votre bibliothécaire », « Bibliothécaire disciplinaire »…) n'en font qu'un */
+export const titreFiche = (titre: string) => (/^(votre |vos )?bibliothécaires?( disciplinaire)?\s*:?$/i.test(titre.trim()) ? 'Bibliothécaire' : titre)
+
 /** Adresses d'un lien mailto, sans sujet ; le « ; » de la source n'est pas fiable partout, la virgule l'est */
 export const adressesDe = (href: string) => href.replace(/^mailto:/i, '').split('?')[0].split(/[;,]/).map((a) => a.trim()).filter(Boolean)
 

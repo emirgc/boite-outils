@@ -2216,6 +2216,37 @@ a.profil-personne:hover {
   object-fit: cover;
 }
 
+/* Une fiche qui mène au répertoire se clique en entier : le lien couvre toute la carte */
+.profil:has(> a.profil-personne) {
+  position: relative;
+  transition:
+    border-color var(--duree-courte-4) var(--courbe-standard),
+    box-shadow var(--duree-courte-4) var(--courbe-standard);
+}
+
+a.profil-personne::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+a.profil-personne .profil-photo {
+  transition: scale var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Pointeurs fins seulement : au toucher, l'état resterait après le tapotement */
+@media (hover: hover) and (pointer: fine) {
+  .profil:has(> a.profil-personne:hover) {
+    border-color: var(--couleur-accent);
+    box-shadow: var(--ombre-1);
+  }
+
+  a.profil-personne:hover .profil-photo {
+    scale: 1.04;
+  }
+}
+
 .profil-nom {
   font-size: 1.0625rem;
   font-weight: var(--graisse-forte);

@@ -16,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { idGuide, idPage } = Astro.props
-const { nom, description, misAJour, auteur, racine, sections } = await guide(idGuide)
+const { nom, description, misAJour, auteur, ficheAuteur, racine, sections } = await guide(idGuide)
 const section = sections.find((s) => s.id === idPage)!
 const parents = await ancetres(idGuide)
 const premierePage = section.chemin === racine
@@ -24,8 +24,8 @@ const ids = new Set(sections.map((s) => s.id))
 const pagesPrincipales = sections.filter((s) => !s.parent || !ids.has(s.parent))
 const sousPages = (id: string) => sections.filter((s) => s.parent === id)
 const titresBoites = section.boites.filter((b) => b.nom)
-// Une page sans fiche reprend la première fiche du guide
-const fichesPage = section.profils.length ? section.profils : (sections.find((s) => s.profils.length)?.profils ?? [])
+// Une page sans fiche reprend la première fiche du guide ; un guide sans fiche, celle de son propriétaire
+const fichesPage = section.profils.length ? section.profils : (sections.find((s) => s.profils.length)?.profils ?? (ficheAuteur ? [ficheAuteur] : []))
 const profils = fichesPage.filter((p) => !estCollectif(p.nom))
 // Guide écrit en commun : une seule fiche « Nous joindre », à la place de l'équipe
 const imageCommune = fichesPage.find((p) => estCollectif(p.nom))?.photo
