@@ -1,0 +1,82 @@
+# Publie une copie de démonstration sur GitHub Pages, à la demande (onglet
+# Actions, « Run workflow ») : https://emirgc.github.io/boite-outils/
+#
+# Prérequis, une seule fois :
+# 1. Settings > Pages > Build and deployment > Source : « GitHub Actions ».
+# 2. Settings > Secrets and variables > Actions : LIBGUIDES_CLIENT_ID et
+#    LIBGUIDES_CLIENT_SECRET.
+#
+# SITE_ENV=preprod : chaque page porte noindex. Les adresses canoniques restent
+# celles du site officiel (`site` dans astro.config.mjs).
+name: Déployer sur GitHub Pages
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Un seul déploiement à la fois ; celui en cours va au bout
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  construire:
+    name: Construire
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Récupérer le dépôt
+        uses: actions/checkout@v4
+
+      # Astro 7 exige Node 22.22 ou plus récent (engines de package.json)
+      - name: Installer Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Installer les dépendances
+        run: npm ci
+
+      # Après npm ci, qui vide node_modules. Un cache GitHub ne se réécrit pas :
+      # chaque exécution en enregistre un nouveau, et restore-keys reprend le plus récent.
+      - name: Récupérer le cache du build
+        uses: actions/cache@v4
+        with:
+          path: node_modules/.astro
+          key: pages-${{ github.run_id }}
+          restore-keys: pages-
+
+      # Donne le sous-dossier de publication (/boite-outils)
+      - name: Préparer GitHub Pages
+        id: pages
+        uses: actions/configure-pages@v5
+
+      - name: Construire le site
+        run: npm run build
+        env:
+          SITE_ENV: preprod
+          BASE_PATH: ${{ steps.pages.outputs.base_path }}
+          LIBGUIDES_CLIENT_ID: ${{ secrets.LIBGUIDES_CLIENT_ID }}
+          LIBGUIDES_CLIENT_SECRET: ${{ secrets.LIBGUIDES_CLIENT_SECRET }}
+
+      - name: Téléverser le site construit
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deployer:
+    name: Déployer
+    needs: construire
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - name: Publier sur GitHub Pages
+        id: deploiement
+        uses: actions/deploy-pages@v4

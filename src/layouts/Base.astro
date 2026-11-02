@@ -24,6 +24,7 @@ import { XIcon } from '@phosphor-icons/react/dist/ssr/X'
 import LogoBibliotheques from '@/components/LogoBibliotheques.astro'
 import RechercheGuides from '@/components/RechercheGuides.astro'
 import Consentement from '@/components/coquille/Consentement.astro'
+import { sansBase } from '@/lib/chemin'
 import PiedDePage from '@/components/coquille/PiedDePage.astro'
 import { LIENS_SOFIA } from '@/data/navigation'
 import Retroaction from '@/components/coquille/Retroaction.astro'
@@ -32,7 +33,8 @@ import Retroaction from '@/components/coquille/Retroaction.astro'
 const { titre, description, sansRetroaction = false, noindex = false } = Astro.props as { titre: string; description?: string; sansRetroaction?: boolean; noindex?: boolean }
 const DESCRIPTION_SITE = 'Des ressources et des conseils de recherche choisis par les spécialistes des Bibliothèques de l’Université de Montréal.'
 const resume = description || DESCRIPTION_SITE
-const canonique = new URL(Astro.url.pathname, Astro.site).href
+const chemin = sansBase(Astro.url.pathname)
+const canonique = new URL(chemin, Astro.site).href
 // Hors production, rien n'est indexé : l'ancien site reste la référence (voir astro.config.mjs)
 const indexable = !noindex && process.env.SITE_ENV === 'production'
 
@@ -97,7 +99,7 @@ const MENU = [
         </div>
         <nav aria-label="Menu de la boîte à outils">
           <ul>
-            {MENU.map(([libelle, href]) => <li><a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>{libelle}</a></li>)}
+            {MENU.map(([libelle, href]) => <li><a href={href} aria-current={chemin === href ? 'page' : undefined}>{libelle}</a></li>)}
           </ul>
         </nav>
         <div class="outils" hidden data-outils>
@@ -132,7 +134,7 @@ const MENU = [
           <p class="surtitre surtitre-explorer" id="menu-explorer">Explorer</p>
           <nav aria-labelledby="menu-explorer">
             <ul class="pages-menu">
-              {[['Accueil', '/'], ...MENU].map(([libelle, href]) => <li><a href={href} aria-current={Astro.url.pathname === href ? 'page' : undefined}>{libelle}</a></li>)}
+              {[['Accueil', '/'], ...MENU].map(([libelle, href]) => <li><a href={href} aria-current={chemin === href ? 'page' : undefined}>{libelle}</a></li>)}
             </ul>
           </nav>
           <button type="button" class="poignee" aria-label="Fermer le menu" data-fermer-menu><span aria-hidden="true"></span></button>

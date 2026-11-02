@@ -46,10 +46,12 @@ const LIENS = [
 </Base>
 
 <script>
+  import { sansBase } from '@/lib/chemin'
+
   // Mots de l'adresse demandée dans le champ : /droit-civil/ → « droit civil ». Rien pour les extensions et les chiffres seuls.
   const champ = document.querySelector<HTMLInputElement>('[data-recherche-404] input[type=search]')
   if (champ) {
-    let chemin = location.pathname
+    let chemin = sansBase(location.pathname)
     try {
       chemin = decodeURIComponent(chemin)
     } catch {

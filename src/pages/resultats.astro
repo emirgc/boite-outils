@@ -69,6 +69,7 @@ const SOURCES = [
 </Base>
 
 <script>
+  import { avecBase } from '@/lib/chemin'
   import { chercher, motsDe, urlSofia, type EntreeRecherche } from '@/lib/recherche-guides'
 
   const PAR_PAGE = 20
@@ -122,9 +123,9 @@ const SOURCES = [
 
   // Sans index (serveur de développement, fichier absent) : les titres seulement
   const lireIndex = async (): Promise<EntreeRecherche[]> => {
-    const reponse = await fetch('/index-recherche.json')
+    const reponse = await fetch(avecBase('/index-recherche.json'))
     if (reponse.ok) return reponse.json()
-    const guides: { nom: string; url: string; base?: boolean; autres?: string }[] = await (await fetch('/guides.json')).json()
+    const guides: { nom: string; url: string; base?: boolean; autres?: string }[] = await (await fetch(avecBase('/guides.json'))).json()
     return guides.map(({ nom, url, base, autres }) => ({ titre: nom, url, base, mots: motsDe(`${nom} ${autres ?? ''}`).join(' ') }))
   }
 

@@ -55,10 +55,11 @@ const { id, portee = false } = Astro.props as { id: string; portee?: boolean }
 </form>
 
 <script>
+  import { avecBase } from '@/lib/chemin'
   import { filtrerGuides, urlSofia } from '@/lib/recherche-guides'
 
   let guides: Promise<{ nom: string; url: string; base?: boolean; autres?: string }[]> | undefined
-  const chargerGuides = (): NonNullable<typeof guides> => (guides ??= fetch('/guides.json').then((reponse) => reponse.json()).catch(() => []))
+  const chargerGuides = (): NonNullable<typeof guides> => (guides ??= fetch(avecBase('/guides.json')).then((reponse) => reponse.json()).catch(() => []))
 
   // Une adresse absolue quitte le site (lib/liens-externes)
   const aller = (url: string) => {
