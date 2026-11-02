@@ -169,6 +169,40 @@ const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA',
         trait.style.translate = `${choisi.offsetLeft}px ${choisi.offsetTop + choisi.offsetHeight - 3}px`
       }
 
+      // Images à agrandir : sans JavaScript, le lien ouvre simplement l'image. <dialog> garde le focus, ferme avec Échap et le rend au lien
+      const liensImages = document.querySelectorAll<HTMLAnchorElement>('a.image-agrandie')
+      if (liensImages.length) {
+        const visionneuse = document.createElement('dialog')
+        visionneuse.className = 'visionneuse'
+        visionneuse.setAttribute('aria-label', 'Image agrandie')
+        const fermer = document.createElement('button')
+        fermer.type = 'button'
+        fermer.setAttribute('aria-label', 'Fermer')
+        fermer.innerHTML = '<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>'
+        const image = document.createElement('img')
+        visionneuse.append(fermer, image)
+        document.body.append(visionneuse)
+        // Comme dans la source, un clic n'importe où ferme
+        visionneuse.addEventListener('click', () => visionneuse.close())
+        // Échap ferme même si le focus a quitté la visionneuse, ce que <dialog> seul ne garantit pas partout
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && visionneuse.open) visionneuse.close()
+        })
+        liensImages.forEach((lien) => {
+          // Elle ne s'ouvre plus dans une autre fenêtre : le marquage du middleware ne vaut plus
+          lien.removeAttribute('target')
+          lien.querySelector('.visuellement-masque')?.remove()
+          lien.setAttribute('aria-haspopup', 'dialog')
+          lien.addEventListener('click', (e) => {
+            if (e.ctrlKey || e.metaKey || e.shiftKey) return
+            e.preventDefault()
+            image.src = lien.href
+            image.alt = lien.querySelector('img')?.alt ?? ''
+            visionneuse.showModal()
+          })
+        })
+      }
+
       const activer = (onglet: HTMLElement) => {
         onglet.parentElement!.querySelectorAll<HTMLElement>('[role="tab"]').forEach((o) => {
           const choisi = o === onglet
