@@ -10,6 +10,7 @@
 import { createHash } from 'node:crypto'
 import * as cheerio from 'cheerio'
 import personnel from '@/data/personnel.json'
+import { jourMontreal, lirePagesAvecFil } from './fils'
 import { marquerLiensExternes } from './liens-externes'
 import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, slugifier, type SectionBrute } from './nettoyage'
 
@@ -262,8 +263,11 @@ function construireCatalogue(guides: GuideApi[]) {
   // Le middleware échappe à l'empreinte de code d'Astro : son résultat sur un exemple entre dans la clé.
   // SITE_ENV aussi : passer en production doit retirer le noindex des pages en cache.
   const empreinte = createHash('sha256').update(JSON.stringify(plan) + marquerLiensExternes('<a href="https://x"><img alt="i"></a><a href="https://x">t</a>') + process.env.SITE_ENV).digest('hex')
-  // Fils RSS et widgets changent sans toucher à la date du guide : relus au moins une fois par semaine
+  // Fils RSS et widgets changent sans toucher à la date du guide. Une page avec un fil est relue chaque jour, à la
+  // date de Montréal ; les autres chaque semaine, pour leurs widgets : tout relire ferait 1 950 requêtes par jour
   const semaine = Math.floor(Date.now() / (7 * 24 * 3600 * 1000))
+  const jour = jourMontreal()
+  const avecFil = lirePagesAvecFil()
   for (const g of publies) {
     const racine = racineDe(g)
     parRacine.set(racine, g)
@@ -272,7 +276,7 @@ function construireCatalogue(guides: GuideApi[]) {
     const pages = pagesAffichees(g).map((p) => ({ id: String(p.id), nom: p.name.trim() }))
     for (const [id, chemin] of cheminsDes(pages, racine)) {
       pagesLocales.set(id, chemin)
-      routes.push({ idGuide: g.id, idPage: id, chemin, cacheKey: `${g.updated}|${empreinte}|${semaine}` })
+      routes.push({ idGuide: g.id, idPage: id, chemin, cacheKey: `${g.updated}|${empreinte}|${avecFil.has(chemin) ? jour : semaine}` })
     }
   }
   return { guides: publies, pagesLocales, racines, parRacine, routes }
