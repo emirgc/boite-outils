@@ -1,0 +1,51 @@
+---
+/* Les fiches d'un guide : sous le menu sur grand écran, après le contenu sur une colonne (guide.css) */
+import { LIEN_NOUS_ECRIRE, LIENS_NOUS_JOINDRE } from '@/data/navigation'
+
+const { profils, enCommun, imageCommune, courrielsEquipe, auteur } = Astro.props as {
+  profils: { titre?: string; nom: string; photo?: string; href?: string }[]
+  enCommun: boolean
+  imageCommune?: string
+  courrielsEquipe: string[]
+  auteur?: string
+}
+---
+
+{profils.length > 0 || enCommun ? (
+  <aside aria-label="Nous joindre">
+    {profils.map((profil) => (
+      <div class="profil">
+        {profil.titre && <p class="profil-titre">{profil.titre}</p>}
+        {profil.href ? (
+          <a class="profil-personne" href={profil.href}>
+            {profil.photo && <img class="profil-photo" src={profil.photo} alt="" width="88" height="88" loading="lazy" />}
+            <span class="profil-nom">{profil.nom}</span>
+          </a>
+        ) : (
+          <div class="profil-personne">
+            {profil.photo && <img class="profil-photo" src={profil.photo} alt="" width="88" height="88" loading="lazy" />}
+            <span class="profil-nom">{profil.nom}</span>
+          </div>
+        )}
+      </div>
+    ))}
+    {enCommun && (
+      <div class="profil profil-commun">
+        <p class="profil-titre">Nous joindre</p>
+        {imageCommune && <img class="profil-photo" src={imageCommune} alt="" width="88" height="88" loading="lazy" />}
+        <ul>
+          {LIENS_NOUS_JOINDRE.map(({ libelle, href }) => <li><a href={href}>{libelle}</a></li>)}
+          <li>
+            {courrielsEquipe.length > 0 ? (
+              <>Nous écrire : {courrielsEquipe.map((adresse) => <a class="profil-courriel" href={`mailto:${adresse}`}>{adresse}</a>)}</>
+            ) : (
+              <a href={LIEN_NOUS_ECRIRE}>Nous écrire</a>
+            )}
+          </li>
+        </ul>
+      </div>
+    )}
+  </aside>
+) : (
+  auteur && <aside class="navigation-auteur" aria-label="Responsable du guide">Responsable du guide : <strong>{auteur}</strong></aside>
+)}

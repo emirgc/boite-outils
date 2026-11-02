@@ -3,12 +3,12 @@
  * Une page de guide lue dans l'API de LibGuides, avec la présentation de
  * bibweb. Une page statique par page du guide.
  */
+import FichesGuide from '@/components/FichesGuide.astro'
 import FilAriane from '@/components/coquille/FilAriane.astro'
 import Base from '@/layouts/Base.astro'
 import { descriptionDe } from '@/lib/extrait'
 import { ancetres, guide, routesGuides } from '@/lib/libguides'
 import { estCollectif, lienAncre } from '@/lib/nettoyage'
-import { LIEN_NOUS_ECRIRE, LIENS_NOUS_JOINDRE } from '@/data/navigation'
 
 export async function getStaticPaths() {
   const routes = await routesGuides()
@@ -26,12 +26,14 @@ const sousPages = (id: string) => sections.filter((s) => s.parent === id)
 const titresBoites = section.boites.filter((b) => b.nom)
 // Une page sans fiche reprend la première fiche du guide ; un guide sans fiche, celle de son propriétaire
 const fichesPage = section.profils.length ? section.profils : (sections.find((s) => s.profils.length)?.profils ?? (ficheAuteur ? [ficheAuteur] : []))
-const profils = fichesPage.filter((p) => !estCollectif(p.nom))
+// Une personne peut avoir deux boîtes de profil sur la même page : une seule fiche
+const profils = fichesPage.filter((p, i) => !estCollectif(p.nom) && fichesPage.findIndex((q) => q.nom === p.nom) === i)
 // Guide écrit en commun : une seule fiche « Nous joindre », à la place de l'équipe
 const imageCommune = fichesPage.find((p) => estCollectif(p.nom))?.photo
 // Une même adresse peut revenir dans plusieurs fiches de la page
 const courrielsEquipe = [...new Set(fichesPage.filter((p) => estCollectif(p.nom)).flatMap((p) => p.courriels ?? []).flat())]
 const enCommun = fichesPage.some((p) => estCollectif(p.nom)) || (!fichesPage.length && Boolean(auteur && estCollectif(auteur)))
+const fiches = { profils, enCommun, imageCommune, courrielsEquipe, auteur }
 // Deux pages de même nom dans un guide (sous deux sections) : le nom de la section les distingue dans le titre
 const homonyme = sections.some((s) => s !== section && s.nom === section.nom)
 const sectionParente = homonyme ? sections.find((s) => s.id === section.parent)?.nom : undefined
@@ -83,44 +85,7 @@ const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA',
             }
           </ul>
         </nav>
-        {profils.length > 0 || enCommun ? (
-          <aside aria-label="Nous joindre">
-            {profils.map((profil) => (
-              <div class="profil">
-                {profil.titre && <p class="profil-titre">{profil.titre}</p>}
-                {profil.href ? (
-                  <a class="profil-personne" href={profil.href}>
-                    {profil.photo && <img class="profil-photo" src={profil.photo} alt="" width="88" height="88" loading="lazy" />}
-                    <span class="profil-nom">{profil.nom}</span>
-                  </a>
-                ) : (
-                  <div class="profil-personne">
-                    {profil.photo && <img class="profil-photo" src={profil.photo} alt="" width="88" height="88" loading="lazy" />}
-                    <span class="profil-nom">{profil.nom}</span>
-                  </div>
-                )}
-              </div>
-            ))}
-            {enCommun && (
-              <div class="profil profil-commun">
-                <p class="profil-titre">Nous joindre</p>
-                {imageCommune && <img class="profil-photo" src={imageCommune} alt="" width="88" height="88" loading="lazy" />}
-                <ul>
-                  {LIENS_NOUS_JOINDRE.map(({ libelle, href }) => <li><a href={href}>{libelle}</a></li>)}
-                  <li>
-                    {courrielsEquipe.length > 0 ? (
-                      <>Nous écrire : {courrielsEquipe.map((adresse) => <a class="profil-courriel" href={`mailto:${adresse}`}>{adresse}</a>)}</>
-                    ) : (
-                      <a href={LIEN_NOUS_ECRIRE}>Nous écrire</a>
-                    )}
-                  </li>
-                </ul>
-              </div>
-            )}
-          </aside>
-        ) : (
-          auteur && <aside class="navigation-auteur" aria-label="Responsable du guide">Responsable du guide : <strong>{auteur}</strong></aside>
-        )}
+        <FichesGuide {...fiches} />
       </div>
 
 
@@ -157,6 +122,7 @@ const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA',
           Mis à jour le {dateMaj}.
         </p>
       </main>
+      <FichesGuide {...fiches} />
   </div>
     <script>
       // Onglets selon le motif de l'APG : tabindex itinérant, activation au focus

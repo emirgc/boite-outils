@@ -94,6 +94,29 @@
   padding-block: var(--espace-3) var(--espace-8);
 }
 
+/* Les fiches sont dans la page deux fois, une seule à la fois : l'ordre de lecture et de tabulation suit ce qu'on voit */
+@media (max-width: 1199.98px) {
+  .navigation-contenu > aside {
+    display: none;
+  }
+
+  .gabarit > aside:not(.navigation-auteur) {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--espace-2);
+  }
+
+  .gabarit > aside > .profil {
+    margin-block-start: 0;
+  }
+}
+
+@media (min-width: 1200px) {
+  .gabarit > aside {
+    display: none;
+  }
+}
+
 .navigation-titre {
   margin: 0;
   font-size: 1.25rem;

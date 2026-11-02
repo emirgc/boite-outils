@@ -149,17 +149,20 @@ function vignettePersonne(nom: string, photo: string | undefined, fonction: stri
 }
 
 /** Fiche de LibGuides : titre et nom, avec la photo et le lien du répertoire de bibweb si la personne y figure */
-function lireProfil($: cheerio.CheerioAPI, boite: ReturnType<cheerio.CheerioAPI>) {
-  const fiche = boite.find('.s-lib-profile-container').first()
-  const nom = fiche.find('.s-lib-profile-name').text().trim()
-  const personne = trouverPersonne(nom)
+function lireProfils($: cheerio.CheerioAPI, boite: ReturnType<cheerio.CheerioAPI>) {
   const titreBoite = boite.children('.s-lib-box-title').text().trim().replace(/^\.$/, '')
-  // Sans titre, ou avec un titre qui ne dit rien de la personne (« Nous joindre ») : la fonction du répertoire, si elle y figure
-  const titre = !titreBoite || /^((pour )?nous joindre|contact)\s*:?$/i.test(titreBoite) ? personne?.fonction || titreBoite : titreBoite
-  const imageSource = fiche.find('.s-lib-profile-image img').attr('src')
-  const photo = personne ? photoPersonne(personne.photo) : imageSource?.replace(/^\/\//, 'https://')
-  const courriels = fiche.find('a[href^="mailto:"]').toArray().map((a) => adressesDe($(a).attr('href')!))
-  return { titre: titreFiche(titre), nom, photo, href: personne && fichePersonne(personne.nomComplet), courriels }
+  // Une même boîte peut présenter plusieurs personnes : une fiche pour chacune
+  return boite.find('.s-lib-profile-container').toArray().map((el) => {
+    const fiche = $(el)
+    const nom = fiche.find('.s-lib-profile-name').text().trim()
+    const personne = trouverPersonne(nom)
+    // Sans titre, ou avec un titre qui ne dit rien de la personne (« Nous joindre ») : la fonction du répertoire, si elle y figure
+    const titre = !titreBoite || /^((pour )?nous joindre|contact)\s*:?$/i.test(titreBoite) ? personne?.fonction || titreBoite : titreBoite
+    const imageSource = fiche.find('.s-lib-profile-image img').attr('src')
+    const photo = personne ? photoPersonne(personne.photo) : imageSource?.replace(/^\/\//, 'https://')
+    const courriels = fiche.find('a[href^="mailto:"]').toArray().map((a) => adressesDe($(a).attr('href')!))
+    return { titre: titreFiche(titre), nom, photo, href: personne && fichePersonne(personne.nomComplet), courriels }
+  })
 }
 
 /** Fiche du propriétaire d'un guide sans boîte de profil, si le répertoire de bibweb le connaît */
@@ -174,7 +177,7 @@ async function boitesPubliques(idGuide: number, idPage: PageApi['id']) {
   const $ = cheerio.load(await (await lire(await appelLimite(url), url)).text())
   type Contenu = { id: number; onglet?: { id: string; nom: string }; href?: string; icones: string; description?: string; html: string }
   const boites = new Map<string, { nom: string; ancre?: string; contenus: Contenu[] }>()
-  const profils: ReturnType<typeof lireProfil>[] = []
+  const profils: ReturnType<typeof lireProfils> = []
   let courante: Contenu[] = []
   $('[id^="s-lg-box-"], [id^="s-lg-content-"]').each((_, el) => {
     const id = $(el).attr('id')!
@@ -184,7 +187,7 @@ async function boitesPubliques(idGuide: number, idPage: PageApi['id']) {
     // Le titre lu ici, pas dans l'API : une boîte flottante en a un dans l'API (« 4 carrés »), mais il ne s'affiche pas
     // Une fiche va sous le menu des guides, jamais dans le contenu
     if (boite && $(el).find('.s-lib-profile-container').length) {
-      profils.push(lireProfil($, $(el)))
+      profils.push(...lireProfils($, $(el)))
       courante = []
     } else if (boite) boites.set(boite[1], { nom: $(el).children('.s-lib-box-title').text().trim(), ancre: $(el).closest('[id^="s-lg-box-wrapper-"]').attr('id'), contenus: (courante = []) })
     // Contenu d'une boîte réutilisée : déjà rendu par le contenu qui l'englobe
