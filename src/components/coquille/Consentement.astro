@@ -75,6 +75,8 @@ const URL_VIE_PRIVEE = 'https://vie-privee.umontreal.ca/accueil/'
 <script>
   import { formaterTemoin, lireChoix } from '@/lib/consentement'
 
+  // Une copie (démonstration, développement) ne compte pas dans les statistiques des bibliothèques
+  const SITE_OFFICIEL = location.hostname.endsWith('bib.umontreal.ca')
   const CONTENEUR_GTM = 'GTM-K8BQPC'
   const PROJET_CLARITY = 'tfds44a7xa'
   const TEMOINS_STATISTIQUES = [/^_ga$/i, /^_ga_.+/i, /^_gid$/i, /^_gat$/i, /^_clck$/i, /^_clsk$/i, /^CLID$/i, /^ANONCHK$/i, /^MR$/i, /^MUID$/i, /^SM$/i]
@@ -132,7 +134,7 @@ const URL_VIE_PRIVEE = 'https://vie-privee.umontreal.ca/accueil/'
   let googleCharge = false
 
   function appliquerStatistiques(accepte: boolean) {
-    if (accepte) {
+    if (accepte && SITE_OFFICIEL) {
       gtag('consent', 'update', { analytics_storage: 'granted' })
       if (!googleCharge) {
         googleCharge = true
