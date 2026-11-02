@@ -30,11 +30,11 @@ jobs:
     timeout-minutes: 20
     steps:
       - name: Récupérer le dépôt
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Astro 7 exige Node 22.22 ou plus récent (engines de package.json)
       - name: Installer Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: '22'
           cache: npm
@@ -45,7 +45,7 @@ jobs:
       # Après npm ci, qui vide node_modules. Un cache GitHub ne se réécrit pas :
       # chaque exécution en enregistre un nouveau, et restore-keys reprend le plus récent.
       - name: Récupérer le cache du build
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: node_modules/.astro
           key: pages-${{ github.run_id }}
@@ -54,7 +54,7 @@ jobs:
       # Donne le sous-dossier de publication (/boite-outils)
       - name: Préparer GitHub Pages
         id: pages
-        uses: actions/configure-pages@v5
+        uses: actions/configure-pages@v6
 
       - name: Construire le site
         run: npm run build
@@ -65,7 +65,7 @@ jobs:
           LIBGUIDES_CLIENT_SECRET: ${{ secrets.LIBGUIDES_CLIENT_SECRET }}
 
       - name: Téléverser le site construit
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: dist
 
@@ -79,4 +79,4 @@ jobs:
     steps:
       - name: Publier sur GitHub Pages
         id: deploiement
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
