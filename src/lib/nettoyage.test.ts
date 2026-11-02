@@ -10,6 +10,13 @@ test('retire scripts, gestionnaires, styles et liens javascript', () => {
   assert.equal(html, '<p>a b</p>')
 })
 
+test('icône de la police Phosphor : une image, avec sa classe de présentation', () => {
+  const html = nettoyerContenu('<a href="/x" class="frame"><div class="text-wrapper"><i class="ph ph-gavel icone-discipline"></i>Texte</div></a><i class="fa fa-book"></i>', 1, '1', { idGuide: 1, urlGuide: 'https://x.ca/g', chemins: new Map() })
+  assert.match(html, /<img[^>]*class="icone-discipline"/)
+  assert.match(html, /src="data:image\/svg\+xml,/)
+  assert.doesNotMatch(html, /class="[^"]*\bph\b/)
+})
+
 test('titre de fiche : une seule forme pour bibliothécaire, les autres titres restent', () => {
   for (const titre of ['Votre bibliothécaire', 'Votre bibliothécaire ', 'Vos bibliothécaires', 'Bibliothécaire', 'Bibliothécaire ', 'Bibliothécaire disciplinaire', 'bibliothécaire :']) assert.equal(titreFiche(titre), 'Bibliothécaire', titre)
   for (const titre of ['Librarian', 'Bibliothécaire formateur', 'Bibliothécaire - Santé publique', 'Technicien(ne) en documentation', 'Équipe de soutien REL - Volet projet']) assert.equal(titreFiche(titre), titre)

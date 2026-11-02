@@ -4,6 +4,7 @@
  * hiérarchie de titres. Le contenu et les images de la source restent tels quels.
  */
 import * as cheerio from 'cheerio'
+import { iconeDePolice, imageLocale } from './images-locales.ts'
 
 export interface SectionBrute {
   id: string
@@ -287,6 +288,11 @@ function poserDisposition($: cheerio.CheerioAPI) {
 }
 
 function poserImages($: cheerio.CheerioAPI) {
+  $('i.ph').each((_, el) => {
+    const icone = $(el)
+    const src = iconeDePolice(icone.attr('class')!, icone.closest('.frame-bleu').length > 0)
+    if (src) icone.replaceWith($('<img alt="">').attr('src', src).addClass(icone.attr('class')!))
+  })
   $('img').each((_, el) => {
     const img = $(el)
     const largeur = largeurEnPx(img.attr('style'))
@@ -296,6 +302,8 @@ function poserImages($: cheerio.CheerioAPI) {
     // Du HTML collé par erreur dans le texte de remplacement serait lu tel quel
     img.attr('alt', (img.attr('alt') ?? '').replace(/<[^>]*>/g, '').trim())
     img.attr('loading', 'lazy')
+    const src = img.attr('src')
+    if (src) img.attr('src', imageLocale(src))
   })
   // Un titre fait d'une image sans texte de remplacement n'annonce rien : l'image reste, dans un paragraphe
   $('h1, h2, h3, h4, h5, h6')
@@ -527,7 +535,7 @@ export function carrouselDepuis(html: string, titre: string) {
       const legende = diapo.find('.s-lib-cpane-caption').first().html()?.trim() ?? ''
       const alt = legende ? '' : (diapo.find('img').attr('alt') ?? '')
       const src = diapo.find('img').attr('src')
-      return `<li>${src ? `<img src="${echapper(src)}" alt="${echapper(alt)}">` : ''}<div>${legende.replace(/<(\/?)h[1-6]\b[^>]*>/g, '<$1p>')}</div></li>`
+      return `<li>${src ? `<img src="${echapper(imageLocale(src))}" alt="${echapper(alt)}">` : ''}<div>${legende.replace(/<(\/?)h[1-6]\b[^>]*>/g, '<$1p>')}</div></li>`
     })
   return `<div class="carrousel" role="group" aria-roledescription="carrousel" aria-label="${echapper(titre || 'Carrousel')}"><ul class="carrousel-piste" tabindex="0">${diapos.join('')}</ul></div>`
 }

@@ -11,6 +11,7 @@ import { createHash } from 'node:crypto'
 import * as cheerio from 'cheerio'
 import personnel from '@/data/personnel.json'
 import { jourMontreal, lirePagesAvecFil } from './fils'
+import { imageLocale } from './images-locales'
 import { marquerLiensExternes } from './liens-externes'
 import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, slugifier, titreFiche, type SectionBrute } from './nettoyage'
 
@@ -192,7 +193,7 @@ async function boitesPubliques(idGuide: number, idPage: PageApi['id']) {
       // Le plus extérieur : une boîte réutilisée dans un onglet garde ses propres panneaux, sans nom
       const idOnglet = $(el).parents('[id^="s-lib-ctab-"]').last().attr('id')
       const onglet = idOnglet ? { id: idOnglet, nom: $(`a[href="#${idOnglet}"]`).first().text().trim() } : undefined
-      const icones = $(el).find('img.s-lg-icon').toArray().map((img) => `<img class="icone-texte" src="${$(img).attr('src')}" alt="${$(img).attr('alt') ?? ''}">`).join('')
+      const icones = $(el).find('img.s-lg-icon').toArray().map((img) => `<img class="icone-texte" src="${imageLocale($(img).attr('src') ?? '')}" alt="${$(img).attr('alt') ?? ''}">`).join('')
       // La description d'une base peut être personnalisée pour ce guide : seule la page publique l'affiche
       const description = $(el).find('.s-lg-database-desc').first().html()?.trim()
       courante.push({ id: Number(contenu[1]), onglet, href: $(el).find('a[href]').first().attr('href'), icones, description, html: $(el).html() ?? '' })
@@ -418,7 +419,7 @@ async function lireBases() {
         acces: (b.icons ?? []).map((i) => ({
           libelle: i.description.replace(/\s*\(proxy\)$/, ''),
           href: i.url || undefined,
-          icone: `https://d1qywhc7l90rsa.cloudfront.net/sites/${b.site_id}/icons/${i.id}/${i.file}`,
+          icone: imageLocale(`https://d1qywhc7l90rsa.cloudfront.net/sites/${b.site_id}/icons/${i.id}/${i.file}`),
         })),
         nouveau: enCours(b.enable_new, b.new_expiration),
         essai: enCours(b.enable_trial, b.trial_expiration),

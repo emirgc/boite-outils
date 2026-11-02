@@ -36,6 +36,8 @@ LibGuides bloque les rafales. Pour une vérification en lot, faites une requête
 
 Le nettoyage garde une liste de balises, d'attributs et de classes permis. Il retire les styles en ligne et les scripts, puis remplace par des classes ce qui compte : accordéons, encadrés, onglets, images à agrandir.
 
+Les icônes et images des guides ne dépendent plus du site des bibliothèques : `src/lib/images-locales.ts` prend l'icône Phosphor du même nom, sinon la copie de `public/images/bib`. Une nouvelle image garde son adresse d'origine tant qu'elle n'y est pas copiée.
+
 Les fiches des responsables viennent de la boîte de profil du guide, sinon de son propriétaire. `src/data/personnel.json` vient de bibweb et fournit la photo, la fonction et le lien du répertoire. Une personne absente de ce fichier garde son titre LibGuides, ou son nom seul sans boîte de profil.
 
 ## Le build
