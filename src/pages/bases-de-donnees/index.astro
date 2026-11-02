@@ -29,6 +29,7 @@ const alphabet = [...'ABCDEFGHIJKLMNOPQRSTUVWXYZ'].map((l) => ({ libelle: l, cle
 const compte = (n: number) => (n === 1 ? '1 base de données trouvée' : `${n} bases de données trouvées`)
 const nouveautes = bases.filter((b) => b.nouveau || b.essai)
 const logoUdem = bases.flatMap((b) => b.acces).find((a) => a.libelle.startsWith('Réservé'))?.icone
+const icones = [...new Map(bases.flatMap((b) => b.acces).map((a) => [a.libelle, a])).values()].sort((a, b) => a.libelle.localeCompare(b.libelle, 'fr', { sensitivity: 'base' }))
 const ACCES_PROXY = 'https://studio.bib.umontreal.ca/informatique/proxy'
 const AVIS = 'https://bib.umontreal.ca/a-propos/nos-collections#avis-sur-lutilisation-des-ressources-electroniques'
 ---
@@ -74,23 +75,36 @@ const AVIS = 'https://bib.umontreal.ca/a-propos/nos-collections#avis-sur-lutilis
         <button type="reset" form="bases-filtres" class="bouton-lien" hidden data-effacer>Effacer les filtres</button>
       </div>
 
-      <section class="bases-laterale" aria-label="Légende et nouveautés">
-        <div class="encadre bases-legende">
-          <p class="base-acces">
-            {logoUdem && <img src={logoUdem} alt="" width="20" height="20" />}
-            <span>Réservé à la communauté UdeM (<a href={ACCES_PROXY}>accès Proxy</a>)</span>
-          </p>
-          <p><a href={AVIS}>Avis sur l'utilisation des ressources électroniques</a></p>
-        </div>
+      <section class="bases-laterale" aria-label="Liens utiles, légende et nouveautés">
+        <details class="volet bases-carte" open>
+          <summary class="sommaire"><h2 class="titre">Liens utiles</h2></summary>
+          <div class="volet-contenu">
+            <p class="base-acces">
+              {logoUdem && <img src={logoUdem} alt="" width="20" height="20" />}
+              <span>Réservé à la communauté UdeM (<a href={ACCES_PROXY}>accès Proxy</a>)</span>
+            </p>
+            <p><a href={AVIS}>Avis sur l'utilisation des ressources électroniques</a></p>
+          </div>
+        </details>
+        <details class="volet bases-carte" open>
+          <summary class="sommaire"><h2 class="titre">Légende des icônes</h2></summary>
+          <div class="volet-contenu">
+            <ul class="bases-icones">
+              {icones.map(({ libelle, icone }) => <li><img src={icone} alt="" width="20" height="20" loading="lazy" />{libelle}</li>)}
+            </ul>
+          </div>
+        </details>
         {
           nouveautes.length > 0 && (
-            <>
-              <h2>Nouveautés / Bases de données à l'essai</h2>
-              <p>Les bases de données suivantes sont des ajouts récents ou sont en cours d'évaluation en vue de leur future acquisition.</p>
-              <ul class="liste-ressources">
-                {nouveautes.map((b) => <li><FicheBase base={b} /></li>)}
-              </ul>
-            </>
+            <details class="volet bases-carte bases-nouveautes" open>
+              <summary class="sommaire"><h2 class="titre">Nouveautés / Bases de données à l'essai</h2></summary>
+              <div class="volet-contenu">
+                <p>Les bases de données suivantes sont des ajouts récents ou sont en cours d'évaluation en vue de leur future acquisition.</p>
+                <ul class="liste-ressources">
+                  {nouveautes.map((b) => <li><FicheBase base={b} /></li>)}
+                </ul>
+              </div>
+            </details>
           )
         }
       </section>
@@ -130,6 +144,14 @@ const AVIS = 'https://bib.umontreal.ca/a-propos/nos-collections#avis-sur-lutilis
   </main>
   <script>
     import { baseVisible, compterChoix, motsDe, trierResultats, urlSofia, type EntreeBase, type FiltresBases } from '@/lib/recherche-guides'
+
+    // Sur une colonne, les cartes passent avant la liste : fermées, elles ne la repoussent pas
+    if (matchMedia('(width < 1000px)').matches) {
+      document.querySelectorAll<HTMLDetailsElement>('.bases-carte').forEach((carte) => {
+        carte.classList.add('sans-transition')
+        carte.open = false
+      })
+    }
 
     const formulaire = document.querySelector<HTMLFormElement>('[data-filtres]')!
     const grille = document.querySelector<HTMLElement>('[data-grille]')!

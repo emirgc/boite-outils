@@ -3221,24 +3221,61 @@ a.profil-personne::after {
   background: var(--couleur-teinte-forte);
 }
 
-.bases-laterale h2 {
-  margin-block: var(--espace-3) var(--espace-1);
-  padding-block-end: 0.25rem;
-  border-block-end: 1px solid var(--couleur-bordure);
-  font-size: 1.5rem;
+.bases-laterale .bases-carte {
+  margin-block-end: var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-carte);
+  background: var(--couleur-surface);
+  font-size: 0.875rem;
+}
+
+.bases-laterale .bases-nouveautes {
+  background: var(--couleur-teinte-bleue);
+}
+
+.bases-carte > .sommaire {
+  padding: 0.75rem var(--espace-2);
+}
+
+.bases-carte .titre {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: var(--graisse-forte);
+}
+
+.bases-carte > .volet-contenu {
+  padding-inline: var(--espace-2);
 }
 
 .bases-laterale p {
   margin-block: 0 var(--espace-1);
 }
 
-.bases-legende {
-  width: auto;
-  max-inline-size: none;
-}
-
 .bases-laterale .liste-ressources {
   margin: 0;
+}
+
+.bases-icones {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.bases-icones li {
+  display: flex;
+  align-items: center;
+  gap: var(--espace-1);
+  padding-block: 0.5rem;
+  border-block-end: 1px solid var(--couleur-bordure);
+}
+
+.bases-icones li:last-child {
+  border-block-end: 0;
+}
+
+.bases-icones img {
+  flex: none;
+  object-fit: contain;
 }
 
 /* Sur une colonne, les nouveautés passent avant la liste : réduites aux noms, et retirées pendant un filtrage */
@@ -3286,6 +3323,12 @@ a.profil-personne::after {
   padding-block-end: 0.25rem;
   border-block-end: 1px solid var(--couleur-bordure);
   font-size: 1.75rem;
+}
+
+.bases-vedettes {
+  padding: var(--espace-2) var(--espace-3);
+  border-radius: var(--rayon-carte);
+  background: color-mix(in srgb, var(--couleur-teinte-jaune) 40%, var(--couleur-surface));
 }
 
 .bases-vedettes h2 {

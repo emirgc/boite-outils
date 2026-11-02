@@ -186,6 +186,7 @@
   /* Fonds teintés de bleu (encadrés, puces, survols) */
   --couleur-teinte: var(--bleu-100);
   --couleur-teinte-forte: var(--bleu-200);
+  --couleur-teinte-bleue: var(--bleu-100);
   --couleur-teinte-jaune: var(--jaune-pale);
   --couleur-teinte-rose: var(--rose-100);
   --couleur-teinte-rose-forte: var(--rose-300);
@@ -232,6 +233,7 @@
   --couleur-fond-fort-survol: var(--bleu-principal-fonce);
   --couleur-teinte: #1d2b48;
   --couleur-teinte-forte: #26375c;
+  --couleur-teinte-bleue: #1d2b48;
   --couleur-teinte-jaune: #3a3218;
   --couleur-teinte-rose: #2e1e25;
   --couleur-teinte-rose-forte: #43242c;
