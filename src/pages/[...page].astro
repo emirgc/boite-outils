@@ -41,7 +41,7 @@ const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA',
 
 <Base titre={`${nomPage} | ${nom} | Boîte à outils UdeM`} description={descriptionDe(description, section.boites.map((b) => b.html).join(' '), premierePage)}>
   {/* Sans JavaScript, les onglets ne servent à rien : tous les panneaux s'affichent */}
-  <noscript slot="head"><style is:inline>.onglets [role='tablist'] { display: none; } .onglets [role='tabpanel'][hidden] { display: block; }</style></noscript>
+  <noscript slot="head"><style is:inline>.onglets [role='tablist'] { display: none; } .onglets [role='tabpanel'][hidden] { display: block; } .onglets [role='tabpanel'] { margin-block-end: 1rem; border-block-start: 1px solid var(--couleur-bordure); border-radius: 8px; } .onglets [role='tabpanel']::before { content: attr(data-nom); display: block; margin-block-end: 0.5rem; font-weight: 600; }</style></noscript>
   <div class="conteneur gabarit">
     <FilAriane
       maillons={[
@@ -145,7 +145,7 @@ const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA',
                       ))}
                     </div>
                     {boite.onglets.map((o, i) => (
-                      <div role="tabpanel" id={o.id} aria-labelledby={`${o.id}-onglet`} tabindex="0" hidden={i > 0} set:html={o.html} />
+                      <div role="tabpanel" id={o.id} aria-labelledby={`${o.id}-onglet`} data-nom={o.nom} tabindex="0" hidden={i > 0} set:html={o.html} />
                     ))}
                   </div>
                 )}
@@ -160,13 +160,13 @@ const dateMaj = new Date(misAJour.replace(' ', 'T')).toLocaleDateString('fr-CA',
   </div>
     <script>
       // Onglets selon le motif de l'APG : tabindex itinérant, activation au focus
-      // Trait sous l'onglet actif : il glisse d'un onglet à l'autre, comme dans bibweb
+      // Trait au-dessus de l'onglet actif : il glisse d'un onglet à l'autre, comme dans bibweb
       const placerTrait = (liste: HTMLElement) => {
         const choisi = liste.querySelector<HTMLElement>('[role="tab"][aria-selected="true"]')
         const trait = liste.querySelector<HTMLElement>('.onglet-trait')
         if (!choisi || !trait || !choisi.offsetWidth) return
         trait.style.width = `${choisi.offsetWidth}px`
-        trait.style.translate = `${choisi.offsetLeft}px ${choisi.offsetTop + choisi.offsetHeight - 3}px`
+        trait.style.translate = `${choisi.offsetLeft}px ${choisi.offsetTop}px`
       }
 
       // Images à agrandir : sans JavaScript, le lien ouvre simplement l'image. <dialog> garde le focus, ferme avec Échap et le rend au lien

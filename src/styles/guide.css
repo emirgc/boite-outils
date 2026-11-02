@@ -312,7 +312,12 @@ main h1 {
   font-size: 0.8125rem;
 }
 
-/* ---- Onglets ---- */
+/* ---- Onglets ----
+   L'onglet actif et son panneau partagent un même fond : le contenu se lit comme étant dans l'onglet */
+.onglets {
+  --fond-onglet: color-mix(in srgb, var(--couleur-teinte) 60%, var(--couleur-surface));
+}
+
 .onglets [role='tablist'] {
   display: flex;
   flex-wrap: wrap;
@@ -321,11 +326,13 @@ main h1 {
 }
 
 .onglets [role='tab'] {
+  min-height: var(--taille-cible);
   margin-block-end: -1px;
-  padding: 0.625rem var(--espace-2);
-  border: 0;
-  border-block-end: 3px solid transparent;
-  background: none;
+  padding: 0.5rem var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-block-start-width: 3px;
+  border-radius: var(--rayon-minuscule) var(--rayon-minuscule) 0 0;
+  background: var(--couleur-surface);
   color: var(--couleur-texte);
   font: inherit;
   font-weight: 500;
@@ -338,18 +345,49 @@ main h1 {
 }
 
 .onglets [role='tab'][aria-selected='true'] {
-  border-block-end-color: var(--couleur-accent);
+  border-color: var(--couleur-bordure);
+  border-block-start-color: var(--couleur-accent);
+  border-block-end-color: var(--fond-onglet);
+  background: var(--fond-onglet);
   color: var(--couleur-accent);
   font-weight: 600;
 }
 
 .onglets [role='tabpanel'] {
   display: flow-root;
-  padding-block-start: var(--espace-3);
+  padding: var(--espace-3);
+  border: 1px solid var(--couleur-bordure);
+  border-block-start: 0;
+  border-radius: 0 0 var(--rayon-tres-petit) var(--rayon-tres-petit);
+  background: var(--fond-onglet);
+}
+
+.onglets [role='tabpanel'] > :first-child {
+  margin-block-start: 0;
+}
+
+.onglets [role='tabpanel'] > :last-child {
+  margin-block-end: 0;
+}
+
+/* Le code et les tableaux gardent un fond distinct de celui du panneau */
+.onglets [role='tabpanel'] .tableau table {
+  background: var(--couleur-surface);
+}
+
+.onglets [role='tabpanel'] pre {
+  background: var(--couleur-surface);
+  border: 1px solid var(--couleur-bordure);
 }
 
 .onglets [role='tabpanel'][hidden] {
   display: none;
+}
+
+@media (width < 600px) {
+  .onglets [role='tabpanel'] {
+    padding: var(--espace-2);
+  }
 }
 
 @media print {
@@ -357,8 +395,20 @@ main h1 {
     display: none;
   }
 
+  .onglets [role='tabpanel'],
   .onglets [role='tabpanel'][hidden] {
     display: flow-root;
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  /* La liste des onglets n'est pas imprimée : chaque panneau rappelle son nom */
+  .onglets [role='tabpanel']::before {
+    content: attr(data-nom);
+    display: block;
+    margin-block-end: var(--espace-1);
+    font-weight: 600;
   }
 }
 
@@ -2696,6 +2746,7 @@ a.profil-personne .profil-photo {
   left: 0;
   display: block;
   height: 3px;
+  border-radius: var(--rayon-minuscule) var(--rayon-minuscule) 0 0;
   background: var(--couleur-accent);
   transition:
     translate var(--duree-courte-4) var(--courbe-emphase-deceleree),
@@ -2703,7 +2754,7 @@ a.profil-personne .profil-photo {
 }
 
 [data-onglets-anime] [role='tab'][aria-selected='true'] {
-  border-block-end-color: transparent;
+  border-block-start-color: transparent;
 }
 
 .onglets[data-onglets-anime] [role='tabpanel'] {
@@ -2758,11 +2809,14 @@ a.profil-personne .profil-photo {
   }
 
   .onglets [role='tab'] {
-    border-block-end-color: Canvas;
+    border-color: Canvas;
   }
 
+  .onglets [role='tab'][aria-selected='true'],
   [data-onglets-anime] [role='tab'][aria-selected='true'] {
-    border-block-end-color: Highlight;
+    border-color: CanvasText;
+    border-block-start-color: Highlight;
+    border-block-end-color: Canvas;
   }
 }
 
