@@ -1056,6 +1056,27 @@ main h1 {
   gap: 0.75rem;
 }
 
+/* Rangée de tuiles : côte à côte dès qu'il y a la place, chaque groupe de la source formant une ligne */
+.boite > .text-wrapper:has(> .frame) {
+  display: grid;
+  gap: var(--espace-2);
+}
+
+.boite > .text-wrapper:has(> .frame) + .text-wrapper:has(> .frame) {
+  margin-block-start: var(--espace-2);
+}
+
+.boite > .text-wrapper:has(> .frame) + :not(.text-wrapper) {
+  margin-block-start: var(--espace-3);
+}
+
+@media (min-width: 640px) {
+  .boite > .text-wrapper:has(> .frame) {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+}
+
 /* Sans cette limite, une icône directement dans la tuile s'étire sur toute sa largeur */
 .frame > img {
   flex: none;
