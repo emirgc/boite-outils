@@ -2384,7 +2384,7 @@ main h1 {
 }
 
 a.profil-personne:hover {
-  color: var(--couleur-lien);
+  color: var(--couleur-texte);
   text-decoration: underline;
 }
 
@@ -2410,19 +2410,11 @@ a.profil-personne::after {
   border-radius: inherit;
 }
 
-a.profil-personne .profil-photo {
-  transition: scale var(--duree-courte-4) var(--courbe-standard);
-}
-
 /* Pointeurs fins seulement : au toucher, l'état resterait après le tapotement */
 @media (hover: hover) and (pointer: fine) {
   .profil:has(> a.profil-personne:hover) {
     border-color: var(--couleur-accent);
     box-shadow: var(--ombre-1);
-  }
-
-  a.profil-personne:hover .profil-photo {
-    scale: 1.04;
   }
 }
 
