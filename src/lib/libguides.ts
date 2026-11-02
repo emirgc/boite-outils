@@ -10,8 +10,9 @@
 import { createHash } from 'node:crypto'
 import * as cheerio from 'cheerio'
 import personnel from '@/data/personnel.json'
+import { jourMontreal, lirePagesAvecFil } from './fils'
 import { marquerLiensExternes } from './liens-externes'
-import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, slugifier, type SectionBrute } from './nettoyage'
+import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, slugifier, titreFiche, type SectionBrute } from './nettoyage'
 
 const API = 'https://lgapi-ca.libapps.com/1.2'
 const SITE = 'https://boite-outils.bib.umontreal.ca'
@@ -150,12 +151,20 @@ function vignettePersonne(nom: string, photo: string | undefined, fonction: stri
 function lireProfil($: cheerio.CheerioAPI, boite: ReturnType<cheerio.CheerioAPI>) {
   const fiche = boite.find('.s-lib-profile-container').first()
   const nom = fiche.find('.s-lib-profile-name').text().trim()
-  const titre = boite.children('.s-lib-box-title').text().trim().replace(/^\.$/, '')
   const personne = trouverPersonne(nom)
+  const titreBoite = boite.children('.s-lib-box-title').text().trim().replace(/^\.$/, '')
+  // Sans titre, ou avec un titre qui ne dit rien de la personne (« Nous joindre ») : la fonction du répertoire, si elle y figure
+  const titre = !titreBoite || /^((pour )?nous joindre|contact)\s*:?$/i.test(titreBoite) ? personne?.fonction || titreBoite : titreBoite
   const imageSource = fiche.find('.s-lib-profile-image img').attr('src')
   const photo = personne ? photoPersonne(personne.photo) : imageSource?.replace(/^\/\//, 'https://')
   const courriels = fiche.find('a[href^="mailto:"]').toArray().map((a) => adressesDe($(a).attr('href')!))
-  return { titre, nom, photo, href: personne && fichePersonne(personne.nomComplet), courriels }
+  return { titre: titreFiche(titre), nom, photo, href: personne && fichePersonne(personne.nomComplet), courriels }
+}
+
+/** Fiche du propriétaire d'un guide sans boîte de profil, si le répertoire de bibweb le connaît */
+function ficheProprietaire(nom: string | undefined) {
+  const personne = nom ? trouverPersonne(nom) : undefined
+  return personne && { titre: titreFiche(personne.fonction), nom: personne.nomComplet, photo: photoPersonne(personne.photo), href: fichePersonne(personne.nomComplet), courriels: [] as string[][] }
 }
 
 /** Boîtes d'une page publique, dans l'ordre d'affichage, avec leurs assets */
@@ -262,8 +271,11 @@ function construireCatalogue(guides: GuideApi[]) {
   // Le middleware échappe à l'empreinte de code d'Astro : son résultat sur un exemple entre dans la clé.
   // SITE_ENV aussi : passer en production doit retirer le noindex des pages en cache.
   const empreinte = createHash('sha256').update(JSON.stringify(plan) + marquerLiensExternes('<a href="https://x"><img alt="i"></a><a href="https://x">t</a>') + process.env.SITE_ENV).digest('hex')
-  // Fils RSS et widgets changent sans toucher à la date du guide : relus au moins une fois par semaine
+  // Fils RSS et widgets changent sans toucher à la date du guide. Une page avec un fil est relue chaque jour, à la
+  // date de Montréal ; les autres chaque semaine, pour leurs widgets : tout relire ferait 1 950 requêtes par jour
   const semaine = Math.floor(Date.now() / (7 * 24 * 3600 * 1000))
+  const jour = jourMontreal()
+  const avecFil = lirePagesAvecFil()
   for (const g of publies) {
     const racine = racineDe(g)
     parRacine.set(racine, g)
@@ -272,7 +284,7 @@ function construireCatalogue(guides: GuideApi[]) {
     const pages = pagesAffichees(g).map((p) => ({ id: String(p.id), nom: p.name.trim() }))
     for (const [id, chemin] of cheminsDes(pages, racine)) {
       pagesLocales.set(id, chemin)
-      routes.push({ idGuide: g.id, idPage: id, chemin, cacheKey: `${g.updated}|${empreinte}|${semaine}` })
+      routes.push({ idGuide: g.id, idPage: id, chemin, cacheKey: `${g.updated}|${empreinte}|${avecFil.has(chemin) ? jour : semaine}` })
     }
   }
   return { guides: publies, pagesLocales, racines, parRacine, routes }
@@ -341,13 +353,16 @@ async function chargerGuide(idGuide: number) {
     }),
   )
 
+  // Le nom seulement : l'API donne aussi le courriel, qui n'a pas à être publié
+  const auteur = guide.owner && `${guide.owner.first_name} ${guide.owner.last_name}`.trim()
+
   return {
     nom: guide.name.trim(),
     description: (guide.description ?? '').trim(),
     misAJour: guide.updated,
     racine: racineDe(guide),
-    // Le nom seulement : l'API donne aussi le courriel, qui n'a pas à être publié
-    auteur: guide.owner && `${guide.owner.first_name} ${guide.owner.last_name}`.trim(),
+    auteur,
+    ficheAuteur: ficheProprietaire(auteur),
     sections: nettoyerGuide(sections, {
       idGuide,
       urlGuide: guide.friendly_url || `${SITE}/c.php?g=${idGuide}`,

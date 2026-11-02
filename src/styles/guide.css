@@ -312,7 +312,12 @@ main h1 {
   font-size: 0.8125rem;
 }
 
-/* ---- Onglets ---- */
+/* ---- Onglets ----
+   L'onglet actif et son panneau partagent un même fond : le contenu se lit comme étant dans l'onglet */
+.onglets {
+  --fond-onglet: color-mix(in srgb, var(--couleur-teinte) 60%, var(--couleur-surface));
+}
+
 .onglets [role='tablist'] {
   display: flex;
   flex-wrap: wrap;
@@ -321,11 +326,13 @@ main h1 {
 }
 
 .onglets [role='tab'] {
+  min-height: var(--taille-cible);
   margin-block-end: -1px;
-  padding: 0.625rem var(--espace-2);
-  border: 0;
-  border-block-end: 3px solid transparent;
-  background: none;
+  padding: 0.5rem var(--espace-2);
+  border: 1px solid var(--couleur-bordure);
+  border-block-start-width: 3px;
+  border-radius: var(--rayon-minuscule) var(--rayon-minuscule) 0 0;
+  background: var(--couleur-surface);
   color: var(--couleur-texte);
   font: inherit;
   font-weight: 500;
@@ -338,18 +345,49 @@ main h1 {
 }
 
 .onglets [role='tab'][aria-selected='true'] {
-  border-block-end-color: var(--couleur-accent);
+  border-color: var(--couleur-bordure);
+  border-block-start-color: var(--couleur-accent);
+  border-block-end-color: var(--fond-onglet);
+  background: var(--fond-onglet);
   color: var(--couleur-accent);
   font-weight: 600;
 }
 
 .onglets [role='tabpanel'] {
   display: flow-root;
-  padding-block-start: var(--espace-3);
+  padding: var(--espace-3);
+  border: 1px solid var(--couleur-bordure);
+  border-block-start: 0;
+  border-radius: 0 0 var(--rayon-tres-petit) var(--rayon-tres-petit);
+  background: var(--fond-onglet);
+}
+
+.onglets [role='tabpanel'] > :first-child {
+  margin-block-start: 0;
+}
+
+.onglets [role='tabpanel'] > :last-child {
+  margin-block-end: 0;
+}
+
+/* Le code et les tableaux gardent un fond distinct de celui du panneau */
+.onglets [role='tabpanel'] .tableau table {
+  background: var(--couleur-surface);
+}
+
+.onglets [role='tabpanel'] pre {
+  background: var(--couleur-surface);
+  border: 1px solid var(--couleur-bordure);
 }
 
 .onglets [role='tabpanel'][hidden] {
   display: none;
+}
+
+@media (width < 600px) {
+  .onglets [role='tabpanel'] {
+    padding: var(--espace-2);
+  }
 }
 
 @media print {
@@ -357,9 +395,90 @@ main h1 {
     display: none;
   }
 
+  .onglets [role='tabpanel'],
   .onglets [role='tabpanel'][hidden] {
     display: flow-root;
+    padding: 0;
+    border: 0;
+    background: none;
   }
+
+  /* La liste des onglets n'est pas imprimée : chaque panneau rappelle son nom */
+  .onglets [role='tabpanel']::before {
+    content: attr(data-nom);
+    display: block;
+    margin-block-end: var(--espace-1);
+    font-weight: 600;
+  }
+}
+
+/* ---- Images à agrandir ---- */
+.image-agrandie {
+  display: inline-block;
+  max-width: 100%;
+  cursor: zoom-in;
+}
+
+.image-agrandie img {
+  display: block;
+  border: 1px solid var(--couleur-bordure);
+  border-radius: var(--rayon-minuscule);
+  transition: border-color var(--duree-courte-3) var(--courbe-standard);
+}
+
+.image-agrandie:hover img {
+  border-color: var(--couleur-accent);
+}
+
+.visionneuse {
+  box-sizing: border-box;
+  max-width: 95vw;
+  max-height: 95dvh;
+  padding: var(--espace-2);
+  border: 0;
+  border-radius: var(--rayon-petit);
+  background: var(--couleur-surface);
+  overflow: auto;
+  cursor: zoom-out;
+  transition: opacity var(--duree-courte-4) var(--courbe-standard-deceleree);
+}
+
+@starting-style {
+  .visionneuse[open] {
+    opacity: 0;
+  }
+}
+
+.visionneuse::backdrop {
+  background: color-mix(in srgb, var(--couleur-voile) 70%, transparent);
+}
+
+.visionneuse button {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+  display: grid;
+  place-items: center;
+  width: var(--taille-cible);
+  height: var(--taille-cible);
+  margin-block-end: var(--espace-1);
+  margin-inline-start: auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--rayon-plein);
+  background: var(--couleur-fond-fort);
+  color: var(--couleur-sur-fonce);
+  cursor: pointer;
+}
+
+.visionneuse button:hover {
+  background: var(--couleur-fond-fort-survol);
+}
+
+.visionneuse img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 /* ---- Accordéons ---- */
@@ -448,6 +567,17 @@ main h1 {
   .encadre {
     max-inline-size: calc(var(--mesure-texte) + 2 * var(--espace-2) + 2px);
   }
+
+  /* Un encadré flottant laisse au texte voisin une colonne lisible */
+  .encadre:is(.flottante, .flottante-droite) {
+    max-inline-size: 50%;
+  }
+
+  /* La mesure du texte ne vaut pas pour un tableau : il prend toute la largeur */
+  .encadre:has(.tableau) {
+    width: auto;
+    max-inline-size: 100%;
+  }
 }
 
 .alerte {
@@ -520,6 +650,22 @@ main h1 {
 
 .tableau :is(td, th) > :last-child {
   margin-block-end: 0;
+}
+
+/* Les longs mots français se coupent plutôt que d'imposer leur largeur à toute la colonne */
+.tableau :is(td, th) {
+  hyphens: auto;
+}
+
+/* Le cadre retire de la largeur : un texte un peu plus petit évite de faire défiler le tableau */
+.encadre .tableau table {
+  font-size: 0.875rem;
+}
+
+/* Dans une case, le code revient à la ligne : sinon une longue adresse élargit tout le tableau */
+.tableau :is(pre, code) {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 /* ---- Tuiles et cartes du guide ---- */
@@ -908,6 +1054,39 @@ main h1 {
   display: flex;
   align-items: flex-start;
   gap: 0.75rem;
+}
+
+/* Sans cette limite, une icône directement dans la tuile s'étire sur toute sa largeur */
+.frame > img {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+}
+
+/* Rangée de petites tuiles « Sur cette page » */
+.tiles-label {
+  margin-block-end: var(--espace-1);
+  font-weight: var(--graisse-forte);
+}
+
+.tiles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--espace-1);
+  margin-block-end: var(--espace-element);
+}
+
+.tiles .frame {
+  flex-direction: row;
+  align-items: center;
+  gap: var(--espace-1);
+  min-height: var(--taille-cible);
+  padding: 0.25rem 0.75rem;
+  font-size: 0.875rem;
+}
+
+.tiles .frame::after {
+  display: none;
 }
 
 .frame .icone-discipline {
@@ -2216,6 +2395,37 @@ a.profil-personne:hover {
   object-fit: cover;
 }
 
+/* Une fiche qui mène au répertoire se clique en entier : le lien couvre toute la carte */
+.profil:has(> a.profil-personne) {
+  position: relative;
+  transition:
+    border-color var(--duree-courte-4) var(--courbe-standard),
+    box-shadow var(--duree-courte-4) var(--courbe-standard);
+}
+
+a.profil-personne::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+a.profil-personne .profil-photo {
+  transition: scale var(--duree-courte-4) var(--courbe-standard);
+}
+
+/* Pointeurs fins seulement : au toucher, l'état resterait après le tapotement */
+@media (hover: hover) and (pointer: fine) {
+  .profil:has(> a.profil-personne:hover) {
+    border-color: var(--couleur-accent);
+    box-shadow: var(--ombre-1);
+  }
+
+  a.profil-personne:hover .profil-photo {
+    scale: 1.04;
+  }
+}
+
 .profil-nom {
   font-size: 1.0625rem;
   font-weight: var(--graisse-forte);
@@ -2405,6 +2615,13 @@ a.profil-personne:hover {
   font-size: 0.875rem;
 }
 
+/* Une longue réponse dépliée défile dans son cadre plutôt que d'allonger la page */
+.ressource-plus > pre {
+  max-block-size: 28rem;
+  margin-block-start: var(--espace-1);
+  overflow-y: auto;
+}
+
 .indent {
   margin-inline-start: var(--espace-3);
 }
@@ -2529,6 +2746,7 @@ a.profil-personne:hover {
   left: 0;
   display: block;
   height: 3px;
+  border-radius: var(--rayon-minuscule) var(--rayon-minuscule) 0 0;
   background: var(--couleur-accent);
   transition:
     translate var(--duree-courte-4) var(--courbe-emphase-deceleree),
@@ -2536,7 +2754,7 @@ a.profil-personne:hover {
 }
 
 [data-onglets-anime] [role='tab'][aria-selected='true'] {
-  border-block-end-color: transparent;
+  border-block-start-color: transparent;
 }
 
 .onglets[data-onglets-anime] [role='tabpanel'] {
@@ -2591,11 +2809,14 @@ a.profil-personne:hover {
   }
 
   .onglets [role='tab'] {
-    border-block-end-color: Canvas;
+    border-color: Canvas;
   }
 
+  .onglets [role='tab'][aria-selected='true'],
   [data-onglets-anime] [role='tab'][aria-selected='true'] {
-    border-block-end-color: Highlight;
+    border-color: CanvasText;
+    border-block-start-color: Highlight;
+    border-block-end-color: Canvas;
   }
 }
 

@@ -55,9 +55,26 @@ export function entreesDe(html, chemin) {
 }
 
 export default function indexRecherche() {
+  let sortie
   return {
     name: 'index-recherche',
     hooks: {
+      'astro:config:done': ({ config }) => {
+        sortie = config.outDir
+      },
+      // shortcut: en développement, l'index est celui du dernier build ; relancer npm run build pour voir un contenu modifié
+      'astro:server:setup': ({ server }) => {
+        server.middlewares.use('/index-recherche.json', (_, reponse, suite) => {
+          let index
+          try {
+            index = readFileSync(new URL('index-recherche.json', sortie))
+          } catch {
+            return suite()
+          }
+          reponse.setHeader('Content-Type', 'application/json')
+          reponse.end(index)
+        })
+      },
       'astro:build:done': ({ dir, logger }) => {
         const racine = fileURLToPath(dir)
         const entrees = readdirSync(racine, { recursive: true })

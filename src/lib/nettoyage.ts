@@ -52,7 +52,7 @@ const ATTRIBUTS_PERMIS: Record<string, string[]> = {
 }
 // Classes de l'éditeur que guide.css reprend, plus celles posées ici
 const CLASSES_PERMISES = new Set([
-  ...'tuile-wrapper frame-light icone-discipline texte sift-grid sift-card sift-title sift-text sift-img sift-links accessible-toggle toggle-button volet sommaire titre volet-contenu alerte encadre chapeau icone-texte tableau flottante flottante-droite retrait centre titre-accueil indispensables frame text-wrapper quatres tuile-photo text-wrapper-photo photo-wrapper photo contenutuile bouton-texte row conteneur-question-image question-list question question-image sift-link icon-line equipe vignette vignette-photo vignette-nom vignette-detail titre-vide menu-deroulant fil-nouvelles fil-date frame-bleu quatre-tuiles-bleues name-wrapper carrousel carrousel-piste liste-ressources ressource-plus livre couverture ressource-description ressource-type indent texte-petit liste-compacte table-alterne-bleu caption-top moins titre-produire titre-diffuser titre-bibliometrie titre-gdr titre-droit-auteur'.split(' '),
+  ...'tuile-wrapper frame-light icone-discipline texte sift-grid sift-card sift-title sift-text sift-img sift-links accessible-toggle toggle-button volet sommaire titre volet-contenu alerte encadre chapeau icone-texte tableau flottante flottante-droite retrait centre titre-accueil indispensables frame text-wrapper quatres tuile-photo text-wrapper-photo photo-wrapper photo contenutuile bouton-texte row conteneur-question-image question-list question question-image sift-link icon-line equipe vignette vignette-photo vignette-nom vignette-detail titre-vide menu-deroulant fil-nouvelles fil-date frame-bleu quatre-tuiles-bleues name-wrapper carrousel carrousel-piste liste-ressources ressource-plus livre couverture ressource-description ressource-type indent texte-petit liste-compacte table-alterne-bleu caption-top moins titre-produire titre-diffuser titre-bibliometrie titre-gdr titre-droit-auteur image-agrandie tiles tiles-label'.split(' '),
   ...Array.from({ length: 12 }, (_, i) => `col-md-${i + 1}`),
 ])
 
@@ -125,6 +125,45 @@ function convertirAccordeonsJquery($: cheerio.CheerioAPI) {
       })
     }
   })
+}
+
+// Bouton qui affiche un exemple JSON gardé dans un script : un <details> rempli au build, sans script
+function convertirReponsesJson($: cheerio.CheerioAPI) {
+  $('script').each((_, script) => {
+    const source = $(script).html() ?? ''
+    const [, varBloc, varDonnees] = source.match(/(\w+)\s*\.textContent\s*=\s*JSON\.stringify\(\s*(\w+)/) ?? []
+    const varBouton = source.match(/(\w+)\s*\.addEventListener\(\s*['"]click/)?.[1]
+    if (!varBloc || !varDonnees || !varBouton) return
+    const element = (nom: string) => $(`[id="${source.match(new RegExp(`${nom}\\s*=\\s*document\\.getElementById\\(['"]([\\w-]+)['"]\\)`))?.[1]}"]`)
+    const [bloc, bouton] = [element(varBloc), element(varBouton)]
+    const json = source.match(new RegExp(`${varDonnees}\\s*=\\s*(\\{[\\s\\S]*?\\n\\s*\\})\\s*;`))?.[1]
+    if (!bloc.length || !bouton.length || !json) return
+    let donnees: unknown
+    try {
+      donnees = JSON.parse(json)
+    } catch (erreur) {
+      return void console.warn(`[nettoyage] exemple JSON illisible, ${varDonnees} : ${erreur}`)
+    }
+    const details = $('<details class="ressource-plus"><summary></summary><pre></pre></details>')
+    details.find('summary').text(bouton.text().trim())
+    details.find('pre').text(JSON.stringify(donnees, null, 2))
+    bloc.remove()
+    ;(bouton.parent('p').length ? bouton.parent() : bouton).replaceWith(details)
+  })
+}
+
+// La visionneuse de la source, ouverte par :target, perd son CSS : la vignette mène à l'image, qui ne reste pas dans la page
+function convertirVisionneuses($: cheerio.CheerioAPI) {
+  $('.lb[id]').each((_, el) => {
+    const image = $(el).find('img').attr('src')
+    const lien = $(`a[href="#${$(el).attr('id')}"]`)
+    if (!image || !lien.length) return
+    lien.attr('href', image).addClass('image-agrandie')
+    $(el).remove()
+  })
+  $('a[href]')
+    .filter((_, el) => !$(el).text().trim() && $(el).find('img').length > 0 && (/\.(png|jpe?g|gif|webp)([?#]|$)/i.test($(el).attr('href')!)))
+    .addClass('image-agrandie')
 }
 
 function poserIframes($: cheerio.CheerioAPI, titreBoite?: string) {
@@ -208,6 +247,17 @@ function poserAlertes($: cheerio.CheerioAPI) {
     .filter((_, n) => n.type === 'text')
     .each((_, n) => {
       if ('data' in n) n.data = n.data.replace(/⚠️\s*/gu, '')
+    })
+  // Fond et marge interne : la source détache ce bloc du texte, quelle qu'en soit la couleur. Le blanc ne se distingue pas de la page
+  $('div[style*="background"][style*="padding"]')
+    .filter((_, el) => {
+      const bloc = $(el)
+      const fond = bloc.attr('style')!.match(/background(?:-color|-image)?:\s*([^;]+)/i)?.[1]?.trim().toLowerCase() ?? ''
+      const classes = (bloc.attr('class') ?? '').split(/\s+/).filter((c) => CLASSES_PERMISES.has(c) && !c.startsWith('flottante'))
+      return !/^(white|#fff(fff)?|transparent|none|rgb\(255,\s*255,\s*255\))/.test(fond) && !classes.length
+    })
+    .each((_, el) => {
+      if (!$(el).parents('.encadre, .alerte').length) $(el).addClass('encadre')
     })
 }
 
@@ -524,6 +574,8 @@ export function nettoyerContenu(html: string, idAsset: number, idPage: string, c
     .remove()
 
   convertirAccordeonsJquery($)
+  convertirReponsesJson($)
+  convertirVisionneuses($)
   $('script').not(SCRIPT_PERMIS).remove()
   aplatirAccordeons($)
   poserIframes($, ctx.titreBoite)
@@ -568,6 +620,9 @@ export function nettoyerContenu(html: string, idAsset: number, idPage: string, c
 
 /** Fiche ou responsable d'un guide écrit en commun : une équipe, pas une personne */
 export const estCollectif = (nom: string) => /^(nous joindre|notre équipe|bibliothèques udem|bibliothécaires en |équipe |soutien pour )/i.test(nom.trim())
+
+/** Titre d'une fiche : les variantes du même métier (« Votre bibliothécaire », « Bibliothécaire disciplinaire »…) n'en font qu'un */
+export const titreFiche = (titre: string) => (/^(votre |vos )?bibliothécaires?( disciplinaire)?\s*:?$/i.test(titre.trim()) ? 'Bibliothécaire' : titre)
 
 /** Adresses d'un lien mailto, sans sujet ; le « ; » de la source n'est pas fiable partout, la virgule l'est */
 export const adressesDe = (href: string) => href.replace(/^mailto:/i, '').split('?')[0].split(/[;,]/).map((a) => a.trim()).filter(Boolean)

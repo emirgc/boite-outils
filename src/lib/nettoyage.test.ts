@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { test } from 'node:test'
-import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, estCollectif, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, reecrireLien } from './nettoyage.ts'
+import { adressesDe, carrouselDepuis, cheminsDes, equipeDepuis, estCollectif, htmlRessource, listeFil, listeWidget, menuWidget, nettoyerContenu, nettoyerGuide, reecrireLien, titreFiche } from './nettoyage.ts'
 
 const ctx = { idGuide: 748086, urlGuide: 'https://boite-outils.bib.umontreal.ca/trouver-evaluer/fiabilite-information', chemins: new Map([['10', '/'], ['20', '/vingt/']]) }
 const propre = (html: string, ancres = new Map<string, string>()) => nettoyerContenu(html, 1, '10', ctx, ancres)
@@ -8,6 +8,62 @@ const propre = (html: string, ancres = new Map<string, string>()) => nettoyerCon
 test('retire scripts, gestionnaires, styles et liens javascript', () => {
   const html = propre('<p style="color:red" onclick="x()">a<script>alert(1)</script> <a href="javascript:alert(1)">b</a></p>')
   assert.equal(html, '<p>a b</p>')
+})
+
+test('titre de fiche : une seule forme pour bibliothécaire, les autres titres restent', () => {
+  for (const titre of ['Votre bibliothécaire', 'Votre bibliothécaire ', 'Vos bibliothécaires', 'Bibliothécaire', 'Bibliothécaire ', 'Bibliothécaire disciplinaire', 'bibliothécaire :']) assert.equal(titreFiche(titre), 'Bibliothécaire', titre)
+  for (const titre of ['Librarian', 'Bibliothécaire formateur', 'Bibliothécaire - Santé publique', 'Technicien(ne) en documentation', 'Équipe de soutien REL - Volet projet']) assert.equal(titreFiche(titre), titre)
+})
+
+test('bloc avec fond et marge interne : un encadré, sauf sur fond blanc ou déjà mis en forme', () => {
+  const bloc = (style: string, classe = '') => `<div class="${classe}" style="${style}"><p>Texte</p></div>`
+  assert.equal(propre(bloc('background: linear-gradient(to top, #014B97, #3A78B8); padding: 10pt; color: white')), '<div class="encadre"><p>Texte</p></div>')
+  assert.equal(propre(bloc('float: right; background-color: tomato; padding: 4px')), '<div class="flottante-droite encadre"><p>Texte</p></div>')
+  assert.equal(propre(bloc('background: white; padding: 4px')), '<div><p>Texte</p></div>')
+  assert.equal(propre(bloc('background: tomato')), '<div><p>Texte</p></div>')
+  assert.equal(propre(bloc('background: tomato; padding: 4px', 'tuile-wrapper')), '<div class="tuile-wrapper"><p>Texte</p></div>')
+  // Un seul cadre, pas un cadre dans un cadre
+  assert.equal(propre(`<div style="background: tomato; padding: 4px">${bloc('background: beige; padding: 4px')}</div>`), '<div class="encadre"><div><p>Texte</p></div></div>')
+})
+
+test('exemple JSON affiché par un bouton : un <details> rempli au build, sans script', () => {
+  const html = propre(`<p><button id="b">Afficher la réponse</button></p><pre id="r" style="display: none;"> &nbsp;</pre><script>
+const ex= {
+  "a": { "b": "<c>\\u2019" }
+};
+const bouton = document.getElementById('b');
+const bloc = document.getElementById('r');
+bouton .addEventListener('click', () => { bloc .textContent = JSON.stringify(ex, null, 2); });
+</script>`)
+  assert.equal(html, `<details class="ressource-plus"><summary>Afficher la réponse</summary><pre tabindex="0">{\n  "a": {\n    "b": "&lt;c&gt;’"\n  }\n}</pre></details>`)
+})
+
+test('exemple JSON illisible : rien ne plante et le script disparaît', () => {
+  const html = propre(`<p><button id="b">Voir</button></p><pre id="r"> x</pre><script>
+const ex= {
+  a: 1
+};
+const bouton = document.getElementById('b');
+const bloc = document.getElementById('r');
+bouton .addEventListener('click', () => { bloc .textContent = JSON.stringify(ex); });
+</script>`)
+  assert.ok(!html.includes('<script'))
+  assert.ok(html.includes('Voir'))
+})
+
+test('visionneuse de la source : la vignette mène à l\'image, qui ne reste pas dans la page', () => {
+  const html = propre(`<figure><a href="#lb-x"><img alt="Clé" class="thumb" src="https://i.org/v.png" style="width: 316px;" /></a><figcaption>Cliquer pour agrandir</figcaption></figure>
+<div class="lb" id="lb-x"><a class="close" href="#">.</a><div class="content"><img alt="Clé" src="https://i.org/o.png" /><div>Cliquer n'importe où pour fermer</div></div></div>`)
+  assert.ok(html.includes('<a href="https://i.org/o.png" class="image-agrandie"><img'))
+  assert.ok(html.includes('src="https://i.org/v.png"'))
+  assert.ok(!html.includes('fermer'))
+  assert.equal(html.match(/<img/g)?.length, 1)
+})
+
+test('seul un lien-image vers une image s\'agrandit', () => {
+  assert.ok(propre('<a href="https://i.org/a.JPG?x=1"><img alt="a" src="https://i.org/m.jpg"></a>').includes('class="image-agrandie"'))
+  assert.ok(!propre('<a href="https://i.org/page"><img alt="a" src="https://i.org/m.jpg"></a>').includes('image-agrandie'))
+  assert.ok(!propre('<a href="https://i.org/a.png">Voir<img alt="a" src="https://i.org/m.jpg"></a>').includes('image-agrandie'))
 })
 
 test('réécrit les liens internes au guide et laisse les autres absolus', () => {

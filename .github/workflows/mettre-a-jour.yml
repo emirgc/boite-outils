@@ -1,0 +1,36 @@
+# Demande à Amplify de reconstruire le site (amplify.yml). Le build lit le
+# catalogue de l'API et ne relit que les guides dont la date a changé. Le premier
+# build de la journée rafraîchit aussi les pages avec un fil RSS : la détection
+# est dans la cacheKey de lib/libguides.ts, pas ici.
+#
+# INACTIF : aucune planification, et le secret ci-dessous n'existe pas encore.
+#
+# Pour l'activer :
+# 1. Amplify : connecter le dépôt à la branche production, puis ajouter les
+#    variables d'environnement LIBGUIDES_CLIENT_ID et LIBGUIDES_CLIENT_SECRET.
+# 2. Amplify : créer un webhook entrant pour cette branche.
+# 3. GitHub, Settings > Secrets and variables > Actions : mettre son adresse
+#    dans le secret AMPLIFY_WEBHOOK. Elle contient un jeton.
+# 4. Décommenter `schedule` ci-dessous.
+name: Mettre à jour le site
+
+on:
+  # À tout moment : onglet Actions, « Run workflow »
+  workflow_dispatch:
+  # 6 h, 12 h et 17 h à Montréal (une heure plus tôt en hiver : cron est en UTC).
+  # Chaque exécution redéploie tout le site et vide le cache du CDN.
+  # schedule:
+  #   - cron: '17 10,16,21 * * *'
+
+permissions: {}
+
+jobs:
+  declencher:
+    name: Déclencher le build
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Appeler le webhook d'Amplify
+        run: curl --fail --silent --show-error -X POST -H 'Content-Type:application/json' -d '{}' "$AMPLIFY_WEBHOOK"
+        env:
+          AMPLIFY_WEBHOOK: ${{ secrets.AMPLIFY_WEBHOOK }}
