@@ -58,3 +58,5 @@ Le build incrémental d'Astro reprend du cache les pages dont le guide n'a pas c
 - **Tests :** une nouvelle règle de nettoyage ou de recherche s'accompagne d'un test.
 
 Le texte de remplacement des images, les en-têtes de tableaux et les autres corrections de rédaction se font dans LibGuides : aucune règle du code ne peut les remplacer.
+
+**À corriger dans LibGuides :** l'image de la fiche « Nous joindre » (`a-la-carte-generique-2-.jpg`) pèse 3,1 Mo pour un affichage de 88 px, sur environ 300 pages. Il faut la remplacer par une version réduite dans le profil LibGuides.
