@@ -1,0 +1,26 @@
+version: 1
+applications:
+  - appRoot: .
+    frontend:
+      phases:
+        preBuild:
+          commands:
+            - nvm install 22.22
+            - nvm use 22.22
+            # Amplify restaure le cache avant ces commandes, et npm ci vide node_modules
+            - if [ -d node_modules/.astro ]; then mv node_modules/.astro /tmp/cache-astro; fi
+            - npm ci
+            - if [ -d /tmp/cache-astro ]; then mv /tmp/cache-astro node_modules/.astro; fi
+        build:
+          commands:
+            # Seule la branche production est indexée ; AWS_BRANCH ne dépend pas de la façon dont Amplify récupère le dépôt
+            - if [ "$AWS_BRANCH" = production ]; then export SITE_ENV=production; else export SITE_ENV=preprod; fi
+            - npm run build
+      artifacts:
+        baseDirectory: dist
+        files:
+          - '**/*'
+      # Le build incrémental : environ 10 s avec ce cache, plus d'une minute et toutes les requêtes à LibGuides sans lui
+      cache:
+        paths:
+          - node_modules/.astro/**/*
