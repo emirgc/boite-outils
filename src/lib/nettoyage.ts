@@ -184,8 +184,9 @@ function poserIframes($: cheerio.CheerioAPI, titreBoite?: string) {
 }
 
 function largeurEnPx(style = '') {
-  const m = style.match(/(?:^|;|\s)width:\s*(\d+)px/)
-  return m ? Number(m[1]) : undefined
+  const m = style.match(/(?:^|;|\s)width:\s*(\d*\.?\d+)(px|r?em)/)
+  // Sans sa largeur, un SVG occupe toute la colonne. Le style disparaît : em se calcule sur le texte courant, 16 px
+  return m ? Math.round(Number(m[1]) * (m[2] === 'px' ? 1 : 16)) : undefined
 }
 
 function aplatirAccordeons($: cheerio.CheerioAPI) {

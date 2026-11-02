@@ -10,6 +10,13 @@ test('retire scripts, gestionnaires, styles et liens javascript', () => {
   assert.equal(html, '<p>a b</p>')
 })
 
+test('largeur d\'une image : en px comme en em, et une petite image reste une icône', () => {
+  assert.match(propre('<img alt="" src="/a.svg" style="float: left; width: 4.5em;">'), /width="72"/)
+  assert.match(propre('<img alt="" src="/a.png" style="width: 200px">'), /width="200"/)
+  assert.match(propre('<img alt="" src="/a.svg" style="width: 2rem">'), /class="icone-texte"/)
+  assert.doesNotMatch(propre('<img alt="" src="/a.png" style="max-width: 4.5em">'), /width=/)
+})
+
 test('icône de la police Phosphor : une image, avec sa classe de présentation', () => {
   const html = nettoyerContenu('<a href="/x" class="frame"><div class="text-wrapper"><i class="ph ph-gavel icone-discipline"></i>Texte</div></a><i class="fa fa-book"></i>', 1, '1', { idGuide: 1, urlGuide: 'https://x.ca/g', chemins: new Map() })
   assert.match(html, /<img[^>]*class="icone-discipline"/)
